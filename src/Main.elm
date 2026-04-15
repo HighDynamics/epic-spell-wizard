@@ -1,4 +1,4 @@
-module Main exposing (main)
+port module Main exposing (main)
 
 import Browser
 import Calc exposing (StatBlockData, calculateBreakdown, devCosts, statBlock)
@@ -12,9 +12,10 @@ import Seeds exposing (allSeeds, getSeed)
 import Types exposing (..)
 
 
--- ─── Ports (wired in Section 11) ─────────────────────────────────────────────
+-- ─── Ports ───────────────────────────────────────────────────────────────────
 
--- Ports declared here so the module compiles; subscriptions added in Section 11.
+port copyToClipboard : String -> Cmd msg
+port copyResult : (Bool -> msg) -> Sub msg
 
 
 -- ─── Main ────────────────────────────────────────────────────────────────────
@@ -24,7 +25,7 @@ main =
     Browser.element
         { init = \_ -> ( init, Cmd.none )
         , update = update
-        , subscriptions = \_ -> Sub.none
+        , subscriptions = \_ -> copyResult CopyResult
         , view = view
         }
 
@@ -221,8 +222,16 @@ update msg model =
             ( { model | summaryPanelOpen = not model.summaryPanelOpen }, Cmd.none )
 
         ExportMarkdown ->
-            -- Clipboard port call implemented in Section 11.
-            ( model, Cmd.none )
+            let
+                markdown =
+                    Export.generateMarkdown
+                        model.spellName
+                        model.seedInstances
+                        model.appliedFactors
+                        model.description
+                        0
+            in
+            ( { model | copySuccess = Nothing }, copyToClipboard markdown )
 
         CopyResult success ->
             ( { model | copySuccess = Just success }, Cmd.none )
