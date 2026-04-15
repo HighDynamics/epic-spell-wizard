@@ -2,6 +2,7 @@ module Main exposing (main)
 
 import Browser
 import Calc exposing (StatBlockData, calculateBreakdown, devCosts, statBlock)
+import Export
 import Dict exposing (Dict)
 import Factors exposing (allFactors, getFactor)
 import Html exposing (..)
@@ -204,15 +205,11 @@ update msg model =
             ( { model | description = text }, Cmd.none )
 
         RegenerateDescription ->
-            -- Description generation implemented in Section 10 (Export.elm).
-            -- Placeholder: sets description to a join of seed names.
             let
-                names =
-                    model.seedInstances
-                        |> List.filterMap (\i -> getSeed i.seedId |> Maybe.map .name)
-                        |> String.join ", "
+                generated =
+                    Export.generateDescription model.seedInstances model.appliedFactors
             in
-            ( { model | description = "Spell using: " ++ names }, Cmd.none )
+            ( { model | description = generated }, Cmd.none )
 
         ToggleSeedsPanel ->
             ( { model | seedsPanelOpen = not model.seedsPanelOpen }, Cmd.none )
