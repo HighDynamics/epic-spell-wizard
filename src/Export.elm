@@ -283,12 +283,14 @@ seedParagraph seed modeId inst _ choice qty has =
                 "slay_enervate" ->
                     let dice = 2 + qty "slay_neg_level"
                     in
-                    "This spell suppresses the life force of the target, bestowing " ++ String.fromInt dice ++ "d4 negative levels (Fortitude save for half). If negative levels equal or exceed the target's Hit Dice, it dies."
+                    "This spell suppresses the life force of the target, bestowing " ++ String.fromInt dice ++ "d4 negative levels (or half as many on a successful Fortitude save). If the subject has at least as many negative levels as Hit Dice, it dies."
                 _ ->
                     let extraHD = qty "slay_hd"
-                        targets = if extraHD > 0 then String.fromInt (1 + extraHD) ++ " additional targets or groups of" else "a creature of up to"
+                        targetStr = if extraHD > 0
+                            then "up to " ++ String.fromInt (1 + extraHD) ++ " living creatures of up to 80 Hit Dice each"
+                            else "a living creature of up to 80 Hit Dice"
                     in
-                    "This spell snuffs out the life force of " ++ targets ++ " 80 Hit Dice. If the target fails a Fortitude save, it dies instantly. On a successful save, it instead takes 3d6+20 points of damage."
+                    "This spell snuffs out the life force of " ++ targetStr ++ ". The subject is entitled to a Fortitude saving throw to survive the attack. If the save is successful, it instead takes 3d6+20 points of damage."
 
         Summon ->
             case modeId of
