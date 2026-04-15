@@ -83,9 +83,9 @@ seedParagraph seed modeId inst _ choice qty has =
         Armor ->
             let bonus = 4 + qty "armor_ac_bonus"
                 other = qty "armor_other_type"
-                otherStr = if other > 0 then " Additionally, the target gains a +" ++ String.fromInt other ++ " bonus to AC from a different bonus type." else ""
+                otherStr = if other > 0 then " The target also gains a +" ++ String.fromInt other ++ " bonus to Armor Class of a different type, such as deflection, divine, or insight." else ""
             in
-            "This spell grants the target a +" ++ String.fromInt bonus ++ " armor or natural armor bonus to Armor Class. The protection is intangible and carries no penalties." ++ otherStr
+            "This spell grants the target a +" ++ String.fromInt bonus ++ " armor or natural armor bonus to Armor Class, whichever the caster selects. Unlike mundane armor, this protection entails no armor check penalty, arcane spell failure chance, or speed reduction. Incorporeal creatures can't bypass it the way they can ignore normal armor." ++ otherStr
 
         Banish ->
             let hd = 14 + qty "banish_hd" * 2
