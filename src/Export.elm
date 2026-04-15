@@ -139,12 +139,12 @@ seedParagraph seed modeId inst _ choice qty has =
                 images = qty "delude_extra_image"
                 script = has "delude_script"
                 area = has "delude_area"
-                senseStr = if senses > 0 then " The illusion also includes " ++ String.fromInt senses ++ " additional sensory aspect(s) beyond vision." else ""
-                imageStr = if images > 0 then " The spell creates " ++ String.fromInt (1 + images) ++ " images total." else ""
-                scriptStr = if script then " The illusion follows a predetermined script without the caster's concentration." else ""
+                senseStr = if senses > 0 then " The illusion includes " ++ String.fromInt senses ++ " additional sensory aspect(s), such as sound, smell, or touch." else ""
+                imageStr = if images > 0 then " The spell creates " ++ String.fromInt (1 + images) ++ " images." else ""
+                scriptStr = if script then " The figment follows a script determined by the caster, without requiring concentration. It can include intelligible speech." else ""
                 areaStr = if area then " The illusion makes an entire area appear to be something other than it is." else ""
             in
-            "This spell creates a visual illusion that the caster can move by concentrating. The illusion disappears when struck unless the caster responds appropriately." ++ senseStr ++ imageStr ++ scriptStr ++ areaStr
+            "This spell creates the visual illusion of an object, creature, or force, as visualized by the caster. The caster can move the image by concentrating; it is otherwise stationary. The image disappears when struck by an opponent unless the caster causes the illusion to react appropriately." ++ senseStr ++ imageStr ++ scriptStr ++ areaStr
 
         Destroy ->
             let dmg = 20 + qty "destroy_damage"
