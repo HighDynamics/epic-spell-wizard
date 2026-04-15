@@ -307,10 +307,10 @@ seedParagraph seed modeId inst _ choice qty has =
 
         Transform ->
             let
-                specific = if has "transform_specific" then " The target is transformed into the specific likeness of another individual, including memories and mental abilities." else ""
+                specific = if has "transform_specific" then " The target is transformed into the specific likeness of another individual, including that individual's memories and mental abilities." else ""
                 incorporeal = if has "transform_incorporeal" then " The transformation involves an incorporeal or gaseous form." else ""
             in
-            "This spell transforms the target into another form of creature or object. The transformed subject retains its mental abilities and scores but gains the physical attributes of its new form." ++ specific ++ incorporeal
+            "This spell changes the subject into another form of creature or object. The transformed subject acquires the physical and natural abilities of its new form while retaining its own memories and mental ability scores. The subject's equipment either melds into the new form or remains, at the caster's option." ++ specific ++ incorporeal
 
         Transport ->
             case modeId of
