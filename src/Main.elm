@@ -1,8 +1,10 @@
 module Main exposing (main)
 
 import Browser
+import Dict exposing (Dict)
 import Html exposing (Html, div, text)
 import Html.Attributes exposing (class)
+import Types exposing (..)
 
 
 main : Program () Model Msg
