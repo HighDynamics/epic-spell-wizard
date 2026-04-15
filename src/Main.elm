@@ -111,12 +111,19 @@ update msg model =
             )
 
         SelectMode iid modeId ->
+            let
+                newMode =
+                    if String.isEmpty modeId then
+                        Nothing
+                    else
+                        Just modeId
+            in
             ( { model
                 | seedInstances =
                     List.map
                         (\i ->
                             if i.instanceId == iid then
-                                { i | selectedMode = Just modeId, appliedSeedFactors = [] }
+                                { i | selectedMode = newMode, appliedSeedFactors = [] }
                             else
                                 i
                         )
@@ -365,29 +372,6 @@ viewSeedInstance inst =
                 , -- Original seed description (always visible so the user can read the source text)
                   p [ class "text-xs text-gray-500 italic mb-2 leading-relaxed" ]
                     [ text seed.description ]
-                , -- Mode selector (if seed has modes)
-                  if List.isEmpty seed.modes then
-                    text ""
-                  else
-                    div [ class "mb-2" ]
-                        [ select
-                            [ class "w-full bg-gray-800 text-gray-200 text-xs rounded px-2 py-1 border border-gray-700"
-                            , onInput (SelectMode inst.instanceId)
-                            ]
-                            (option [ value "" ] [ text "— select mode —" ]
-                                :: List.map
-                                    (\m ->
-                                        option
-                                            [ value m.id
-                                            , selected (inst.selectedMode == Just m.id)
-                                            ]
-                                            [ text m.name ]
-                                    )
-                                    seed.modes
-                            )
-                        ]
-                , -- Choice dropdowns
-                  div [] (List.map (viewChoiceDropdown inst) seed.choices)
                 ]
 
 
@@ -473,17 +457,46 @@ viewSeedInstanceFactors _ inst =
 
                 availableFactors =
                     seed.universalFactors ++ activeModeFactors
-            in
-            if List.isEmpty availableFactors then
-                text ""
 
-            else
-                div [ class "border-b border-gray-800" ]
-                    [ div [ class "px-4 py-2 bg-gray-900 text-xs text-arcane-400 font-semibold uppercase tracking-wider" ]
-                        [ text ("── " ++ seed.name ++ " ──") ]
-                    , div [ class "px-4 py-2" ]
-                        (List.map (viewSeedFactor inst) availableFactors)
-                    ]
+                modeRow =
+                    if List.isEmpty seed.modes then
+                        []
+                    else
+                        [ div [ class "mb-2" ]
+                            [ label [ class "text-xs text-gray-500 mb-1 block" ] [ text "Mode" ]
+                            , select
+                                [ class "w-full bg-gray-800 text-gray-200 text-xs rounded px-2 py-1 border border-gray-700"
+                                , onInput (SelectMode inst.instanceId)
+                                ]
+                                (option [ value "" ] [ text "— select mode —" ]
+                                    :: List.map
+                                        (\m ->
+                                            option
+                                                [ value m.id
+                                                , selected (inst.selectedMode == Just m.id)
+                                                ]
+                                                [ text m.name ]
+                                        )
+                                        seed.modes
+                                )
+                            ]
+                        ]
+
+                choiceRows =
+                    List.map (viewChoiceDropdown inst) seed.choices
+
+                factorRows =
+                    if List.isEmpty availableFactors then
+                        [ p [ class "text-gray-500 text-xs italic mt-1" ] [ text "No seed-specific factors" ] ]
+                    else
+                        List.map (viewSeedFactor inst) availableFactors
+            in
+            div [ class "border-b border-gray-800" ]
+                [ div [ class "px-4 py-2 bg-gray-900 text-xs text-arcane-400 font-semibold uppercase tracking-wider" ]
+                    [ text ("── " ++ seed.name ++ " ──") ]
+                , div [ class "px-4 py-2" ]
+                    (modeRow ++ choiceRows ++ factorRows)
+                ]
 
 
 viewSeedFactor : SeedInstance -> SeedFactor -> Html Msg
