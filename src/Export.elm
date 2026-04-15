@@ -331,20 +331,20 @@ seedParagraph seed modeId inst _ choice qty has =
                     let pts = 5 + qty "ward_energy_pts"
                         eType = if String.isEmpty (choice "wardEnergyType") then "the chosen energy type" else choice "wardEnergyType"
                     in
-                    "This spell protects the target, absorbing the first " ++ String.fromInt pts ++ " points of " ++ eType ++ " damage it would take each round."
+                    "This spell grants the target protection from " ++ eType ++ ". Each round, the spell absorbs the first " ++ String.fromInt pts ++ " points of " ++ eType ++ " damage the target would otherwise take, whether the source is natural or magical. The target's equipment is also protected."
                 "ward_creature" ->
                     let cType = if String.isEmpty (choice "wardCreatureType") then "the chosen creature type" else choice "wardCreatureType"
                     in
-                    "This spell prevents bodily contact by " ++ cType ++ ". Their natural weapon attacks fail and they recoil if they must touch the warded creature."
+                    "This spell prevents bodily contact by " ++ cType ++ ". This causes their natural weapon attacks to fail and the creatures to recoil if such attacks require touching the warded creature."
                 "ward_magic" ->
                     let lvl = 1 + qty "ward_magic_level"
                     in
-                    "This spell creates a 10-foot-radius sphere around the caster that blocks all spells of " ++ String.fromInt lvl ++ "th level and below. Spells can still be cast outward from within the ward."
+                    "This spell creates an immobile, faintly shimmering magical sphere with a 10-foot radius that excludes all spell effects of up to " ++ String.fromInt lvl ++ "th level. Any type of spell can still be cast through or out of the ward."
                 _ ->
                     let pts = 5 + qty "ward_dmg_pts"
-                        allThree = if has "ward_all_three" then "all three types (bludgeoning, piercing, and slashing)" else "two of the three damage types (bludgeoning, piercing, or slashing)"
+                        typesStr = if has "ward_all_three" then "all three damage types (bludgeoning, piercing, and slashing)" else "two of the three damage types (bludgeoning, piercing, or slashing)"
                     in
-                    "This spell absorbs the first " ++ String.fromInt pts ++ " points of physical damage the target would take each round from " ++ allThree ++ "."
+                    "This spell protects the target from " ++ typesStr ++ ". Each round, the spell absorbs the first " ++ String.fromInt pts ++ " points of damage the target would otherwise take from those types, whether the source is natural or magical."
 
 
 -- Helper: determine undead type for Animate Dead paragraph
