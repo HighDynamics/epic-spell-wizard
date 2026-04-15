@@ -203,20 +203,20 @@ seedParagraph seed modeId inst _ choice qty has =
                 "fortify_nonenhance" ->
                     let bonus = 1 + qty "fortify_other_plus"
                     in
-                    "This spell grants the target a +" ++ String.fromInt bonus ++ " non-enhancement bonus (such as insight, sacred, or profane) to one statistic."
+                    "This spell grants the target a +" ++ String.fromInt bonus ++ " bonus of a type other than enhancement (such as insight, sacred, or profane) to one statistic."
                 "fortify_new" ->
                     let bonus = 1 + qty "fortify_new_plus"
                     in
-                    "This spell grants the target a +" ++ String.fromInt bonus ++ " bonus to a statistic it does not normally possess."
+                    "This spell grants the target a +" ++ String.fromInt bonus ++ " bonus to an ability score or statistic it does not normally possess."
                 "fortify_sr" ->
                     let srBase = 25 + qty "fortify_sr_plus" - qty "fortify_sr_minus"
-                        epicDR = if has "fortify_dr_epic" then " The damage reduction provided penetrates epic defenses." else ""
+                        epicDR = if has "fortify_dr_epic" then " The granted damage reduction is effective against epic attacks." else ""
                     in
                     "This spell grants the target Spell Resistance " ++ String.fromInt srBase ++ "." ++ epicDR
                 "fortify_age" ->
                     let years = qty "fortify_age_year"
                     in
-                    "This spell permanently extends the target's current age category by " ++ String.fromInt years ++ " year(s)."
+                    "This spell permanently adds " ++ String.fromInt years ++ " year(s) to the target's current age category. Incremental adjustments do not stack; they overlap."
                 _ ->
                     "This spell fortifies the target with a bonus to one statistic or ability."
 
