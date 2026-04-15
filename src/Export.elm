@@ -70,9 +70,9 @@ seedParagraph seed modeId inst _ choice qty has =
 
         Animate ->
             let vol = 20 + qty "animate_vol_1k" * 10 + qty "animate_vol_over1k" * 100
-                attended = if has "animate_attended" then " It can animate objects currently carried or worn by a creature." else ""
+                attended = if has "animate_attended" then " The spell can animate objects carried or worn by another creature." else ""
             in
-            "This spell animates " ++ String.fromInt vol ++ " cubic feet of inanimate matter, causing it to move and attack the caster's designated foes." ++ attended
+            "This spell imbues up to " ++ String.fromInt vol ++ " cubic feet of inanimate matter with mobility and a semblance of life. The animated object attacks whomever or whatever the caster designates and can be of any nonmagical material." ++ attended
 
         AnimateDead ->
             let hd = 20 + qty "adead_extra_hd_create"
