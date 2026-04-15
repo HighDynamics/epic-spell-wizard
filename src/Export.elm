@@ -247,17 +247,17 @@ seedParagraph seed modeId inst _ choice qty has =
                 "reflect_ranged" ->
                     let attacks = 5 + qty "reflect_ranged_extra"
                     in
-                    "This spell reflects the next " ++ String.fromInt attacks ++ " ranged attacks made against the caster back on their originators, using the original attack rolls."
+                    "This spell automatically reflects the next " ++ String.fromInt attacks ++ " ranged attacks made against the caster back on their originators, using the original attack rolls. Once all attacks are reflected, the protection is expended."
                 "reflect_melee" ->
                     let attacks = 5 + qty "reflect_melee_extra"
                     in
-                    "This spell reflects the next " ++ String.fromInt attacks ++ " melee attacks made against the caster back on their originators, using the original attack rolls."
+                    "This spell automatically reflects the next " ++ String.fromInt attacks ++ " melee attacks made against the caster back on their originators, using the original attack rolls. Once all attacks are reflected, the protection is expended."
                 _ ->
                     let levelCap = qty "reflect_spell_level"
-                        aoe = if has "reflect_aoe" then " It can reflect area-of-effect spells that catch the caster in their vicinity." else ""
+                        aoe = if has "reflect_aoe" then " It can also reflect area spells that catch the caster in their vicinity." else ""
                         capStr = if levelCap > 0 then String.fromInt (1 + levelCap) else "1"
                     in
-                    "This spell reflects spells and spell-like effects of up to " ++ capStr ++ "th level back on their casters. Epic spells require an opposed caster level check to reflect." ++ aoe
+                    "This spell returns all spell effects of up to " ++ capStr ++ "th level directed at the caster back on their casters. A single successful reflection expends the protection. Against epic spells, an opposed caster level check is required; if the enemy wins, the protection is suppressed rather than expended." ++ aoe
 
         Reveal ->
             case modeId of
