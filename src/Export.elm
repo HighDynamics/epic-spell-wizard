@@ -125,13 +125,13 @@ seedParagraph seed modeId inst _ choice qty has =
         Contact ->
             case modeId of
                 "contact_messenger" ->
-                    "This spell imbues a creature or object with a prepared message that appears as text or is spoken aloud when specific conditions are met."
+                    "This spell imbues a creature or object with a message the caster prepares, which appears as written text or is spoken aloud when specific conditions set at casting are fulfilled."
                 _ ->
                     let extra = qty "contact_extra_creature"
                         lang = if has "contact_language" then " The bond allows telepathic communication regardless of language." else ""
-                        extraStr = if extra > 0 then " Up to " ++ String.fromInt (2 + extra) ++ " creatures can share the bond." else ""
+                        extraStr = if extra > 0 then " The caster can forge a communal bond among up to " ++ String.fromInt (2 + extra) ++ " creatures." else ""
                     in
-                    "This spell forges a telepathic bond with a known or visible creature, allowing two-way communication across any distance." ++ extraStr ++ lang
+                    "This spell forges a telepathic bond with a creature familiar to the caster, or one the caster can currently see. The subject recognizes the caster if it knows him or her and can answer in like manner, though it does not have to." ++ extraStr ++ lang
 
         Delude ->
             let
