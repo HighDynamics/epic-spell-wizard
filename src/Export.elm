@@ -94,8 +94,12 @@ seedParagraph seed modeId inst _ choice qty has =
             "This spell forces up to " ++ String.fromInt hd ++ " Hit Dice of extraplanar creatures out of the caster's home plane." ++ typeStr
 
         Compel ->
-            let unreasonable = if has "compel_unreasonable" then " The compelled activity need not sound reasonable to the target." else " The compelled activity must sound reasonable to the target." in
-            "This spell compels the target to follow a specific course of activity for up to the spell's duration, or until the task is completed." ++ unreasonable
+            let
+                restriction = if has "compel_unreasonable"
+                    then " The compelled activity need not sound reasonable to the target and can include obviously harmful acts."
+                    else " The activity must be worded so as to sound reasonable to the target; asking it to do an obviously harmful act automatically negates the effect."
+            in
+            "This spell compels the target to follow a course of activity." ++ restriction ++ " The compelled activity can continue for the entire duration, or the spell ends early when the task is completed."
 
         Conceal ->
             case modeId of
