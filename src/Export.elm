@@ -154,7 +154,7 @@ seedParagraph seed modeId inst _ choice qty has =
         Dispel ->
             let bonus = 10 + qty "dispel_bonus"
             in
-            "This spell ends ongoing magical effects on the target. The caster makes a dispel check (1d20 +" ++ String.fromInt bonus ++ ") against DC 11 + the target spell's caster level. It can defeat any spell, including epic ones and supernatural abilities."
+            "This spell can end ongoing spells on a creature or object, temporarily suppress the magical abilities of a magic item, or end ongoing spell effects within an area. A dispelled spell ends as if its duration had expired. The caster makes a dispel check (1d20 +" ++ String.fromInt bonus ++ ") against a DC of 11 + the target spell's caster level. The dispel seed can defeat all spells, even those not normally subject to dispel magic, including epic spells and supernatural abilities."
 
         Energy ->
             let
