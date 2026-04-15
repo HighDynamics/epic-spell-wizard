@@ -225,12 +225,12 @@ seedParagraph seed modeId inst _ choice qty has =
                 "heal_harm" ->
                     let negLevels = 4 + qty "heal_neg_level_extra"
                     in
-                    "This spell flushes negative energy into the target, healing undead completely but inflicting " ++ String.fromInt negLevels ++ " negative levels on living creatures (Fortitude save for half)."
+                    "This spell flushes negative energy into the target, healing undead completely. A living target that fails its Fortitude saving throw gains " ++ String.fromInt negLevels ++ " negative levels. If the subject has at least as many negative levels as Hit Dice, it dies."
                 _ ->
                     let drain = if has "heal_drain" then " It also restores permanently drained ability score points." else ""
                         negLevels = if has "heal_neg_levels" then " All negative levels afflicting the target are dispelled." else ""
                     in
-                    "This spell channels positive energy to completely cure all diseases, blindness, deafness, hit point damage, temporary ability damage, poisons, and magical penalties afflicting the target." ++ drain ++ negLevels
+                    "This spell channels positive energy to completely cure all diseases, blindness, deafness, hit point damage, and temporary ability damage afflicting the target. It neutralizes poisons, offsets feeblemindedness, cures mental disorders, and dispels all magical effects penalizing the target's abilities." ++ drain ++ negLevels
 
         Life ->
             case modeId of
