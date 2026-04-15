@@ -262,19 +262,21 @@ seedParagraph seed modeId inst _ choice qty has =
         Reveal ->
             case modeId of
                 "reveal_truesight" ->
-                    "This spell grants the caster true sight to a range of 120 feet, piercing all mundane and magical darkness, illusions, blur, displacement, and invisibility."
+                    "This spell allows the caster to pierce illusions and see things as they really are, to a range of 120 feet. The caster can see through normal and magical darkness, notice secret doors hidden by magic, see the exact locations of creatures under blur or displacement effects, see invisible creatures or objects normally, see through illusions, and see the true form of polymorphed or transmuted things."
                 "reveal_language" ->
-                    let both = if has "reveal_both_lang" then " The caster can both comprehend and speak the language." else " The caster can comprehend the language." in
-                    "This spell grants the ability to understand a foreign written or spoken language." ++ both
+                    if has "reveal_both_lang" then
+                        "This spell allows the caster to both comprehend and speak the written and verbal language of another."
+                    else
+                        "This spell allows the caster to comprehend the written and verbal language of another."
                 _ ->
                     let
-                        hear = if has "reveal_hear" then " The caster can both see and hear through the sensor." else " The caster can see through the sensor."
-                        mobile = if has "reveal_mobile" then " The sensor is mobile (speed 30 ft.)." else ""
-                        plane = if has "reveal_plane" then " The sensor can be placed on a different plane." else ""
-                        cast = if has "reveal_cast_through" then " The caster can cast touch-range or greater spells through the sensor (must maintain line of effect)." else ""
-                        noLoe = if has "reveal_no_loe" then " No line of effect is required for spells cast through the sensor." else ""
+                        senseStr = if has "reveal_hear" then "see and hear" else "see"
+                        mobile = if has "reveal_mobile" then " The sensor is mobile at a speed of 30 feet." else ""
+                        plane = if has "reveal_plane" then " The sensor can be placed on a different plane of existence." else ""
+                        cast = if has "reveal_cast_through" then " The caster can cast spells with a range of touch or greater through the sensor, but must maintain line of effect to it at all times." else ""
+                        noLoe = if has "reveal_no_loe" then " The line of effect requirement for casting through the sensor is waived." else ""
                     in
-                    "This spell creates an invisible sensor at a known location, allowing the caster to observe remotely." ++ hear ++ mobile ++ plane ++ cast ++ noLoe
+                    "This spell creates an invisible sensor at a known location through which the caster can " ++ senseStr ++ " almost as if present there. Distance is not a factor, but the locale must be known to the caster." ++ mobile ++ plane ++ cast ++ noLoe
 
         Slay ->
             case modeId of
