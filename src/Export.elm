@@ -89,9 +89,9 @@ seedParagraph seed modeId inst _ choice qty has =
 
         Banish ->
             let hd = 14 + qty "banish_hd" * 2
-                typeStr = if has "banish_type" then " The spell targets a non-outsider creature type." else " The spell targets extraplanar outsiders."
+                typeStr = if has "banish_type" then " The spell targets a specified creature type or subtype other than outsiders." else ""
             in
-            "This spell forces up to " ++ String.fromInt hd ++ " Hit Dice of extraplanar creatures back to their home plane." ++ typeStr
+            "This spell forces up to " ++ String.fromInt hd ++ " Hit Dice of extraplanar creatures out of the caster's home plane." ++ typeStr
 
         Compel ->
             let unreasonable = if has "compel_unreasonable" then " The compelled activity need not sound reasonable to the target." else " The compelled activity must sound reasonable to the target." in
