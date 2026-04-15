@@ -149,7 +149,7 @@ seedParagraph seed modeId inst _ choice qty has =
         Destroy ->
             let dmg = 20 + qty "destroy_damage"
             in
-            "This spell deals " ++ String.fromInt dmg ++ "d6 points of damage to the target (no specific type). A creature reduced to –10 hit points or less is utterly destroyed, leaving only fine dust."
+            "This spell deals " ++ String.fromInt dmg ++ "d6 points of damage to the target. The damage is of no particular type or energy. If the target is reduced to –10 hit points or less—or a construct, object, or undead is reduced to 0 hit points—it is utterly destroyed as if disintegrated, leaving behind only a trace of fine dust."
 
         Dispel ->
             let bonus = 10 + qty "dispel_bonus"
