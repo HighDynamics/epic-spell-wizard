@@ -59,11 +59,11 @@ seedParagraph seed modeId inst _ choice qty has =
                 senseCount = qty "afflict_sense"
                 otherStr =
                     if otherPenalties > 0 then
-                        " It also inflicts a –" ++ String.fromInt otherPenalties ++ " penalty to ability scores, caster level checks, or Spell Resistance."
+                        " The target is also afflicted with a –" ++ String.fromInt otherPenalties ++ " penalty to caster level checks, ability scores, and Spell Resistance."
                     else ""
                 senseStr =
                     if senseCount > 0 then
-                        " Additionally, one of the target's senses ceases to function for the duration."
+                        " One of the target's senses ceases to function for the spell's duration, with all attendant penalties that apply for losing that sense."
                     else ""
             in
             "This spell afflicts the target with a –" ++ String.fromInt penaltyRolls ++ " morale penalty on attack rolls, checks, and saving throws." ++ otherStr ++ senseStr
