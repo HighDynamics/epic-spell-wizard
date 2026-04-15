@@ -104,12 +104,15 @@ seedParagraph seed modeId inst _ choice qty has =
         Conceal ->
             case modeId of
                 "conceal_invisibility" ->
-                    let persist = if has "conceal_persist" then " This invisibility persists regardless of the subject's actions, including attacking." else " This invisibility ends if the subject attacks." in
-                    "This spell renders the target invisible, concealing it from sight even against darkvision." ++ persist
+                    let persist = if has "conceal_persist"
+                            then " This invisibility lasts regardless of the subject's actions, including attacking."
+                            else " The spell ends if the subject attacks any creature."
+                    in
+                    "This spell conceals the target from sight, even from darkvision. If the subject is a creature carrying gear, the gear vanishes too, rendering the creature invisible." ++ persist
                 "conceal_displacement" ->
-                    "This spell displaces the target's apparent location by roughly 2 feet, granting a 50% miss chance. Unlike true invisibility, enemies can still target the subject normally."
+                    "This spell conceals the exact location of the target, making it appear to be about 2 feet away from its true location. The subject benefits from a 50% miss chance as if it had total concealment. However, unlike actual total concealment, this displacement effect does not prevent enemies from targeting the subject normally."
                 _ ->
-                    "This spell can block divination magic and effects using the reveal seed. When such magic is used against the subject, an opposed caster level check determines which spell prevails."
+                    "This spell blocks divination spells, spell-like effects, and epic spells developed with the reveal seed from affecting the subject. Whenever such magic is directed against the subject, an opposed caster level check determines which spell prevails."
 
         Conjure ->
             case modeId of
