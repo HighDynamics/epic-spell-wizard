@@ -183,16 +183,16 @@ seedParagraph seed modeId inst _ choice qty has =
         Foresee ->
             case modeId of
                 "foresee_questions" ->
-                    "This spell allows the caster to pose up to ten specific questions to unknown powers of other planes. Each answer is one word (yes, no, maybe, never, irrelevant, or similar) and is 90% likely to be truthful."
+                    "This spell allows the caster to pose up to ten specific questions to unknown powers of other planes, one per round while concentrating. The answers return in a language the caster understands, using only one-word replies—yes, no, maybe, never, irrelevant, or similar—and are 90% likely to be truthful."
                 "foresee_info" ->
                     let info = 1 + qty "foresee_extra_info"
                     in
-                    "This spell reveals " ++ String.fromInt info ++ " piece(s) of basic information about a living target—such as level, class, alignment, or a special ability."
+                    "This spell reveals " ++ String.fromInt info ++ " basic piece(s) of information about a living target—such as level, class, alignment, or a special ability."
                 _ ->
                     let intervals = qty "foresee_interval"
                         minutes = (1 + intervals) * 30
                     in
-                    "This spell foretells the immediate future up to " ++ String.fromInt minutes ++ " minutes ahead. The caster is 90% likely to receive a meaningful reading indicating whether a contemplated action will bring good, bad, or no results."
+                    "This spell foretells the immediate future up to " ++ String.fromInt minutes ++ " minutes ahead. The caster is 90% likely to receive a meaningful reading indicating whether a contemplated action will bring good results, bad results, or no result."
 
         Fortify ->
             case modeId of
