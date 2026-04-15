@@ -235,12 +235,12 @@ seedParagraph seed modeId inst _ choice qty has =
         Life ->
             case modeId of
                 "life_give" ->
-                    "This spell grants actual life, personality, and humanlike sentience to an inanimate object, plant, or animal. The newly living creature is friendly toward the caster and speaks one language per point of Intelligence bonus."
+                    "This spell gives actual life to a normally inanimate object, plant, or animal, granting it a soul, personality, and humanlike sentience. The newly living creature is friendly toward the caster and speaks one language the caster knows, plus one additional language per point of Intelligence bonus."
                 _ ->
                     let decades = qty "life_extra_decade"
                         yearLimit = 200 + decades * 10
                     in
-                    "This spell restores life and complete vigor to a creature that has been dead for no more than " ++ String.fromInt yearLimit ++ " years, regardless of the state of its remains. The subject loses one level (or 1 Constitution if 1st level) upon returning."
+                    "This spell restores life and complete vigor to any deceased creature, provided it has not been dead for more than " ++ String.fromInt yearLimit ++ " years. The condition of the remains is not a factor—so long as some portion of the creature's body still exists, it can be returned to life. The subject is restored to full hit points with no loss of prepared spells, but loses one level (or 1 Constitution if 1st level). This spell cannot revive those who died of old age."
 
         Reflect ->
             case modeId of
