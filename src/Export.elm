@@ -163,20 +163,20 @@ seedParagraph seed modeId inst _ choice qty has =
             case modeId of
                 "energy_bolt" ->
                     let dmg = 10 + qty "energy_bolt_damage"
-                        imbue = if has "energy_bolt_imbue" then " Another creature is imbued with the ability to use this bolt as a spell-like ability." else ""
+                        imbue = if has "energy_bolt_imbue" then " Another creature is imbued with the ability to use this bolt as a spell-like ability at its option or when a particular condition is met." else ""
                     in
-                    "This spell releases a bolt of " ++ eType ++ " energy that deals " ++ String.fromInt dmg ++ "d6 points of " ++ eType ++ " damage to all in its path. A successful Reflex save halves the damage." ++ imbue
+                    "This spell releases a bolt of " ++ eType ++ " energy that instantaneously deals " ++ String.fromInt dmg ++ "d6 points of " ++ eType ++ " damage; all in the bolt's area must make a Reflex save for half damage." ++ imbue
                 "energy_emanation" ->
                     let dmg = 2 + qty "energy_em_damage"
                     in
-                    "This spell causes the target to emanate " ++ eType ++ " energy in a 10-foot radius for the duration, dealing " ++ String.fromInt dmg ++ "d6 points of " ++ eType ++ " damage per round to unprotected creatures."
+                    "This spell causes the target to emanate " ++ eType ++ " energy out to a radius of 10 feet, dealing " ++ String.fromInt dmg ++ "d6 points of " ++ eType ++ " damage per round against unprotected creatures."
                 "energy_wall" ->
                     let dmgNear = 2 + qty "energy_wall_damage"
                         dmgFar = 1 + qty "energy_wall_damage"
                     in
-                    "This spell creates a wall of " ++ eType ++ " energy, dealing " ++ String.fromInt dmgNear ++ "d4 damage to creatures within 10 feet, " ++ String.fromInt dmgFar ++ "d4 damage to creatures between 10–20 feet, and 2d6+20 damage to any creature that passes through it."
+                    "This spell creates a wall, dome, or sphere of " ++ eType ++ " energy. One side sends forth waves of energy, dealing " ++ String.fromInt dmgNear ++ "d4 points of damage to creatures within 10 feet and " ++ String.fromInt dmgFar ++ "d4 points to those within 20 feet. Any creature passing through the wall takes 2d6+20 points of " ++ eType ++ " damage. The wall deals double damage to undead."
                 "energy_weather" ->
-                    "This spell carefully releases cold, electricity, and fire to create specific weather effects (blizzards, heat waves, storms, fogs, or tornadoes) in a two-mile radius for the duration. Targeted damage requires an additional use of the Energy seed."
+                    "This spell carefully releases and balances cold, electricity, and fire to create specific weather effects in a two-mile radius centered on the caster. It can create cold snaps, heat waves, thunderstorms, fogs, blizzards, or even a tornado that moves randomly through the area. Creating targeted damaging effects requires an additional use of the energy seed."
                 _ ->
                     "This spell channels " ++ eType ++ " energy. Select a mode (bolt, emanation, wall, or weather) to define the effect."
 
