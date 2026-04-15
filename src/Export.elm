@@ -117,10 +117,10 @@ seedParagraph seed modeId inst _ choice qty has =
         Conjure ->
             case modeId of
                 "conjure_creature" ->
-                    "This spell, in conjunction with the Life and Fortify seeds, creates an entirely new creature if made permanent. The new creature breeds true once successfully created."
+                    "This spell, used in conjunction with the Life and Fortify seeds, creates an entirely new creature if made permanent. Once successfully created, the new creature will breed true."
                 _ ->
                     let vol = 20 + qty "conjure_vol"
-                    in "This spell conjures " ++ String.fromInt vol ++ " cubic feet of nonmagical, nonliving matter. The conjured material ranges from simple vegetation to rare metals such as mithral or adamantine."
+                    in "This spell creates a nonmagical, unattended object of nonliving matter of up to " ++ String.fromInt vol ++ " cubic feet in volume. The caster must succeed at an appropriate skill check to make a complex item. The conjured material can range from vegetable matter all the way up to mithral and even adamantine."
 
         Contact ->
             case modeId of
