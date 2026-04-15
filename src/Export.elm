@@ -295,13 +295,15 @@ seedParagraph seed modeId inst _ choice qty has =
         Summon ->
             case modeId of
                 "summon_unique" ->
-                    "This spell summons a specific named individual from anywhere in the multiverse. The target must be known to the caster, and the caster must overcome the target's magical protections, Spell Resistance, and Will save. The target is under no compulsion to serve."
+                    "This spell summons a specific named individual from anywhere in the multiverse. The caster must know the target's name and some facts about its life, and must overcome any magical protections it possesses, its spell resistance, and it must fail a Will saving throw. The target is under no special compulsion to serve the caster."
                 _ ->
                     let crBonus = qty "summon_cr"
                         cr = 1 + crBonus
-                        nonOutsider = if has "summon_nonoutsider" then " The summoned creature is not an outsider." else " The summoned creature is an outsider."
+                        creatureStr = if has "summon_nonoutsider"
+                            then "a creature of CR " ++ String.fromInt cr ++ " or less from another monster type or subtype"
+                            else "an outsider of CR " ++ String.fromInt cr ++ " or less"
                     in
-                    "This spell summons a CR " ++ String.fromInt cr ++ " creature that attacks the caster's opponents to the best of its ability." ++ nonOutsider
+                    "This spell summons " ++ creatureStr ++ " that appears where the caster designates and attacks the caster's opponents to the best of its ability."
 
         Transform ->
             let
