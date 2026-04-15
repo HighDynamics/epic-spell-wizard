@@ -315,15 +315,15 @@ seedParagraph seed modeId inst _ choice qty has =
         Transport ->
             case modeId of
                 "transport_temporal" ->
-                    "This spell shifts the caster into a different time stream for 5 rounds. In a slow time stream, the subject is frozen and invulnerable. In a fast time stream, all other creatures appear frozen while the caster acts freely for 5 rounds."
+                    "This spell temporarily transports the caster into a different time stream for 5 rounds. In a slower time stream, the caster's condition becomes fixed—no force or effect can harm it until the duration expires. In a faster time stream, all other creatures seem frozen while the caster is free to act for 5 rounds of apparent time."
                 "transport_temporal_lite" ->
-                    "This spell hastens or slows the target for 20 rounds by briefly shifting it into an accelerated or decelerated time stream."
+                    "This spell hastens or slows the target for 20 rounds by transporting it to the appropriate time stream."
                 _ ->
                     let
-                        interplanar = if has "transport_interplanar" then " The destination can be on a different plane." else ""
-                        unwilling = if has "transport_unwilling" then " The spell can target unwilling creatures (Will save negates)." else ""
+                        interplanar = if has "transport_interplanar" then " The destination can be on a different plane of existence." else ""
+                        unwilling = if has "transport_unwilling" then " The spell can be used to transport unwilling creatures." else ""
                     in
-                    "This spell instantly transports the caster and willing companions (up to 1,000 lb.) to a designated destination." ++ interplanar ++ unwilling
+                    "This spell instantly takes the caster to a designated destination, regardless of distance." ++ interplanar ++ unwilling
 
         Ward ->
             case modeId of
