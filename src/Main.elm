@@ -181,19 +181,24 @@ update msg model =
             )
 
         SetGlobalFactorQty factorId qty ->
-            ( { model
-                | appliedFactors =
-                    List.map
-                        (\af ->
-                            if af.factorId == factorId then
-                                { af | quantity = qty }
-                            else
-                                af
-                        )
-                        model.appliedFactors
-              }
-            , Cmd.none
-            )
+            if qty <= 0 then
+                ( { model | appliedFactors = List.filter (\af -> af.factorId /= factorId) model.appliedFactors }
+                , Cmd.none
+                )
+            else
+                ( { model
+                    | appliedFactors =
+                        List.map
+                            (\af ->
+                                if af.factorId == factorId then
+                                    { af | quantity = qty }
+                                else
+                                    af
+                            )
+                            model.appliedFactors
+                  }
+                , Cmd.none
+                )
 
         SetDescription text ->
             ( { model | description = text }, Cmd.none )
@@ -401,12 +406,337 @@ viewChoiceDropdown inst choice =
         ]
 
 
--- ─── Stub panels (replaced in Sections 8 and 9) ──────────────────────────────
+-- ─── Factors panel ───────────────────────────────────────────────────────────
 
 viewFactorsPanel : Model -> DcBreakdown -> Html Msg
-viewFactorsPanel _ _ =
-    div [ class "flex-1 bg-gray-950 border-r border-gray-700 overflow-y-auto flex items-center justify-center text-gray-700 text-sm" ]
-        [ text "Factors panel — Section 8" ]
+viewFactorsPanel model _ =
+    if model.factorsPanelOpen then
+        div [ class "flex-1 flex flex-col bg-gray-950 border-r border-gray-700 overflow-y-auto min-w-0" ]
+            [ -- Panel header
+              div [ class "flex items-center justify-between px-4 py-3 border-b border-gray-700 sticky top-0 bg-gray-950 z-10" ]
+                [ span [ class "text-xs font-bold uppercase tracking-widest text-gray-400" ] [ text "Factors" ]
+                , button
+                    [ class "text-gray-500 hover:text-gray-300 text-lg"
+                    , onClick ToggleFactorsPanel
+                    , title "Collapse panel"
+                    ]
+                    [ text "◀" ]
+                ]
+            , -- Per-instance seed factor sub-panels
+              div [] (List.map (viewSeedInstanceFactors model) model.seedInstances)
+            , -- Global augmenting factors
+              viewGlobalFactorSection model "Augmenting" Augmenting
+            , -- Global mitigating factors
+              viewGlobalFactorSection model "Mitigating" Mitigating
+            ]
+
+    else
+        let
+            totalFactors =
+                List.length model.appliedFactors
+                    + List.sum (List.map (\i -> List.length i.appliedSeedFactors) model.seedInstances)
+        in
+        div
+            [ class "w-8 shrink-0 flex flex-col items-center bg-gray-950 border-r border-gray-700 cursor-pointer hover:bg-gray-900"
+            , onClick ToggleFactorsPanel
+            , title "Expand factors panel"
+            ]
+            [ div [ class "mt-4 text-gray-500 text-xs rotate-90 whitespace-nowrap select-none" ]
+                [ text ("FACTORS (" ++ String.fromInt totalFactors ++ ")") ]
+            ]
+
+
+-- ─── Per-seed factor sub-panel ────────────────────────────────────────────────
+
+viewSeedInstanceFactors : Model -> SeedInstance -> Html Msg
+viewSeedInstanceFactors _ inst =
+    case getSeed inst.seedId of
+        Nothing ->
+            text ""
+
+        Just seed ->
+            let
+                activeModeFactors =
+                    inst.selectedMode
+                        |> Maybe.andThen
+                            (\mId ->
+                                List.head (List.filter (\m -> m.id == mId) seed.modes)
+                                    |> Maybe.map .factors
+                            )
+                        |> Maybe.withDefault []
+
+                availableFactors =
+                    seed.universalFactors ++ activeModeFactors
+            in
+            if List.isEmpty availableFactors then
+                text ""
+
+            else
+                div [ class "border-b border-gray-800" ]
+                    [ div [ class "px-4 py-2 bg-gray-900 text-xs text-arcane-400 font-semibold uppercase tracking-wider" ]
+                        [ text ("── " ++ seed.name ++ " ──") ]
+                    , div [ class "px-4 py-2" ]
+                        (List.map (viewSeedFactor inst) availableFactors)
+                    ]
+
+
+viewSeedFactor : SeedInstance -> SeedFactor -> Html Msg
+viewSeedFactor inst sf =
+    let
+        currentQty =
+            inst.appliedSeedFactors
+                |> List.filter (\asf -> asf.factorId == sf.id)
+                |> List.head
+                |> Maybe.map .quantity
+                |> Maybe.withDefault 0
+
+        dcLabel =
+            if sf.dcModifier == 0 then
+                "(special)"
+            else if sf.dcModifier > 0 then
+                "+" ++ String.fromInt (sf.dcModifier * Basics.max 1 currentQty) ++ " DC"
+            else
+                String.fromInt (sf.dcModifier * Basics.max 1 currentQty) ++ " DC"
+    in
+    div [ class "flex items-center justify-between py-1 gap-2 text-sm" ]
+        [ div [ class "flex-1 min-w-0" ]
+            [ div [ class "text-gray-200 text-xs truncate" ] [ text sf.name ]
+            , if String.isEmpty sf.description then
+                text ""
+              else
+                div [ class "text-gray-500 text-xs truncate" ] [ text sf.description ]
+            ]
+        , div [ class "flex items-center gap-1 shrink-0" ]
+            [ span [ class "text-gray-500 text-xs w-16 text-right" ] [ text dcLabel ]
+            , case sf.kind of
+                SeedToggle ->
+                    button
+                        [ class
+                            (if currentQty > 0 then
+                                "px-2 py-0.5 rounded text-xs bg-arcane-500 text-white"
+                             else
+                                "px-2 py-0.5 rounded text-xs bg-gray-700 text-gray-300 hover:bg-gray-600"
+                            )
+                        , onClick
+                            (SetSeedFactor inst.instanceId sf.id
+                                (if currentQty > 0 then 0 else 1)
+                            )
+                        ]
+                        [ text (if currentQty > 0 then "On" else "Off") ]
+
+                SeedStackable ->
+                    div [ class "flex items-center gap-1" ]
+                        [ button
+                            [ class "w-5 h-5 rounded bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs flex items-center justify-center"
+                            , onClick (SetSeedFactor inst.instanceId sf.id (Basics.max 0 (currentQty - 1)))
+                            ]
+                            [ text "−" ]
+                        , span [ class "text-xs text-gray-300 w-4 text-center tabular-nums" ]
+                            [ text (String.fromInt currentQty) ]
+                        , button
+                            [ class "w-5 h-5 rounded bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs flex items-center justify-center"
+                            , onClick
+                                (SetSeedFactor inst.instanceId sf.id
+                                    (case sf.maxQuantity of
+                                        Nothing -> currentQty + 1
+                                        Just mx -> Basics.min mx (currentQty + 1)
+                                    )
+                                )
+                            ]
+                            [ text "+" ]
+                        ]
+            ]
+        ]
+
+
+-- ─── Global factor section (augmenting or mitigating) ─────────────────────────
+
+viewGlobalFactorSection : Model -> String -> FactorCategory -> Html Msg
+viewGlobalFactorSection model label category =
+    let
+        categoryFactors =
+            List.filter (\f -> f.category == category) allFactors
+
+        appliedInCategory =
+            List.filter
+                (\af ->
+                    getFactor af.factorId
+                        |> Maybe.map (\f -> f.category == category)
+                        |> Maybe.withDefault False
+                )
+                model.appliedFactors
+
+        unapplied =
+            List.filter
+                (\f -> not (List.any (\af -> af.factorId == f.id) appliedInCategory))
+                categoryFactors
+    in
+    div [ class "border-b border-gray-800" ]
+        [ div [ class "px-4 py-2 bg-gray-900 text-xs text-gray-400 font-semibold uppercase tracking-wider" ]
+            [ text ("── Global " ++ label ++ " ──") ]
+        , div [ class "px-4 py-2" ]
+            (List.map (viewAppliedGlobalFactor model) appliedInCategory
+                ++ [ viewAddFactorDropdown unapplied label ]
+            )
+        ]
+
+
+viewAppliedGlobalFactor : Model -> AppliedFactor -> Html Msg
+viewAppliedGlobalFactor _ af =
+    case getFactor af.factorId of
+        Nothing ->
+            text ""
+
+        Just factor ->
+            let
+                dcDisplay =
+                    case factor.kind of
+                        Toggle ->
+                            if factor.dcModifier > 0 then
+                                "+" ++ String.fromInt factor.dcModifier ++ " DC"
+                            else
+                                String.fromInt factor.dcModifier ++ " DC"
+
+                        Stackable ->
+                            let total = factor.dcModifier * af.quantity
+                            in
+                            (if total > 0 then "+" else "") ++ String.fromInt total ++ " DC"
+
+                        DcMultiplier ->
+                            "×" ++ String.fromInt factor.multiplierValue
+            in
+            div [ class "flex items-center justify-between py-1 gap-2 text-sm" ]
+                [ div [ class "flex-1 min-w-0" ]
+                    [ div [ class "text-gray-200 text-xs truncate" ] [ text factor.name ]
+                    , div [ class "text-gray-500 text-xs" ] [ text factor.shortDesc ]
+                    ]
+                , div [ class "flex items-center gap-1 shrink-0" ]
+                    [ span [ class "text-gray-500 text-xs w-16 text-right" ] [ text dcDisplay ]
+                    , case factor.kind of
+                        Toggle ->
+                            button
+                                [ class "w-5 h-5 rounded bg-arcane-500 hover:bg-red-600 text-white text-xs flex items-center justify-center"
+                                , onClick (RemoveGlobalFactor factor.id)
+                                , title "Remove"
+                                ]
+                                [ text "✕" ]
+
+                        DcMultiplier ->
+                            button
+                                [ class "w-5 h-5 rounded bg-arcane-500 hover:bg-red-600 text-white text-xs flex items-center justify-center"
+                                , onClick (RemoveGlobalFactor factor.id)
+                                , title "Remove"
+                                ]
+                                [ text "✕" ]
+
+                        Stackable ->
+                            div [ class "flex items-center gap-1" ]
+                                [ button
+                                    [ class "w-5 h-5 rounded bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs flex items-center justify-center"
+                                    , onClick (SetGlobalFactorQty factor.id (Basics.max 0 (af.quantity - 1)))
+                                    -- quantity 0 = remove
+                                    ]
+                                    [ text "−" ]
+                                , span [ class "text-xs text-gray-300 w-4 text-center tabular-nums" ]
+                                    [ text (String.fromInt af.quantity) ]
+                                , button
+                                    [ class "w-5 h-5 rounded bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs flex items-center justify-center"
+                                    , onClick (SetGlobalFactorQty factor.id (af.quantity + 1))
+                                    ]
+                                    [ text "+" ]
+                                , button
+                                    [ class "ml-1 w-5 h-5 rounded bg-gray-800 hover:bg-red-700 text-gray-500 hover:text-white text-xs flex items-center justify-center"
+                                    , onClick (RemoveGlobalFactor factor.id)
+                                    , title "Remove"
+                                    ]
+                                    [ text "✕" ]
+                                ]
+                    ]
+                ]
+
+
+viewAddFactorDropdown : List Factor -> String -> Html Msg
+viewAddFactorDropdown unapplied label =
+    if List.isEmpty unapplied then
+        div [ class "text-gray-600 text-xs py-2 text-center" ] [ text ("All " ++ label ++ " factors applied") ]
+
+    else
+        select
+            [ class "w-full bg-gray-800 text-gray-300 text-xs rounded px-2 py-1 border border-gray-700 mt-1"
+            , onInput
+                (\idStr ->
+                    case factorIdFromString idStr of
+                        Just fId -> AddGlobalFactor fId
+                        Nothing  -> ExportMarkdown  -- no-op fallback; harmless
+                )
+            ]
+            (option [ value "" ] [ text ("+ Add " ++ label ++ " factor…") ]
+                :: List.map
+                    (\f ->
+                        option [ value (factorIdToString f.id) ]
+                            [ text f.name ]
+                    )
+                    unapplied
+            )
+
+
+-- ─── FactorId helpers ─────────────────────────────────────────────────────────
+
+factorIdToString : FactorId -> String
+factorIdToString fid =
+    case fid of
+        ReduceCastTime1Round -> "ReduceCastTime1Round"
+        OneActionCastTime    -> "OneActionCastTime"
+        QuickenedSpell       -> "QuickenedSpell"
+        Contingent           -> "Contingent"
+        NoVerbal             -> "NoVerbal"
+        NoSomatic            -> "NoSomatic"
+        IncreaseDuration     -> "IncreaseDuration"
+        PermanentDuration    -> "PermanentDuration"
+        Dismissible          -> "Dismissible"
+        IncreaseRange        -> "IncreaseRange"
+        AddExtraTarget       -> "AddExtraTarget"
+        TargetToArea         -> "TargetToArea"
+        PersonalToArea       -> "PersonalToArea"
+        TargetToTouch        -> "TargetToTouch"
+        TouchToTarget        -> "TouchToTarget"
+        ChangeToBolt         -> "ChangeToBolt"
+        ChangeToCylinder     -> "ChangeToCylinder"
+        ChangeToCone         -> "ChangeToCone"
+        ChangeToFourCubes    -> "ChangeToFourCubes"
+        ChangeToRadius       -> "ChangeToRadius"
+        AreaToTarget         -> "AreaToTarget"
+        AreaToTouch          -> "AreaToTouch"
+        IncreaseArea         -> "IncreaseArea"
+        IncreaseSaveDC       -> "IncreaseSaveDC"
+        IncreaseSRCheck      -> "IncreaseSRCheck"
+        IncreaseVsDispel     -> "IncreaseVsDispel"
+        StoneTablet          -> "StoneTablet"
+        IncreaseDamageDie    -> "IncreaseDamageDie"
+        Backlash             -> "Backlash"
+        XPBurn               -> "XPBurn"
+        IncreaseCastTime1Min -> "IncreaseCastTime1Min"
+        IncreaseCastTime1Day -> "IncreaseCastTime1Day"
+        ChangeToPersonal     -> "ChangeToPersonal"
+        DecreaseDamageDie    -> "DecreaseDamageDie"
+        RitualSlot1          -> "RitualSlot1"
+        RitualSlot2          -> "RitualSlot2"
+        RitualSlot3          -> "RitualSlot3"
+        RitualSlot4          -> "RitualSlot4"
+        RitualSlot5          -> "RitualSlot5"
+        RitualSlot6          -> "RitualSlot6"
+        RitualSlot7          -> "RitualSlot7"
+        RitualSlot8          -> "RitualSlot8"
+        RitualSlot9          -> "RitualSlot9"
+        RitualSlotEpic       -> "RitualSlotEpic"
+
+
+factorIdFromString : String -> Maybe FactorId
+factorIdFromString s =
+    allFactors
+        |> List.filter (\f -> factorIdToString f.id == s)
+        |> List.head
+        |> Maybe.map .id
 
 
 viewSummaryPanel : Model -> DcBreakdown -> DevCosts -> StatBlockData -> Html Msg
