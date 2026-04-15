@@ -1,4 +1,4 @@
-module Calc exposing (calculateBreakdown, devCosts, statBlock)
+module Calc exposing (StatBlockData, calculateBreakdown, devCosts, statBlock)
 
 import Dict exposing (Dict)
 import Factors exposing (getFactor)
