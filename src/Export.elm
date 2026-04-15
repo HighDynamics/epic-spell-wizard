@@ -78,7 +78,7 @@ seedParagraph seed modeId inst _ choice qty has =
             let hd = 20 + qty "adead_extra_hd_create"
                 undeadType = undead_type_from_factors inst
             in
-            "This spell animates up to " ++ String.fromInt hd ++ " Hit Dice of " ++ undeadType ++ " undead from available corpses. The undead follow the caster's commands indefinitely until destroyed."
+            "This spell turns the bones or bodies of dead creatures into up to " ++ String.fromInt hd ++ " Hit Dice of " ++ undeadType ++ " undead that follow the caster's spoken commands. The undead can accompany the caster or remain in an area and attack any creature entering it. They remain animated until destroyed."
 
         Armor ->
             let bonus = 4 + qty "armor_ac_bonus"
