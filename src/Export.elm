@@ -68,9 +68,9 @@ seedParagraph seed modeId inst globalFactors choice qty has =
 
                 abilityPhrase stat n =
                     if isPermanent then
-                        "–" ++ String.fromInt n ++ " permanent " ++ stat ++ " drain"
+                        "a –" ++ String.fromInt n ++ " permanent " ++ stat ++ " drain"
                     else if isExtended then
-                        "–" ++ String.fromInt n ++ " temporary " ++ stat ++ " damage"
+                        "a –" ++ String.fromInt n ++ " temporary " ++ stat ++ " damage"
                     else
                         "a –" ++ String.fromInt n ++ " penalty to " ++ stat
 
