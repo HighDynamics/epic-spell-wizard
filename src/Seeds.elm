@@ -40,7 +40,15 @@ afflict =
     , modes = []
     , universalFactors =
         [ { id = "afflict_rolls", name = "Additional –1 to rolls/checks/saves", description = "Each additional –1 morale penalty beyond base –2", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
-        , { id = "afflict_other", name = "–1 to ability score / CL check / SR / other", description = "Each –1 penalty in one of these categories", dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
+        , { id = "afflict_ability_str", name = "–1 to Strength",           description = "Each –1 penalty to Strength score",                 dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
+        , { id = "afflict_ability_dex", name = "–1 to Dexterity",          description = "Each –1 penalty to Dexterity score",                 dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
+        , { id = "afflict_ability_con", name = "–1 to Constitution",        description = "Each –1 penalty to Constitution score",               dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
+        , { id = "afflict_ability_int", name = "–1 to Intelligence",        description = "Each –1 penalty to Intelligence score",               dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
+        , { id = "afflict_ability_wis", name = "–1 to Wisdom",              description = "Each –1 penalty to Wisdom score",                     dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
+        , { id = "afflict_ability_cha", name = "–1 to Charisma",            description = "Each –1 penalty to Charisma score",                   dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
+        , { id = "afflict_cl",          name = "–1 to caster level checks", description = "Each –1 penalty to caster level checks",              dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
+        , { id = "afflict_sr",          name = "–1 to spell resistance",    description = "Each –1 penalty to spell resistance",                 dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
+        , { id = "afflict_other",       name = "–1 to other aspect",        description = "Each –1 penalty to some other aspect of the target",  dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
         , { id = "afflict_sense", name = "Afflict a sense", description = "One sense (sight, smell, hearing, taste, touch, or special) ceases to function for duration", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
         ]
     , choices = []
