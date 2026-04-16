@@ -50,23 +50,69 @@ seedInstanceParagraph globalFactors inst =
 
 
 seedParagraph : Seed -> String -> SeedInstance -> List AppliedFactor -> (String -> String) -> (String -> Int) -> (String -> Bool) -> String
-seedParagraph seed modeId inst _ choice qty has =
+seedParagraph seed modeId inst globalFactors choice qty has =
     case seed.id of
         Afflict ->
             let
-                penaltyRolls = 2 + qty "afflict_rolls"
-                otherPenalties = qty "afflict_other"
-                senseCount = qty "afflict_sense"
-                otherStr =
-                    if otherPenalties > 0 then
-                        " The target is also afflicted with a –" ++ String.fromInt otherPenalties ++ " penalty to caster level checks, ability scores, and Spell Resistance."
-                    else ""
+                penaltyRolls =
+                    2 + qty "afflict_rolls"
+
+                senseCount =
+                    qty "afflict_sense"
+
+                isPermanent =
+                    List.any (\af -> af.factorId == PermanentDuration) globalFactors
+
+                isExtended =
+                    List.any (\af -> af.factorId == IncreaseDuration) globalFactors
+
+                abilityPhrase stat n =
+                    if isPermanent then
+                        "–" ++ String.fromInt n ++ " permanent " ++ stat ++ " drain"
+                    else if isExtended then
+                        "–" ++ String.fromInt n ++ " temporary " ++ stat ++ " damage"
+                    else
+                        "a –" ++ String.fromInt n ++ " penalty to " ++ stat
+
+                extraClauses =
+                    List.filterMap identity
+                        (List.map
+                            (\( stat, fid ) ->
+                                let
+                                    n =
+                                        qty fid
+                                in
+                                if n > 0 then
+                                    Just (abilityPhrase stat n)
+                                else
+                                    Nothing
+                            )
+                            [ ( "Strength", "afflict_ability_str" )
+                            , ( "Dexterity", "afflict_ability_dex" )
+                            , ( "Constitution", "afflict_ability_con" )
+                            , ( "Intelligence", "afflict_ability_int" )
+                            , ( "Wisdom", "afflict_ability_wis" )
+                            , ( "Charisma", "afflict_ability_cha" )
+                            ]
+                            ++ [ if qty "afflict_cl" > 0 then Just ("a –" ++ String.fromInt (qty "afflict_cl") ++ " penalty to caster level checks") else Nothing
+                               , if qty "afflict_sr" > 0 then Just ("a –" ++ String.fromInt (qty "afflict_sr") ++ " penalty to spell resistance") else Nothing
+                               , if qty "afflict_other" > 0 then Just ("a –" ++ String.fromInt (qty "afflict_other") ++ " penalty to another aspect of the target") else Nothing
+                               ]
+                        )
+
+                extraStr =
+                    if List.isEmpty extraClauses then
+                        ""
+                    else
+                        " The target also suffers " ++ joinClauses extraClauses ++ "."
+
                 senseStr =
                     if senseCount > 0 then
                         " One of the target's senses ceases to function for the spell's duration, with all attendant penalties that apply for losing that sense."
-                    else ""
+                    else
+                        ""
             in
-            "This spell afflicts the target with a –" ++ String.fromInt penaltyRolls ++ " morale penalty on attack rolls, checks, and saving throws." ++ otherStr ++ senseStr
+            "This spell afflicts the target with a –" ++ String.fromInt penaltyRolls ++ " morale penalty on attack rolls, checks, and saving throws." ++ extraStr ++ senseStr
 
         Animate ->
             let vol = 20 + qty "animate_vol_1k" * 10 + qty "animate_vol_over1k" * 100
@@ -371,6 +417,30 @@ undead_type_from_factors inst =
         |> List.head
         |> Maybe.map Tuple.second
         |> Maybe.withDefault "mixed"
+
+
+-- Joins a list of clauses with commas and Oxford "and".
+joinClauses : List String -> String
+joinClauses items =
+    case items of
+        [] ->
+            ""
+
+        [ x ] ->
+            x
+
+        [ x, y ] ->
+            x ++ " and " ++ y
+
+        _ ->
+            let
+                allButLast =
+                    List.take (List.length items - 1) items
+
+                lastItem =
+                    items |> List.reverse |> List.head |> Maybe.withDefault ""
+            in
+            String.join ", " allButLast ++ ", and " ++ lastItem
 
 
 -- Additional properties block (factors that don't fit into stat block or seed paragraphs)
