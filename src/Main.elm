@@ -593,6 +593,98 @@ viewGlobalFactorSection model label category =
         ]
 
 
+viewGlobalFactorRow : Factor -> Maybe AppliedFactor -> Html Msg
+viewGlobalFactorRow factor maybeApplied =
+    let
+        isActive =
+            maybeApplied /= Nothing
+
+        qty =
+            maybeApplied |> Maybe.map .quantity |> Maybe.withDefault 0
+
+        dimClass =
+            if isActive then "" else " opacity-40"
+
+        dcDisplay =
+            case factor.kind of
+                Toggle ->
+                    if factor.dcModifier > 0 then
+                        "+" ++ String.fromInt factor.dcModifier ++ " DC"
+                    else
+                        String.fromInt factor.dcModifier ++ " DC"
+
+                Stackable ->
+                    let total = factor.dcModifier * qty
+                    in
+                    (if total > 0 then "+" else "") ++ String.fromInt total ++ " DC"
+
+                DcMultiplier ->
+                    "×" ++ String.fromInt factor.multiplierValue
+
+        controls =
+            case factor.kind of
+                Toggle ->
+                    input
+                        [ type_ "checkbox"
+                        , checked isActive
+                        , onClick
+                            (if isActive then
+                                RemoveGlobalFactor factor.id
+                             else
+                                AddGlobalFactor factor.id
+                            )
+                        , class "w-4 h-4 accent-arcane-500 cursor-pointer"
+                        ]
+                        []
+
+                DcMultiplier ->
+                    input
+                        [ type_ "checkbox"
+                        , checked isActive
+                        , onClick
+                            (if isActive then
+                                RemoveGlobalFactor factor.id
+                             else
+                                AddGlobalFactor factor.id
+                            )
+                        , class "w-4 h-4 accent-arcane-500 cursor-pointer"
+                        ]
+                        []
+
+                Stackable ->
+                    div [ class "flex items-center gap-1" ]
+                        [ button
+                            [ class "w-5 h-5 rounded bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
+                            , onClick (SetGlobalFactorQty factor.id (Basics.max 0 (qty - 1)))
+                            , disabled (qty == 0)
+                            ]
+                            [ text "−" ]
+                        , span [ class "text-xs text-gray-300 w-4 text-center tabular-nums" ]
+                            [ text (String.fromInt qty) ]
+                        , button
+                            [ class "w-5 h-5 rounded bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs flex items-center justify-center"
+                            , onClick
+                                (if isActive then
+                                    SetGlobalFactorQty factor.id (qty + 1)
+                                 else
+                                    AddGlobalFactor factor.id
+                                )
+                            ]
+                            [ text "+" ]
+                        ]
+    in
+    div [ class ("flex items-center justify-between py-1 gap-2 text-sm" ++ dimClass) ]
+        [ div [ class "flex-1 min-w-0" ]
+            [ div [ class "text-gray-200 text-xs truncate" ] [ text factor.name ]
+            , div [ class "text-gray-500 text-xs" ] [ text factor.shortDesc ]
+            ]
+        , div [ class "flex items-center gap-1 shrink-0" ]
+            [ span [ class "text-gray-500 text-xs w-16 text-right" ] [ text dcDisplay ]
+            , controls
+            ]
+        ]
+
+
 viewAppliedGlobalFactor : Model -> AppliedFactor -> Html Msg
 viewAppliedGlobalFactor _ af =
     case getFactor af.factorId of
