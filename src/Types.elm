@@ -252,3 +252,34 @@ type alias DevCosts =
     , timeDays : Int
     , xpCost : Int
     }
+
+
+-- ─── App state ───────────────────────────────────────────────────────────────
+
+type alias Model =
+    { spellName : String
+    , seedInstances : List SeedInstance
+    , nextInstanceId : SeedInstanceId
+    , appliedFactors : List AppliedFactor
+    , seedsPanelOpen : Bool
+    , factorsPanelOpen : Bool
+    , summaryPanelOpen : Bool
+    , copySuccess : Maybe Bool
+    }
+
+
+type Msg
+    = SetSpellName String
+    | AddSeedInstance SeedId
+    | RemoveSeedInstance SeedInstanceId
+    | SelectMode SeedInstanceId String
+    | SetSeedFactor SeedInstanceId String Int
+    | SetChoice SeedInstanceId String String
+    | AddGlobalFactor FactorId
+    | RemoveGlobalFactor FactorId
+    | SetGlobalFactorQty FactorId Int
+    | ToggleSeedsPanel
+    | ToggleFactorsPanel
+    | ToggleSummaryPanel
+    | ExportMarkdown
+    | CopyResult Bool
