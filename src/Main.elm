@@ -4,7 +4,7 @@ import Browser
 import Calc exposing (StatBlockData, calculateBreakdown, devCosts, statBlock)
 import Export
 import Dict exposing (Dict)
-import Factors exposing (allFactors, getFactor)
+import Factors exposing (allFactors)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput, onClick)
@@ -648,6 +648,7 @@ viewGlobalFactorRow factor maybeApplied =
                             [ text "+" ]
                         ]
 
+                -- Toggle and DcMultiplier both use a checkbox; extend this if new FactorKind variants are added
                 _ ->
                     input
                         [ type_ "checkbox"
@@ -673,163 +674,6 @@ viewGlobalFactorRow factor maybeApplied =
             ]
         ]
 
-
-viewAppliedGlobalFactor : Model -> AppliedFactor -> Html Msg
-viewAppliedGlobalFactor _ af =
-    case getFactor af.factorId of
-        Nothing ->
-            text ""
-
-        Just factor ->
-            let
-                dcDisplay =
-                    case factor.kind of
-                        Toggle ->
-                            if factor.dcModifier > 0 then
-                                "+" ++ String.fromInt factor.dcModifier ++ " DC"
-                            else
-                                String.fromInt factor.dcModifier ++ " DC"
-
-                        Stackable ->
-                            let total = factor.dcModifier * af.quantity
-                            in
-                            (if total > 0 then "+" else "") ++ String.fromInt total ++ " DC"
-
-                        DcMultiplier ->
-                            "×" ++ String.fromInt factor.multiplierValue
-            in
-            div [ class "flex items-center justify-between py-1 gap-2 text-sm" ]
-                [ div [ class "flex-1 min-w-0" ]
-                    [ div [ class "text-gray-200 text-xs truncate" ] [ text factor.name ]
-                    , div [ class "text-gray-500 text-xs" ] [ text factor.shortDesc ]
-                    ]
-                , div [ class "flex items-center gap-1 shrink-0" ]
-                    [ span [ class "text-gray-500 text-xs w-16 text-right" ] [ text dcDisplay ]
-                    , case factor.kind of
-                        Toggle ->
-                            button
-                                [ class "w-5 h-5 rounded bg-arcane-500 hover:bg-red-600 text-white text-xs flex items-center justify-center"
-                                , onClick (RemoveGlobalFactor factor.id)
-                                , title "Remove"
-                                ]
-                                [ text "✕" ]
-
-                        DcMultiplier ->
-                            button
-                                [ class "w-5 h-5 rounded bg-arcane-500 hover:bg-red-600 text-white text-xs flex items-center justify-center"
-                                , onClick (RemoveGlobalFactor factor.id)
-                                , title "Remove"
-                                ]
-                                [ text "✕" ]
-
-                        Stackable ->
-                            div [ class "flex items-center gap-1" ]
-                                [ button
-                                    [ class "w-5 h-5 rounded bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs flex items-center justify-center"
-                                    , onClick (SetGlobalFactorQty factor.id (Basics.max 0 (af.quantity - 1)))
-                                    -- quantity 0 = remove
-                                    ]
-                                    [ text "−" ]
-                                , span [ class "text-xs text-gray-300 w-4 text-center tabular-nums" ]
-                                    [ text (String.fromInt af.quantity) ]
-                                , button
-                                    [ class "w-5 h-5 rounded bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs flex items-center justify-center"
-                                    , onClick (SetGlobalFactorQty factor.id (af.quantity + 1))
-                                    ]
-                                    [ text "+" ]
-                                , button
-                                    [ class "ml-1 w-5 h-5 rounded bg-gray-800 hover:bg-red-700 text-gray-500 hover:text-white text-xs flex items-center justify-center"
-                                    , onClick (RemoveGlobalFactor factor.id)
-                                    , title "Remove"
-                                    ]
-                                    [ text "✕" ]
-                                ]
-                    ]
-                ]
-
-
-viewAddFactorDropdown : List Factor -> String -> Html Msg
-viewAddFactorDropdown unapplied label =
-    if List.isEmpty unapplied then
-        div [ class "text-gray-600 text-xs py-2 text-center" ] [ text ("All " ++ label ++ " factors applied") ]
-
-    else
-        select
-            [ class "w-full bg-gray-800 text-gray-300 text-xs rounded px-2 py-1 border border-gray-700 mt-1"
-            , onInput
-                (\idStr ->
-                    case factorIdFromString idStr of
-                        Just fId -> AddGlobalFactor fId
-                        Nothing  -> ExportMarkdown  -- no-op fallback; harmless
-                )
-            ]
-            (option [ value "" ] [ text ("+ Add " ++ label ++ " factor…") ]
-                :: List.map
-                    (\f ->
-                        option [ value (factorIdToString f.id) ]
-                            [ text f.name ]
-                    )
-                    unapplied
-            )
-
-
--- ─── FactorId helpers ─────────────────────────────────────────────────────────
-
-factorIdToString : FactorId -> String
-factorIdToString fid =
-    case fid of
-        ReduceCastTime1Round -> "ReduceCastTime1Round"
-        OneActionCastTime    -> "OneActionCastTime"
-        QuickenedSpell       -> "QuickenedSpell"
-        Contingent           -> "Contingent"
-        NoVerbal             -> "NoVerbal"
-        NoSomatic            -> "NoSomatic"
-        IncreaseDuration     -> "IncreaseDuration"
-        PermanentDuration    -> "PermanentDuration"
-        Dismissible          -> "Dismissible"
-        IncreaseRange        -> "IncreaseRange"
-        AddExtraTarget       -> "AddExtraTarget"
-        TargetToArea         -> "TargetToArea"
-        PersonalToArea       -> "PersonalToArea"
-        TargetToTouch        -> "TargetToTouch"
-        TouchToTarget        -> "TouchToTarget"
-        ChangeToBolt         -> "ChangeToBolt"
-        ChangeToCylinder     -> "ChangeToCylinder"
-        ChangeToCone         -> "ChangeToCone"
-        ChangeToFourCubes    -> "ChangeToFourCubes"
-        ChangeToRadius       -> "ChangeToRadius"
-        AreaToTarget         -> "AreaToTarget"
-        AreaToTouch          -> "AreaToTouch"
-        IncreaseArea         -> "IncreaseArea"
-        IncreaseSaveDC       -> "IncreaseSaveDC"
-        IncreaseSRCheck      -> "IncreaseSRCheck"
-        IncreaseVsDispel     -> "IncreaseVsDispel"
-        StoneTablet          -> "StoneTablet"
-        IncreaseDamageDie    -> "IncreaseDamageDie"
-        Backlash             -> "Backlash"
-        XPBurn               -> "XPBurn"
-        IncreaseCastTime1Min -> "IncreaseCastTime1Min"
-        IncreaseCastTime1Day -> "IncreaseCastTime1Day"
-        ChangeToPersonal     -> "ChangeToPersonal"
-        DecreaseDamageDie    -> "DecreaseDamageDie"
-        RitualSlot1          -> "RitualSlot1"
-        RitualSlot2          -> "RitualSlot2"
-        RitualSlot3          -> "RitualSlot3"
-        RitualSlot4          -> "RitualSlot4"
-        RitualSlot5          -> "RitualSlot5"
-        RitualSlot6          -> "RitualSlot6"
-        RitualSlot7          -> "RitualSlot7"
-        RitualSlot8          -> "RitualSlot8"
-        RitualSlot9          -> "RitualSlot9"
-        RitualSlotEpic       -> "RitualSlotEpic"
-
-
-factorIdFromString : String -> Maybe FactorId
-factorIdFromString s =
-    allFactors
-        |> List.filter (\f -> factorIdToString f.id == s)
-        |> List.head
-        |> Maybe.map .id
 
 
 -- ─── Summary panel ───────────────────────────────────────────────────────────
