@@ -648,8 +648,21 @@ viewGlobalFactorRow factor maybeApplied =
                             [ text "+" ]
                         ]
 
-                -- Toggle and DcMultiplier both use a checkbox; extend this if new FactorKind variants are added
-                _ ->
+                Toggle ->
+                    input
+                        [ type_ "checkbox"
+                        , checked isActive
+                        , onClick
+                            (if isActive then
+                                RemoveGlobalFactor factor.id
+                             else
+                                AddGlobalFactor factor.id
+                            )
+                        , class "w-4 h-4 accent-arcane-500 cursor-pointer"
+                        ]
+                        []
+
+                DcMultiplier ->
                     input
                         [ type_ "checkbox"
                         , checked isActive
