@@ -614,43 +614,18 @@ viewGlobalFactorRow factor maybeApplied =
                         String.fromInt factor.dcModifier ++ " DC"
 
                 Stackable ->
-                    let total = factor.dcModifier * qty
-                    in
-                    (if total > 0 then "+" else "") ++ String.fromInt total ++ " DC"
+                    if not isActive then
+                        (if factor.dcModifier > 0 then "+" else "") ++ String.fromInt factor.dcModifier ++ " DC ea."
+                    else
+                        let total = factor.dcModifier * qty
+                        in
+                        (if total > 0 then "+" else "") ++ String.fromInt total ++ " DC"
 
                 DcMultiplier ->
                     "×" ++ String.fromInt factor.multiplierValue
 
         controls =
             case factor.kind of
-                Toggle ->
-                    input
-                        [ type_ "checkbox"
-                        , checked isActive
-                        , onClick
-                            (if isActive then
-                                RemoveGlobalFactor factor.id
-                             else
-                                AddGlobalFactor factor.id
-                            )
-                        , class "w-4 h-4 accent-arcane-500 cursor-pointer"
-                        ]
-                        []
-
-                DcMultiplier ->
-                    input
-                        [ type_ "checkbox"
-                        , checked isActive
-                        , onClick
-                            (if isActive then
-                                RemoveGlobalFactor factor.id
-                             else
-                                AddGlobalFactor factor.id
-                            )
-                        , class "w-4 h-4 accent-arcane-500 cursor-pointer"
-                        ]
-                        []
-
                 Stackable ->
                     div [ class "flex items-center gap-1" ]
                         [ button
@@ -672,6 +647,20 @@ viewGlobalFactorRow factor maybeApplied =
                             ]
                             [ text "+" ]
                         ]
+
+                _ ->
+                    input
+                        [ type_ "checkbox"
+                        , checked isActive
+                        , onClick
+                            (if isActive then
+                                RemoveGlobalFactor factor.id
+                             else
+                                AddGlobalFactor factor.id
+                            )
+                        , class "w-4 h-4 accent-arcane-500 cursor-pointer"
+                        ]
+                        []
     in
     div [ class ("flex items-center justify-between py-1 gap-2 text-sm" ++ dimClass) ]
         [ div [ class "flex-1 min-w-0" ]
