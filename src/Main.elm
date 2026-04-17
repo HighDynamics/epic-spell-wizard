@@ -575,27 +575,20 @@ viewGlobalFactorSection model label category =
     let
         categoryFactors =
             List.filter (\f -> f.category == category) allFactors
-
-        appliedInCategory =
-            List.filter
-                (\af ->
-                    getFactor af.factorId
-                        |> Maybe.map (\f -> f.category == category)
-                        |> Maybe.withDefault False
-                )
-                model.appliedFactors
-
-        unapplied =
-            List.filter
-                (\f -> not (List.any (\af -> af.factorId == f.id) appliedInCategory))
-                categoryFactors
     in
     div [ class "border-b border-gray-800" ]
         [ div [ class "px-4 py-2 bg-gray-900 text-xs text-gray-400 font-semibold uppercase tracking-wider" ]
             [ text ("── Global " ++ label ++ " ──") ]
         , div [ class "px-4 py-2" ]
-            (List.map (viewAppliedGlobalFactor model) appliedInCategory
-                ++ [ viewAddFactorDropdown unapplied label ]
+            (List.map
+                (\f ->
+                    let
+                        maybeApplied =
+                            List.head (List.filter (\af -> af.factorId == f.id) model.appliedFactors)
+                    in
+                    viewGlobalFactorRow f maybeApplied
+                )
+                categoryFactors
             )
         ]
 
