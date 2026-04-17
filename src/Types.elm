@@ -3,7 +3,9 @@ module Types exposing (..)
 import Dict exposing (Dict)
 
 
+
 -- ─── IDs ─────────────────────────────────────────────────────────────────────
+
 
 type SeedId
     = Afflict
@@ -79,7 +81,9 @@ type FactorId
     | RitualSlotEpic
 
 
+
 -- ─── Seed building blocks ────────────────────────────────────────────────────
+
 
 type Component
     = V
@@ -115,29 +119,38 @@ type SeedFactorKind
     | SeedStackable
 
 
+
 -- A DC adjustment specific to one seed (from that seed's own rules text).
+
+
 type alias SeedFactor =
     { id : String
     , name : String
     , description : String
-    , dcModifier : Int        -- per unit (negative = reduces DC)
+    , dcModifier : Int -- per unit (negative = reduces DC)
     , kind : SeedFactorKind
     , maxQuantity : Maybe Int -- Nothing = unlimited
     }
 
 
+
 -- A named mode within a seed (e.g. Energy → Bolt, Emanation, Wall).
 -- Modes are mutually exclusive within a single seed instance.
+
+
 type alias SeedMode =
     { id : String
     , name : String
-    , baseDCOverride : Maybe Int  -- overrides seed baseDC when this mode is active (e.g. Contact Messenger = 20)
+    , baseDCOverride : Maybe Int -- overrides seed baseDC when this mode is active (e.g. Contact Messenger = 20)
     , factors : List SeedFactor
     }
 
 
+
 -- A free-choice option on a seed instance (no DC cost).
 -- E.g. Energy type (fire/cold/etc.), Ward type (damage/energy/creature/magic).
+
+
 type alias SeedChoice =
     { id : String
     , label : String
@@ -151,7 +164,7 @@ type alias Seed =
     , name : String
     , baseDC : Int
     , school : String
-    , descriptors : List String       -- e.g. ["Fire"], ["Evil"], ["Mind-Affecting"]
+    , descriptors : List String -- e.g. ["Fire"], ["Evil"], ["Mind-Affecting"]
     , components : List Component
     , castingTime : String
     , range : String
@@ -159,19 +172,21 @@ type alias Seed =
     , duration : String
     , savingThrow : Maybe SavingThrow
     , spellResistance : Bool
-    , description : String            -- base prose (full SRD description)
-    , modes : List SeedMode           -- empty if seed has no modes
-    , universalFactors : List SeedFactor  -- factors available regardless of mode ("Mode: Any")
-    , choices : List SeedChoice       -- free-choice options (energy type, etc.)
+    , description : String -- base prose (full SRD description)
+    , modes : List SeedMode -- empty if seed has no modes
+    , universalFactors : List SeedFactor -- factors available regardless of mode ("Mode: Any")
+    , choices : List SeedChoice -- free-choice options (energy type, etc.)
     }
+
 
 
 -- ─── Global factors ───────────────────────────────────────────────────────────
 
+
 type FactorKind
-    = Toggle          -- on/off, applies once
-    | Stackable       -- quantity × dcModifier
-    | DcMultiplier    -- multiplies running total (Permanent ×5, StoneTablet ×2)
+    = Toggle -- on/off, applies once
+    | Stackable -- quantity × dcModifier
+    | DcMultiplier -- multiplies running total (Permanent ×5, StoneTablet ×2)
 
 
 type FactorCategory
@@ -179,7 +194,10 @@ type FactorCategory
     | Mitigating
 
 
+
 -- Which part of the spell stat block this factor modifies.
+
+
 type StatBlockField
     = FieldComponents
     | FieldCastingTime
@@ -188,7 +206,7 @@ type StatBlockField
     | FieldDuration
     | FieldSaveDC
     | FieldSpellResistance
-    | FieldNone   -- DC-only change
+    | FieldNone -- DC-only change
 
 
 type alias Factor =
@@ -196,33 +214,38 @@ type alias Factor =
     , name : String
     , category : FactorCategory
     , kind : FactorKind
-    , dcModifier : Int       -- per unit; ignored for DcMultiplier (handled separately)
-    , multiplierValue : Int  -- only meaningful for DcMultiplier kind (5 or 2)
+    , dcModifier : Int -- per unit; ignored for DcMultiplier (handled separately)
+    , multiplierValue : Int -- only meaningful for DcMultiplier kind (5 or 2)
     , statBlockField : StatBlockField
-    , shortDesc : String     -- shown in the factors panel
+    , shortDesc : String -- shown in the factors panel
     }
 
 
+
 -- ─── Model building blocks ───────────────────────────────────────────────────
+
 
 type alias SeedInstanceId =
     Int
 
 
 type alias AppliedSeedFactor =
-    { factorId : String   -- matches SeedFactor.id
+    { factorId : String -- matches SeedFactor.id
     , quantity : Int
     }
 
 
+
 -- One instance of a seed in the spell being built.
 -- The same seed can be added multiple times (different modes).
+
+
 type alias SeedInstance =
     { instanceId : SeedInstanceId
     , seedId : SeedId
-    , selectedMode : Maybe String          -- matches SeedMode.id; Nothing if seed has no modes
+    , selectedMode : Maybe String -- matches SeedMode.id; Nothing if seed has no modes
     , appliedSeedFactors : List AppliedSeedFactor
-    , choices : Dict String String         -- choiceId → selected value
+    , choices : Dict String String -- choiceId → selected value
     }
 
 
@@ -232,20 +255,24 @@ type alias AppliedFactor =
     }
 
 
+
 -- ─── DC breakdown (computed, not stored) ─────────────────────────────────────
+
 
 type alias DcBreakdown =
     { seedsTotal : Int
     , seedFactorsTotal : Int
     , augmentingTotal : Int
-    , permanentMultiplier : Int   -- 1 or 5
+    , permanentMultiplier : Int -- 1 or 5
     , stoneTabletMultiplier : Int -- 1 or 2
     , mitigatingTotal : Int
     , finalDC : Int
     }
 
 
+
 -- ─── Development costs (computed) ────────────────────────────────────────────
+
 
 type alias DevCosts =
     { goldCost : Int
@@ -254,7 +281,9 @@ type alias DevCosts =
     }
 
 
+
 -- ─── App state ───────────────────────────────────────────────────────────────
+
 
 type alias Model =
     { spellName : String

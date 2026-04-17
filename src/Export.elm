@@ -281,7 +281,7 @@ seedParagraph seed modeId inst globalFactors choice qty has =
         Life ->
             case modeId of
                 "life_give" ->
-                    "This spell gives actual life to a normally inanimate object, plant, or animal, granting it a soul, personality, and humanlike sentience. The newly living creature is friendly toward the caster and speaks one language the caster knows, plus one additional language per point of Intelligence bonus."
+                    "This spell gives actual life to a normally inanimate object, plant, or animal, granting it a soul, personality, and humanlike sentience. To succeed, the caster must make a Will save (DC 10 + the target's Hit Dice, or the Hit Dice a plant will have once it comes to life). The newly living creature is friendly toward the caster and speaks one language the caster knows, plus one additional language per point of Intelligence bonus."
                 _ ->
                     let decades = qty "life_extra_decade"
                         yearLimit = 200 + decades * 10

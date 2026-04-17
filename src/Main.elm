@@ -2,8 +2,8 @@ port module Main exposing (main)
 
 import Browser
 import Calc exposing (calculateBreakdown, devCosts, statBlock)
-import Export
 import Dict exposing (Dict)
+import Export
 import Html exposing (..)
 import Html.Attributes exposing (class)
 import Types exposing (..)
@@ -13,13 +13,19 @@ import View.SeedsPanel exposing (viewSeedsPanel)
 import View.SummaryPanel exposing (viewSummaryPanel)
 
 
+
 -- ─── Ports ───────────────────────────────────────────────────────────────────
 
+
 port copyToClipboard : String -> Cmd msg
+
+
 port copyResult : (Bool -> msg) -> Sub msg
 
 
+
 -- ─── Main ────────────────────────────────────────────────────────────────────
+
 
 main : Program () Model Msg
 main =
@@ -31,7 +37,9 @@ main =
         }
 
 
+
 -- ─── Init ────────────────────────────────────────────────────────────────────
+
 
 init : Model
 init =
@@ -46,7 +54,9 @@ init =
     }
 
 
+
 -- ─── Update ──────────────────────────────────────────────────────────────────
+
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -81,6 +91,7 @@ update msg model =
                 newMode =
                     if String.isEmpty modeId then
                         Nothing
+
                     else
                         Just modeId
             in
@@ -90,6 +101,7 @@ update msg model =
                         (\i ->
                             if i.instanceId == iid then
                                 { i | selectedMode = newMode, appliedSeedFactors = [] }
+
                             else
                                 i
                         )
@@ -111,10 +123,12 @@ update msg model =
                                     updated =
                                         if qty > 0 then
                                             existing ++ [ { factorId = factorId, quantity = qty } ]
+
                                         else
                                             existing
                                 in
                                 { i | appliedSeedFactors = updated }
+
                             else
                                 i
                         )
@@ -130,6 +144,7 @@ update msg model =
                         (\i ->
                             if i.instanceId == iid then
                                 { i | choices = Dict.insert choiceId value i.choices }
+
                             else
                                 i
                         )
@@ -145,6 +160,7 @@ update msg model =
             in
             if alreadyApplied then
                 ( model, Cmd.none )
+
             else
                 ( { model | appliedFactors = model.appliedFactors ++ [ { factorId = factorId, quantity = 1 } ] }
                 , Cmd.none
@@ -160,6 +176,7 @@ update msg model =
                 ( { model | appliedFactors = List.filter (\af -> af.factorId /= factorId) model.appliedFactors }
                 , Cmd.none
                 )
+
             else
                 ( { model
                     | appliedFactors =
@@ -167,6 +184,7 @@ update msg model =
                             (\af ->
                                 if af.factorId == factorId then
                                     { af | quantity = qty }
+
                                 else
                                     af
                             )
@@ -200,7 +218,9 @@ update msg model =
             ( { model | copySuccess = Just success }, Cmd.none )
 
 
+
 -- ─── View ────────────────────────────────────────────────────────────────────
+
 
 view : Model -> Html Msg
 view model =

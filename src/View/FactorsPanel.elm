@@ -47,7 +47,9 @@ viewFactorsPanel model _ =
             ]
 
 
+
 -- ─── Per-seed factor sub-panel ────────────────────────────────────────────────
+
 
 viewSeedInstanceFactors : Model -> SeedInstance -> Html Msg
 viewSeedInstanceFactors _ inst =
@@ -72,6 +74,7 @@ viewSeedInstanceFactors _ inst =
                 modeRow =
                     if List.isEmpty seed.modes then
                         []
+
                     else
                         [ div [ class "mb-2" ]
                             [ label [ class "text-xs text-gray-500 mb-1 block" ] [ text "Mode" ]
@@ -99,6 +102,7 @@ viewSeedInstanceFactors _ inst =
                 factorRows =
                     if List.isEmpty availableFactors then
                         [ p [ class "text-gray-500 text-xs italic mt-1" ] [ text "No seed-specific factors" ] ]
+
                     else
                         List.map (viewSeedFactor inst) availableFactors
             in
@@ -145,13 +149,19 @@ viewSeedFactor inst sf =
             currentQty > 0
 
         dimClass =
-            if isActive then "" else " opacity-40"
+            if isActive then
+                ""
+
+            else
+                " opacity-40"
 
         dcLabel =
             if sf.dcModifier == 0 then
                 "(special)"
+
             else if sf.dcModifier > 0 then
                 "+" ++ String.fromInt (sf.dcModifier * Basics.max 1 currentQty) ++ " DC"
+
             else
                 String.fromInt (sf.dcModifier * Basics.max 1 currentQty) ++ " DC"
     in
@@ -160,6 +170,7 @@ viewSeedFactor inst sf =
             [ div [ class "text-gray-200 text-xs truncate" ] [ text sf.name ]
             , if String.isEmpty sf.description then
                 text ""
+
               else
                 div [ class "text-gray-500 text-xs truncate" ] [ text sf.description ]
             ]
@@ -171,15 +182,29 @@ viewSeedFactor inst sf =
                         [ class
                             (if currentQty > 0 then
                                 "px-2 py-0.5 rounded text-xs bg-arcane-500 text-white"
+
                              else
                                 "px-2 py-0.5 rounded text-xs bg-gray-700 text-gray-300 hover:bg-gray-600"
                             )
                         , onClick
-                            (SetSeedFactor inst.instanceId sf.id
-                                (if currentQty > 0 then 0 else 1)
+                            (SetSeedFactor inst.instanceId
+                                sf.id
+                                (if currentQty > 0 then
+                                    0
+
+                                 else
+                                    1
+                                )
                             )
                         ]
-                        [ text (if currentQty > 0 then "On" else "Off") ]
+                        [ text
+                            (if currentQty > 0 then
+                                "On"
+
+                             else
+                                "Off"
+                            )
+                        ]
 
                 SeedStackable ->
                     div [ class "flex items-center gap-1" ]
@@ -193,10 +218,14 @@ viewSeedFactor inst sf =
                         , button
                             [ class "w-5 h-5 rounded bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs flex items-center justify-center"
                             , onClick
-                                (SetSeedFactor inst.instanceId sf.id
+                                (SetSeedFactor inst.instanceId
+                                    sf.id
                                     (case sf.maxQuantity of
-                                        Nothing -> currentQty + 1
-                                        Just mx -> Basics.min mx (currentQty + 1)
+                                        Nothing ->
+                                            currentQty + 1
+
+                                        Just mx ->
+                                            Basics.min mx (currentQty + 1)
                                     )
                                 )
                             ]
@@ -206,7 +235,9 @@ viewSeedFactor inst sf =
         ]
 
 
+
 -- ─── Global factor section (augmenting or mitigating) ─────────────────────────
+
 
 viewGlobalFactorSection : Model -> String -> FactorCategory -> Html Msg
 viewGlobalFactorSection model label category =
@@ -241,23 +272,45 @@ viewGlobalFactorRow factor maybeApplied =
             maybeApplied |> Maybe.map .quantity |> Maybe.withDefault 0
 
         dimClass =
-            if isActive then "" else " opacity-40"
+            if isActive then
+                ""
+
+            else
+                " opacity-40"
 
         dcDisplay =
             case factor.kind of
                 Toggle ->
                     if factor.dcModifier > 0 then
                         "+" ++ String.fromInt factor.dcModifier ++ " DC"
+
                     else
                         String.fromInt factor.dcModifier ++ " DC"
 
                 Stackable ->
                     if not isActive then
-                        (if factor.dcModifier > 0 then "+" else "") ++ String.fromInt factor.dcModifier ++ " DC ea."
+                        (if factor.dcModifier > 0 then
+                            "+"
+
+                         else
+                            ""
+                        )
+                            ++ String.fromInt factor.dcModifier
+                            ++ " DC ea."
+
                     else
-                        let total = factor.dcModifier * qty
+                        let
+                            total =
+                                factor.dcModifier * qty
                         in
-                        (if total > 0 then "+" else "") ++ String.fromInt total ++ " DC"
+                        (if total > 0 then
+                            "+"
+
+                         else
+                            ""
+                        )
+                            ++ String.fromInt total
+                            ++ " DC"
 
                 DcMultiplier ->
                     "×" ++ String.fromInt factor.multiplierValue
@@ -279,6 +332,7 @@ viewGlobalFactorRow factor maybeApplied =
                             , onClick
                                 (if isActive then
                                     SetGlobalFactorQty factor.id (qty + 1)
+
                                  else
                                     AddGlobalFactor factor.id
                                 )
@@ -293,6 +347,7 @@ viewGlobalFactorRow factor maybeApplied =
                         , onClick
                             (if isActive then
                                 RemoveGlobalFactor factor.id
+
                              else
                                 AddGlobalFactor factor.id
                             )
@@ -307,6 +362,7 @@ viewGlobalFactorRow factor maybeApplied =
                         , onClick
                             (if isActive then
                                 RemoveGlobalFactor factor.id
+
                              else
                                 AddGlobalFactor factor.id
                             )

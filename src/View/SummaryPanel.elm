@@ -52,10 +52,12 @@ viewDcBreakdown bd =
             , viewBreakdownRow "Augmenting" (showSign bd.augmentingTotal) "text-gray-300"
             , if bd.permanentMultiplier > 1 then
                 viewBreakdownRow "× Permanent" ("×" ++ String.fromInt bd.permanentMultiplier) "text-yellow-400"
+
               else
                 text ""
             , if bd.stoneTabletMultiplier > 1 then
                 viewBreakdownRow "× Stone Tablet" ("×" ++ String.fromInt bd.stoneTabletMultiplier) "text-yellow-400"
+
               else
                 text ""
             , viewBreakdownRow "Mitigating" (showSign bd.mitigatingTotal) "text-green-400"
@@ -80,6 +82,7 @@ showSign : Int -> String
 showSign n =
     if n >= 0 then
         "+" ++ String.fromInt n
+
     else
         String.fromInt n
 
@@ -108,11 +111,15 @@ formatNumber : Int -> String
 formatNumber n =
     -- Insert commas: 423000 → "423,000"
     let
-        str = String.fromInt n
-        len = String.length str
+        str =
+            String.fromInt n
+
+        len =
+            String.length str
     in
     if len <= 3 then
         str
+
     else
         formatNumber (n // 1000) ++ "," ++ String.padLeft 3 '0' (String.fromInt (modBy 1000 n))
 
@@ -129,6 +136,7 @@ viewStatBlock sb =
         descriptorStr =
             if List.isEmpty sb.descriptors then
                 ""
+
             else
                 " [" ++ String.join ", " sb.descriptors ++ "]"
     in
@@ -173,8 +181,10 @@ viewExportButton model =
         , case model.copySuccess of
             Just True ->
                 div [ class "text-green-400 text-xs text-center mt-1" ] [ text "Copied to clipboard!" ]
+
             Just False ->
                 div [ class "text-red-400 text-xs text-center mt-1" ] [ text "Copy failed — check browser permissions." ]
+
             Nothing ->
                 text ""
         ]

@@ -4,14 +4,36 @@ import Dict exposing (Dict)
 import Types exposing (..)
 
 
+
 -- ─── Lookup helpers ──────────────────────────────────────────────────────────
+
 
 allSeeds : List Seed
 allSeeds =
-    [ afflict, animate, animateDead, armor, banish, compel
-    , conceal, conjure, contact, delude, destroy, dispel, energy
-    , foresee, fortify, heal, life, reflect, reveal, slay
-    , summon, transform, transport, ward
+    [ afflict
+    , animate
+    , animateDead
+    , armor
+    , banish
+    , compel
+    , conceal
+    , conjure
+    , contact
+    , delude
+    , destroy
+    , dispel
+    , energy
+    , foresee
+    , fortify
+    , heal
+    , life
+    , reflect
+    , reveal
+    , slay
+    , summon
+    , transform
+    , transport
+    , ward
     ]
 
 
@@ -20,7 +42,9 @@ getSeed id =
     List.head (List.filter (\s -> s.id == id) allSeeds)
 
 
+
 -- ─── Seeds ───────────────────────────────────────────────────────────────────
+
 
 afflict : Seed
 afflict =
@@ -40,15 +64,15 @@ afflict =
     , modes = []
     , universalFactors =
         [ { id = "afflict_rolls", name = "Additional –1 to rolls/checks/saves", description = "Each additional –1 morale penalty beyond base –2", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
-        , { id = "afflict_ability_str", name = "–1 to Strength",           description = "Each –1 penalty to Strength score",                 dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
-        , { id = "afflict_ability_dex", name = "–1 to Dexterity",          description = "Each –1 penalty to Dexterity score",                 dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
-        , { id = "afflict_ability_con", name = "–1 to Constitution",        description = "Each –1 penalty to Constitution score",               dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
-        , { id = "afflict_ability_int", name = "–1 to Intelligence",        description = "Each –1 penalty to Intelligence score",               dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
-        , { id = "afflict_ability_wis", name = "–1 to Wisdom",              description = "Each –1 penalty to Wisdom score",                     dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
-        , { id = "afflict_ability_cha", name = "–1 to Charisma",            description = "Each –1 penalty to Charisma score",                   dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
-        , { id = "afflict_cl",          name = "–1 to caster level checks", description = "Each –1 penalty to caster level checks",              dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
-        , { id = "afflict_sr",          name = "–1 to spell resistance",    description = "Each –1 penalty to spell resistance",                 dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
-        , { id = "afflict_other",       name = "–1 to other aspect",        description = "Each –1 penalty to some other aspect of the target",  dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
+        , { id = "afflict_ability_str", name = "–1 to Strength", description = "Each –1 penalty to Strength score", dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
+        , { id = "afflict_ability_dex", name = "–1 to Dexterity", description = "Each –1 penalty to Dexterity score", dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
+        , { id = "afflict_ability_con", name = "–1 to Constitution", description = "Each –1 penalty to Constitution score", dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
+        , { id = "afflict_ability_int", name = "–1 to Intelligence", description = "Each –1 penalty to Intelligence score", dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
+        , { id = "afflict_ability_wis", name = "–1 to Wisdom", description = "Each –1 penalty to Wisdom score", dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
+        , { id = "afflict_ability_cha", name = "–1 to Charisma", description = "Each –1 penalty to Charisma score", dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
+        , { id = "afflict_cl", name = "–1 to caster level checks", description = "Each –1 penalty to caster level checks", dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
+        , { id = "afflict_sr", name = "–1 to spell resistance", description = "Each –1 penalty to spell resistance", dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
+        , { id = "afflict_other", name = "–1 to other aspect", description = "Each –1 penalty to some other aspect of the target", dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
         , { id = "afflict_sense", name = "Afflict a sense", description = "One sense (sight, smell, hearing, taste, touch, or special) ceases to function for duration", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
         ]
     , choices = []
@@ -102,19 +126,20 @@ Type of Undead: All types of undead can be created with the animate dead seed, a
     , universalFactors =
         [ { id = "adead_extra_hd_create", name = "Each additional 1 HD of undead created", description = "Above base 20 HD", dcModifier = 1, kind = SeedStackable, maxQuantity = Nothing }
         , { id = "adead_extra_hd_control", name = "Each additional 2 HD to control", description = "Control undead beyond free limit (above 20 HD created)", dcModifier = 1, kind = SeedStackable, maxQuantity = Nothing }
+
         -- Undead type modifiers (applied as a single toggle per type):
-        , { id = "adead_skeleton",   name = "Undead type: Skeleton",  description = "DC modifier for skeleton type",  dcModifier = -12, kind = SeedToggle, maxQuantity = Just 1 }
-        , { id = "adead_zombie",     name = "Undead type: Zombie",    description = "DC modifier for zombie type",    dcModifier = -12, kind = SeedToggle, maxQuantity = Just 1 }
-        , { id = "adead_ghoul",      name = "Undead type: Ghoul",     description = "DC modifier for ghoul type",    dcModifier = -10, kind = SeedToggle, maxQuantity = Just 1 }
-        , { id = "adead_shadow",     name = "Undead type: Shadow",    description = "DC modifier for shadow type",   dcModifier = -8,  kind = SeedToggle, maxQuantity = Just 1 }
-        , { id = "adead_ghast",      name = "Undead type: Ghast",     description = "DC modifier for ghast type",    dcModifier = -6,  kind = SeedToggle, maxQuantity = Just 1 }
-        , { id = "adead_wight",      name = "Undead type: Wight",     description = "DC modifier for wight type",    dcModifier = -4,  kind = SeedToggle, maxQuantity = Just 1 }
-        , { id = "adead_wraith",     name = "Undead type: Wraith",    description = "DC modifier for wraith type",   dcModifier = -2,  kind = SeedToggle, maxQuantity = Just 1 }
-        , { id = "adead_mummy",      name = "Undead type: Mummy",     description = "DC modifier for mummy type",    dcModifier = 0,   kind = SeedToggle, maxQuantity = Just 1 }
-        , { id = "adead_spectre",    name = "Undead type: Spectre",   description = "DC modifier for spectre type",  dcModifier = 2,   kind = SeedToggle, maxQuantity = Just 1 }
-        , { id = "adead_mohrg",      name = "Undead type: Mohrg",     description = "DC modifier for mohrg type",    dcModifier = 4,   kind = SeedToggle, maxQuantity = Just 1 }
-        , { id = "adead_vampire",    name = "Undead type: Vampire",   description = "DC modifier for vampire type",  dcModifier = 6,   kind = SeedToggle, maxQuantity = Just 1 }
-        , { id = "adead_ghost",      name = "Undead type: Ghost",     description = "DC modifier for ghost type",    dcModifier = 8,   kind = SeedToggle, maxQuantity = Just 1 }
+        , { id = "adead_skeleton", name = "Undead type: Skeleton", description = "DC modifier for skeleton type", dcModifier = -12, kind = SeedToggle, maxQuantity = Just 1 }
+        , { id = "adead_zombie", name = "Undead type: Zombie", description = "DC modifier for zombie type", dcModifier = -12, kind = SeedToggle, maxQuantity = Just 1 }
+        , { id = "adead_ghoul", name = "Undead type: Ghoul", description = "DC modifier for ghoul type", dcModifier = -10, kind = SeedToggle, maxQuantity = Just 1 }
+        , { id = "adead_shadow", name = "Undead type: Shadow", description = "DC modifier for shadow type", dcModifier = -8, kind = SeedToggle, maxQuantity = Just 1 }
+        , { id = "adead_ghast", name = "Undead type: Ghast", description = "DC modifier for ghast type", dcModifier = -6, kind = SeedToggle, maxQuantity = Just 1 }
+        , { id = "adead_wight", name = "Undead type: Wight", description = "DC modifier for wight type", dcModifier = -4, kind = SeedToggle, maxQuantity = Just 1 }
+        , { id = "adead_wraith", name = "Undead type: Wraith", description = "DC modifier for wraith type", dcModifier = -2, kind = SeedToggle, maxQuantity = Just 1 }
+        , { id = "adead_mummy", name = "Undead type: Mummy", description = "DC modifier for mummy type", dcModifier = 0, kind = SeedToggle, maxQuantity = Just 1 }
+        , { id = "adead_spectre", name = "Undead type: Spectre", description = "DC modifier for spectre type", dcModifier = 2, kind = SeedToggle, maxQuantity = Just 1 }
+        , { id = "adead_mohrg", name = "Undead type: Mohrg", description = "DC modifier for mohrg type", dcModifier = 4, kind = SeedToggle, maxQuantity = Just 1 }
+        , { id = "adead_vampire", name = "Undead type: Vampire", description = "DC modifier for vampire type", dcModifier = 6, kind = SeedToggle, maxQuantity = Just 1 }
+        , { id = "adead_ghost", name = "Undead type: Ghost", description = "DC modifier for ghost type", dcModifier = 8, kind = SeedToggle, maxQuantity = Just 1 }
         ]
     , choices = []
     }
@@ -211,8 +236,8 @@ conceal =
           , name = "Invisibility"
           , baseDCOverride = Nothing
           , factors =
-              [ { id = "conceal_persist", name = "Persistent invisibility (regardless of actions)", description = "Normally ends if subject attacks; this removes that restriction", dcModifier = 4, kind = SeedToggle, maxQuantity = Just 1 }
-              ]
+                [ { id = "conceal_persist", name = "Persistent invisibility (regardless of actions)", description = "Normally ends if subject attacks; this removes that restriction", dcModifier = 4, kind = SeedToggle, maxQuantity = Just 1 }
+                ]
           }
         , { id = "conceal_displacement"
           , name = "Displacement"
@@ -249,8 +274,8 @@ The Conjure seed can be used in conjunction with the life and fortify seeds for 
           , name = "Simple Object Creation"
           , baseDCOverride = Nothing
           , factors =
-              [ { id = "conjure_vol", name = "Each additional cu. ft. of matter", description = "Above base 20 cu. ft.", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
-              ]
+                [ { id = "conjure_vol", name = "Each additional cu. ft. of matter", description = "Above base 20 cu. ft.", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
+                ]
           }
         , { id = "conjure_creature"
           , name = "Creature Creation (with Life + Fortify)"
@@ -285,13 +310,13 @@ At the base Spellcraft DC of 20, a caster can also use the contact seed to imbue
           , name = "Telepathic Bond"
           , baseDCOverride = Nothing
           , factors =
-              [ { id = "contact_extra_creature", name = "Each additional creature in bond", description = "Bond only among willing subjects (no save or SR)", dcModifier = 1, kind = SeedStackable, maxQuantity = Nothing }
-              , { id = "contact_language", name = "Telepathic communication regardless of language", description = "", dcModifier = 4, kind = SeedToggle, maxQuantity = Just 1 }
-              ]
+                [ { id = "contact_extra_creature", name = "Each additional creature in bond", description = "Bond only among willing subjects (no save or SR)", dcModifier = 1, kind = SeedStackable, maxQuantity = Nothing }
+                , { id = "contact_language", name = "Telepathic communication regardless of language", description = "", dcModifier = 4, kind = SeedToggle, maxQuantity = Just 1 }
+                ]
           }
         , { id = "contact_messenger"
           , name = "Messenger"
-          , baseDCOverride = Just 20   -- SRD states base DC 20 for this mode
+          , baseDCOverride = Just 20 -- SRD states base DC 20 for this mode
           , factors = []
           }
         ]
@@ -378,7 +403,7 @@ energy =
     , name = "Energy"
     , baseDC = 19
     , school = "Evocation"
-    , descriptors = []   -- descriptor set by energy type choice at runtime
+    , descriptors = [] -- descriptor set by energy type choice at runtime
     , components = [ V, S ]
     , castingTime = "1 minute"
     , range = "300 ft."
@@ -394,23 +419,23 @@ The caster can also use the energy seed to create a spell that carefully release
           , name = "Bolt"
           , baseDCOverride = Nothing
           , factors =
-              [ { id = "energy_bolt_damage", name = "Each additional 1d6 damage", description = "Above base 10d6", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
-              , { id = "energy_bolt_imbue", name = "Imbue another creature with bolt ability", description = "As a spell-like ability, at its option or on trigger", dcModifier = 25, kind = SeedToggle, maxQuantity = Just 1 }
-              ]
+                [ { id = "energy_bolt_damage", name = "Each additional 1d6 damage", description = "Above base 10d6", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
+                , { id = "energy_bolt_imbue", name = "Imbue another creature with bolt ability", description = "As a spell-like ability, at its option or on trigger", dcModifier = 25, kind = SeedToggle, maxQuantity = Just 1 }
+                ]
           }
         , { id = "energy_emanation"
           , name = "Emanation"
           , baseDCOverride = Nothing
           , factors =
-              [ { id = "energy_em_damage", name = "Each additional 1d6 damage per round", description = "Above base 2d6/round", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
-              ]
+                [ { id = "energy_em_damage", name = "Each additional 1d6 damage per round", description = "Above base 2d6/round", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
+                ]
           }
         , { id = "energy_wall"
           , name = "Wall / Dome / Sphere"
           , baseDCOverride = Nothing
           , factors =
-              [ { id = "energy_wall_damage", name = "Each additional 1d4 damage (wall proximity)", description = "Above base 2d4 near / 1d4 far; passage damage scales with proximity damage", dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
-              ]
+                [ { id = "energy_wall_damage", name = "Each additional 1d4 damage (wall proximity)", description = "Above base 2d4 near / 1d4 far; passage damage scales with proximity damage", dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
+                ]
           }
         , { id = "energy_weather"
           , name = "Weather Effects"
@@ -444,12 +469,13 @@ foresee =
         [ { id = "foresee_predict"
           , name = "Predict the Future (30 min)"
           , baseDCOverride = Nothing
+
           -- NOTE: Each additional 30-min interval multiplies the *seed's effective DC* by ×2.
           -- Implemented in DC calc as: effectiveSeedDC = baseDC * (2 ^ quantity).
           -- The factor below carries dcModifier = 0; special handling in Calc.elm.
           , factors =
-              [ { id = "foresee_interval", name = "Each additional 30-min interval", description = "Multiplies this seed's DC by ×2 per interval (special: not additive)", dcModifier = 0, kind = SeedStackable, maxQuantity = Nothing }
-              ]
+                [ { id = "foresee_interval", name = "Each additional 30-min interval", description = "Multiplies this seed's DC by ×2 per interval (special: not additive)", dcModifier = 0, kind = SeedStackable, maxQuantity = Nothing }
+                ]
           }
         , { id = "foresee_questions"
           , name = "Ask Questions (10 questions)"
@@ -460,8 +486,8 @@ foresee =
           , name = "Targeted Info"
           , baseDCOverride = Nothing
           , factors =
-              [ { id = "foresee_extra_info", name = "Each additional piece of info about target", description = "Level, class, alignment, special ability, or magic item ability", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
-              ]
+                [ { id = "foresee_extra_info", name = "Each additional piece of info about target", description = "Level, class, alignment, special ability, or magic item ability", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
+                ]
           }
         ]
     , universalFactors = []
@@ -505,38 +531,38 @@ A special use of the fortify seed grants the target a permanent +1 year to its c
           , name = "Enhancement Bonus"
           , baseDCOverride = Nothing
           , factors =
-              [ { id = "fortify_enhance_plus", name = "Each additional +1 (or 1 energy resist / 1 temp hp)", description = "Above base +1", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
-              ]
+                [ { id = "fortify_enhance_plus", name = "Each additional +1 (or 1 energy resist / 1 temp hp)", description = "Above base +1", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
+                ]
           }
         , { id = "fortify_nonenhance"
           , name = "Non-Enhancement Bonus"
           , baseDCOverride = Just 23
           , factors =
-              [ { id = "fortify_other_plus", name = "Each additional +1 non-enhancement bonus", description = "", dcModifier = 6, kind = SeedStackable, maxQuantity = Nothing }
-              ]
+                [ { id = "fortify_other_plus", name = "Each additional +1 non-enhancement bonus", description = "", dcModifier = 6, kind = SeedStackable, maxQuantity = Nothing }
+                ]
           }
         , { id = "fortify_new"
           , name = "Bonus to New Statistic (target doesn't have it)"
           , baseDCOverride = Just 27
           , factors =
-              [ { id = "fortify_new_plus", name = "Each additional +1", description = "", dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
-              ]
+                [ { id = "fortify_new_plus", name = "Each additional +1", description = "", dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
+                ]
           }
         , { id = "fortify_sr"
           , name = "Grant Spell Resistance 25"
           , baseDCOverride = Just 27
           , factors =
-              [ { id = "fortify_sr_plus", name = "Each +1 SR above 25", description = "", dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
-              , { id = "fortify_sr_minus", name = "Each –1 SR below 25", description = "", dcModifier = -2, kind = SeedStackable, maxQuantity = Nothing }
-              , { id = "fortify_dr_epic", name = "Damage Reduction vs. epic", description = "+15 DC surcharge to make DR bypass epic", dcModifier = 15, kind = SeedToggle, maxQuantity = Just 1 }
-              ]
+                [ { id = "fortify_sr_plus", name = "Each +1 SR above 25", description = "", dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
+                , { id = "fortify_sr_minus", name = "Each –1 SR below 25", description = "", dcModifier = -2, kind = SeedStackable, maxQuantity = Nothing }
+                , { id = "fortify_dr_epic", name = "Damage Reduction vs. epic", description = "+15 DC surcharge to make DR bypass epic", dcModifier = 15, kind = SeedToggle, maxQuantity = Just 1 }
+                ]
           }
         , { id = "fortify_age"
           , name = "Expand Age Category"
           , baseDCOverride = Nothing
           , factors =
-              [ { id = "fortify_age_year", name = "Each +1 year to current age category", description = "Increments do not stack; they overlap", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
-              ]
+                [ { id = "fortify_age_year", name = "Each +1 year to current age category", description = "Increments do not stack; they overlap", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
+                ]
           }
         ]
     , universalFactors =
@@ -574,18 +600,18 @@ An epic caster with 24 ranks in Knowledge (arcana), Knowledge (nature), or Knowl
           , name = "Heal"
           , baseDCOverride = Nothing
           , factors =
-              [ { id = "heal_drain", name = "Restore drained ability scores", description = "", dcModifier = 6, kind = SeedToggle, maxQuantity = Just 1 }
-              , { id = "heal_neg_levels", name = "Dispel all negative levels", description = "", dcModifier = 2, kind = SeedToggle, maxQuantity = Just 1 }
-              , { id = "heal_extra_week", name = "Each additional week to restore negative levels", description = "Above free 20-week window", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
-              ]
+                [ { id = "heal_drain", name = "Restore drained ability scores", description = "", dcModifier = 6, kind = SeedToggle, maxQuantity = Just 1 }
+                , { id = "heal_neg_levels", name = "Dispel all negative levels", description = "", dcModifier = 2, kind = SeedToggle, maxQuantity = Just 1 }
+                , { id = "heal_extra_week", name = "Each additional week to restore negative levels", description = "Above free 20-week window", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
+                ]
           }
         , { id = "heal_harm"
           , name = "Harm (requires 24 ranks Knowledge)"
           , baseDCOverride = Nothing
           , factors =
-              [ { id = "heal_neg_level_extra", name = "Each additional negative level bestowed", description = "", dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
-              , { id = "heal_neg_level_hour", name = "Each extra hour negative levels persist", description = "", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
-              ]
+                [ { id = "heal_neg_level_extra", name = "Each additional negative level bestowed", description = "", dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
+                , { id = "heal_neg_level_hour", name = "Each extra hour negative levels persist", description = "", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
+                ]
           }
         ]
     , universalFactors = []
@@ -621,8 +647,8 @@ The newly living object, intelligent animal, or sentient plant is friendly towar
           , name = "Resurrection"
           , baseDCOverride = Nothing
           , factors =
-              [ { id = "life_extra_decade", name = "Each additional 10 years beyond 200", description = "Target can have been dead longer", dcModifier = 1, kind = SeedStackable, maxQuantity = Nothing }
-              ]
+                [ { id = "life_extra_decade", name = "Each additional 10 years beyond 200", description = "Target can have been dead longer", dcModifier = 1, kind = SeedStackable, maxQuantity = Nothing }
+                ]
           }
         , { id = "life_give"
           , name = "Give Life (to object/plant/animal)"
@@ -661,23 +687,23 @@ If the reflect seed is used against a melee attack or ranged attack, five such a
           , name = "Spell Reflection"
           , baseDCOverride = Nothing
           , factors =
-              [ { id = "reflect_aoe", name = "Reflect AoE spell (not directly targeted)", description = "", dcModifier = 20, kind = SeedToggle, maxQuantity = Just 1 }
-              , { id = "reflect_spell_level", name = "Each additional spell level reflected", description = "Base reflects up to 1st level; each +1 level costs +20 DC; epic spells count as 10th level", dcModifier = 20, kind = SeedStackable, maxQuantity = Nothing }
-              ]
+                [ { id = "reflect_aoe", name = "Reflect AoE spell (not directly targeted)", description = "", dcModifier = 20, kind = SeedToggle, maxQuantity = Just 1 }
+                , { id = "reflect_spell_level", name = "Each additional spell level reflected", description = "Base reflects up to 1st level; each +1 level costs +20 DC; epic spells count as 10th level", dcModifier = 20, kind = SeedStackable, maxQuantity = Nothing }
+                ]
           }
         , { id = "reflect_ranged"
           , name = "Ranged Attack Reflection"
           , baseDCOverride = Nothing
           , factors =
-              [ { id = "reflect_ranged_extra", name = "Each additional ranged attack reflected", description = "Base: 5 attacks", dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
-              ]
+                [ { id = "reflect_ranged_extra", name = "Each additional ranged attack reflected", description = "Base: 5 attacks", dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
+                ]
           }
         , { id = "reflect_melee"
           , name = "Melee Attack Reflection"
           , baseDCOverride = Nothing
           , factors =
-              [ { id = "reflect_melee_extra", name = "Each additional melee attack reflected", description = "Base: 5 attacks", dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
-              ]
+                [ { id = "reflect_melee_extra", name = "Each additional melee attack reflected", description = "Base: 5 attacks", dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
+                ]
           }
         ]
     , universalFactors = []
@@ -711,14 +737,15 @@ The reveal seed can also be used to develop spells that will do any one of the f
           , name = "Sensor"
           , baseDCOverride = Nothing
           , factors =
-              [ { id = "reveal_hear", name = "Both see and hear through sensor", description = "", dcModifier = 2, kind = SeedToggle, maxQuantity = Just 1 }
-              , { id = "reveal_mobile", name = "Mobile sensor (speed 30 ft.)", description = "", dcModifier = 2, kind = SeedToggle, maxQuantity = Just 1 }
-              , { id = "reveal_plane", name = "Sensor on a different plane", description = "", dcModifier = 8, kind = SeedToggle, maxQuantity = Just 1 }
-              , { id = "reveal_magic_senses", name = "Magically enhanced senses through sensor", description = "", dcModifier = 4, kind = SeedToggle, maxQuantity = Just 1 }
-              , { id = "reveal_cast_through", name = "Cast touch-or-greater spells through sensor", description = "Must maintain line of effect to sensor", dcModifier = 6, kind = SeedToggle, maxQuantity = Just 1 }
-              , { id = "reveal_no_loe", name = "No line of effect required for spells through sensor", description = "Multiplies DC by ×10", dcModifier = 0, kind = SeedToggle, maxQuantity = Just 1 }
-              -- NOTE: "no_loe" is a ×10 multiplier on this seed's DC. Handled as special case in Calc.elm.
-              ]
+                [ { id = "reveal_hear", name = "Both see and hear through sensor", description = "", dcModifier = 2, kind = SeedToggle, maxQuantity = Just 1 }
+                , { id = "reveal_mobile", name = "Mobile sensor (speed 30 ft.)", description = "", dcModifier = 2, kind = SeedToggle, maxQuantity = Just 1 }
+                , { id = "reveal_plane", name = "Sensor on a different plane", description = "", dcModifier = 8, kind = SeedToggle, maxQuantity = Just 1 }
+                , { id = "reveal_magic_senses", name = "Magically enhanced senses through sensor", description = "", dcModifier = 4, kind = SeedToggle, maxQuantity = Just 1 }
+                , { id = "reveal_cast_through", name = "Cast touch-or-greater spells through sensor", description = "Must maintain line of effect to sensor", dcModifier = 6, kind = SeedToggle, maxQuantity = Just 1 }
+                , { id = "reveal_no_loe", name = "No line of effect required for spells through sensor", description = "Multiplies DC by ×10", dcModifier = 0, kind = SeedToggle, maxQuantity = Just 1 }
+
+                -- NOTE: "no_loe" is a ×10 multiplier on this seed's DC. Handled as special case in Calc.elm.
+                ]
           }
         , { id = "reveal_truesight"
           , name = "Pierce Illusions (True Sight, 120 ft.)"
@@ -729,8 +756,8 @@ The reveal seed can also be used to develop spells that will do any one of the f
           , name = "Languages"
           , baseDCOverride = Nothing
           , factors =
-              [ { id = "reveal_both_lang", name = "Both comprehend and speak a language", description = "", dcModifier = 4, kind = SeedToggle, maxQuantity = Just 1 }
-              ]
+                [ { id = "reveal_both_lang", name = "Both comprehend and speak a language", description = "", dcModifier = 4, kind = SeedToggle, maxQuantity = Just 1 }
+                ]
           }
         ]
     , universalFactors = []
@@ -758,15 +785,15 @@ slay =
           , name = "Kill"
           , baseDCOverride = Nothing
           , factors =
-              [ { id = "slay_hd", name = "Each additional 80 HD affected", description = "Or each additional creature affected", dcModifier = 8, kind = SeedStackable, maxQuantity = Nothing }
-              ]
+                [ { id = "slay_hd", name = "Each additional 80 HD affected", description = "Or each additional creature affected", dcModifier = 8, kind = SeedStackable, maxQuantity = Nothing }
+                ]
           }
         , { id = "slay_enervate"
           , name = "Enervate (negative levels)"
           , baseDCOverride = Nothing
           , factors =
-              [ { id = "slay_neg_level", name = "Each additional 1d4 negative levels", description = "Base: 2d4 negative levels", dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
-              ]
+                [ { id = "slay_neg_level", name = "Each additional 1d4 negative levels", description = "Base: 2d4 negative levels", dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
+                ]
           }
         ]
     , universalFactors = []
@@ -798,17 +825,18 @@ Finally, by increasing the Spellcraft DC by +60, the caster can summon a unique 
           , name = "Summon Generic Creature"
           , baseDCOverride = Nothing
           , factors =
-              [ { id = "summon_cr", name = "Each +1 CR above CR 1", description = "", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
-              , { id = "summon_nonoutsider", name = "Summon a non-outsider creature type", description = "+10 DC flat surcharge", dcModifier = 10, kind = SeedToggle, maxQuantity = Just 1 }
-              -- Multiplying DC for multiple creatures is handled via a note; implement as a stackable that triggers multiply logic.
-              ]
+                [ { id = "summon_cr", name = "Each +1 CR above CR 1", description = "", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
+                , { id = "summon_nonoutsider", name = "Summon a non-outsider creature type", description = "+10 DC flat surcharge", dcModifier = 10, kind = SeedToggle, maxQuantity = Just 1 }
+
+                -- Multiplying DC for multiple creatures is handled via a note; implement as a stackable that triggers multiply logic.
+                ]
           }
         , { id = "summon_unique"
           , name = "Summon Unique Individual"
           , baseDCOverride = Nothing
           , factors =
-              [ { id = "summon_unique_dc", name = "Summon specific named individual", description = "+60 DC flat surcharge", dcModifier = 60, kind = SeedToggle, maxQuantity = Just 1 }
-              ]
+                [ { id = "summon_unique_dc", name = "Summon specific named individual", description = "+60 DC flat surcharge", dcModifier = 60, kind = SeedToggle, maxQuantity = Just 1 }
+                ]
           }
         ]
     , universalFactors = []
@@ -874,25 +902,25 @@ As a special use of the transport seed, a caster can develop a spell that tempor
           , name = "Spatial (Teleport)"
           , baseDCOverride = Nothing
           , factors =
-              [ { id = "transport_interplanar", name = "Interplanar travel", description = "", dcModifier = 4, kind = SeedToggle, maxQuantity = Just 1 }
-              , { id = "transport_weight", name = "Each additional 50 lbs. beyond 1,000", description = "", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
-              , { id = "transport_medium", name = "Use transport medium other than Astral Plane", description = "", dcModifier = 2, kind = SeedToggle, maxQuantity = Just 1 }
-              , { id = "transport_unwilling", name = "Transport unwilling creatures", description = "", dcModifier = 4, kind = SeedToggle, maxQuantity = Just 1 }
-              ]
+                [ { id = "transport_interplanar", name = "Interplanar travel", description = "", dcModifier = 4, kind = SeedToggle, maxQuantity = Just 1 }
+                , { id = "transport_weight", name = "Each additional 50 lbs. beyond 1,000", description = "", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
+                , { id = "transport_medium", name = "Use transport medium other than Astral Plane", description = "", dcModifier = 2, kind = SeedToggle, maxQuantity = Just 1 }
+                , { id = "transport_unwilling", name = "Transport unwilling creatures", description = "", dcModifier = 4, kind = SeedToggle, maxQuantity = Just 1 }
+                ]
           }
         , { id = "transport_temporal"
           , name = "Temporal (time stream)"
           , baseDCOverride = Nothing
           , factors =
-              [ { id = "transport_temporal_dc", name = "Temporal transport surcharge", description = "+8 DC to enter a different time stream (freeze or accelerate)", dcModifier = 8, kind = SeedToggle, maxQuantity = Just 1 }
-              ]
+                [ { id = "transport_temporal_dc", name = "Temporal transport surcharge", description = "+8 DC to enter a different time stream (freeze or accelerate)", dcModifier = 8, kind = SeedToggle, maxQuantity = Just 1 }
+                ]
           }
         , { id = "transport_temporal_lite"
           , name = "Temporal Lite (haste/slow 20 rounds)"
           , baseDCOverride = Nothing
           , factors =
-              [ { id = "transport_lite_dc", name = "Temporal lite discount", description = "–4 DC for haste/slow effect only", dcModifier = -4, kind = SeedToggle, maxQuantity = Just 1 }
-              ]
+                [ { id = "transport_lite_dc", name = "Temporal lite discount", description = "–4 DC for haste/slow effect only", dcModifier = -4, kind = SeedToggle, maxQuantity = Just 1 }
+                ]
           }
         ]
     , universalFactors = []
@@ -928,16 +956,16 @@ Instead of creating an epic spell that uses the ward seed to nullify all spells 
           , name = "Damage Ward (B/P/S)"
           , baseDCOverride = Nothing
           , factors =
-              [ { id = "ward_all_three", name = "Ward all three damage types (B, P, and S)", description = "Base covers two; +4 DC for all three", dcModifier = 4, kind = SeedToggle, maxQuantity = Just 1 }
-              , { id = "ward_dmg_pts", name = "Each additional point of damage absorbed per round", description = "Above base 5", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
-              ]
+                [ { id = "ward_all_three", name = "Ward all three damage types (B, P, and S)", description = "Base covers two; +4 DC for all three", dcModifier = 4, kind = SeedToggle, maxQuantity = Just 1 }
+                , { id = "ward_dmg_pts", name = "Each additional point of damage absorbed per round", description = "Above base 5", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
+                ]
           }
         , { id = "ward_energy"
           , name = "Energy Ward"
           , baseDCOverride = Nothing
           , factors =
-              [ { id = "ward_energy_pts", name = "Each additional point of energy absorbed per round", description = "Above base 5", dcModifier = 1, kind = SeedStackable, maxQuantity = Nothing }
-              ]
+                [ { id = "ward_energy_pts", name = "Each additional point of energy absorbed per round", description = "Above base 5", dcModifier = 1, kind = SeedStackable, maxQuantity = Nothing }
+                ]
           }
         , { id = "ward_creature"
           , name = "Creature Ward"
@@ -948,9 +976,9 @@ Instead of creating an epic spell that uses the ward seed to nullify all spells 
           , name = "Magic Ward (spell level exclusion)"
           , baseDCOverride = Nothing
           , factors =
-              [ { id = "ward_magic_level", name = "Each additional spell level excluded", description = "Above 1st level; +20 DC per level", dcModifier = 20, kind = SeedStackable, maxQuantity = Nothing }
-              , { id = "ward_specific_spell", name = "Each specific spell nullified (per spell level above 1st)", description = "+2 DC per spell level above 1st", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
-              ]
+                [ { id = "ward_magic_level", name = "Each additional spell level excluded", description = "Above 1st level; +20 DC per level", dcModifier = 20, kind = SeedStackable, maxQuantity = Nothing }
+                , { id = "ward_specific_spell", name = "Each specific spell nullified (per spell level above 1st)", description = "+2 DC per spell level above 1st", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
+                ]
           }
         ]
     , universalFactors = []

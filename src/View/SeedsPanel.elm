@@ -28,6 +28,7 @@ viewSeedsPanel model =
               if List.isEmpty model.seedInstances then
                 div [ class "px-4 py-6 text-gray-600 text-sm text-center" ]
                     [ text "Click a seed to add it to the spell." ]
+
               else
                 div [ class "border-t border-gray-700" ]
                     (List.map viewSeedInstance model.seedInstances)
@@ -54,6 +55,7 @@ viewSeedCard instances seed =
         activeClass =
             if count > 0 then
                 "bg-arcane-900 border-arcane-500 text-arcane-400"
+
             else
                 "bg-gray-800 border-gray-700 text-gray-300 hover:border-gray-500"
     in
@@ -67,6 +69,7 @@ viewSeedCard instances seed =
             [ text (String.fromInt seed.baseDC)
             , if count > 0 then
                 span [ class "ml-1 text-arcane-400" ] [ text ("×" ++ String.fromInt count) ]
+
               else
                 text ""
             ]
