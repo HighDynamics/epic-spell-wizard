@@ -142,6 +142,7 @@ type alias SeedMode =
     { id : String
     , name : String
     , baseDCOverride : Maybe Int -- overrides seed baseDC when this mode is active (e.g. Contact Messenger = 20)
+    , durationOverride : Maybe String -- overrides seed duration when this mode is active
     , factors : List SeedFactor
     }
 
@@ -289,7 +290,10 @@ type alias Model =
     { spellName : String
     , seedInstances : List SeedInstance
     , nextInstanceId : SeedInstanceId
+    , primarySeedInstanceId : Maybe SeedInstanceId
     , appliedFactors : List AppliedFactor
+    , selectedSchool : Maybe String
+    , selectedSavingThrow : Maybe SavingThrow
     , seedsPanelOpen : Bool
     , factorsPanelOpen : Bool
     , summaryPanelOpen : Bool
@@ -307,6 +311,9 @@ type Msg
     | AddGlobalFactor FactorId
     | RemoveGlobalFactor FactorId
     | SetGlobalFactorQty FactorId Int
+    | SetPrimarySeed SeedInstanceId
+    | SetSchool String
+    | SetSavingThrow (Maybe SavingThrow)
     | ToggleSeedsPanel
     | ToggleFactorsPanel
     | ToggleSummaryPanel

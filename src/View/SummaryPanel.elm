@@ -1,17 +1,17 @@
 module View.SummaryPanel exposing (viewSummaryPanel)
 
-import Calc exposing (StatBlockData)
+import Calc exposing (StatBlockData, availableSavingThrows, availableSchools)
 import Export
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onClick)
+import Html.Events exposing (onClick, onInput)
 import Types exposing (..)
 
 
 viewSummaryPanel : Model -> DcBreakdown -> DevCosts -> StatBlockData -> Html Msg
 viewSummaryPanel model breakdown costs sb =
     if model.summaryPanelOpen then
-        div [ class "w-72 shrink-0 flex flex-col bg-gray-900 overflow-y-auto" ]
+        div [ class "w-96 shrink-0 flex flex-col bg-gray-900 overflow-y-auto" ]
             [ -- Panel header
               div [ class "flex items-center justify-between px-4 py-3 border-b border-gray-700 sticky top-0 bg-gray-900 z-10" ]
                 [ span [ class "text-xs font-bold uppercase tracking-widest text-gray-400" ] [ text "Summary" ]
@@ -25,7 +25,7 @@ viewSummaryPanel model breakdown costs sb =
             , div [ class "p-4 space-y-5" ]
                 [ viewDcBreakdown breakdown
                 , viewDevCosts costs
-                , viewStatBlock sb
+                , viewStatBlock model sb
                 , viewDescriptionBox model
                 , viewExportButton model
                 ]
@@ -124,13 +124,32 @@ formatNumber n =
         formatNumber (n // 1000) ++ "," ++ String.padLeft 3 '0' (String.fromInt (modBy 1000 n))
 
 
-viewStatBlock : StatBlockData -> Html Msg
-viewStatBlock sb =
+saveTypeLabel : SavingThrowType -> String
+saveTypeLabel st =
+    case st of
+        WillSave ->
+            "Will"
+
+        ReflexSave ->
+            "Reflex"
+
+        FortSave ->
+            "Fortitude"
+
+
+viewStatBlock : Model -> StatBlockData -> Html Msg
+viewStatBlock model sb =
     let
         row label val =
             div [ class "flex gap-2 text-xs" ]
                 [ span [ class "text-gray-500 w-24 shrink-0" ] [ text label ]
                 , span [ class "text-gray-200" ] [ text val ]
+                ]
+
+        rowEl label el =
+            div [ class "flex gap-2 text-xs items-start" ]
+                [ span [ class "text-gray-500 w-24 shrink-0" ] [ text label ]
+                , el
                 ]
 
         descriptorStr =
@@ -139,17 +158,144 @@ viewStatBlock sb =
 
             else
                 " [" ++ String.join ", " sb.descriptors ++ "]"
+
+        schools =
+            availableSchools model.seedInstances
+
+        schoolEl =
+            case schools of
+                [] ->
+                    span [ class "text-gray-200" ] [ text "—" ]
+
+                [ single ] ->
+                    div []
+                        [ span [ class "text-gray-200" ] [ text single ]
+                        , if List.isEmpty sb.descriptors then
+                            text ""
+
+                          else
+                            div [ class "text-gray-400 mt-1" ] [ text descriptorStr ]
+                        ]
+
+                _ ->
+                    let
+                        activeSchool =
+                            Maybe.withDefault
+                                (Maybe.withDefault "" (List.head schools))
+                                model.selectedSchool
+                    in
+                    div []
+                        [ div [ class "flex flex-wrap gap-1" ]
+                            (List.map
+                                (\s ->
+                                    button
+                                        [ class
+                                            (if s == activeSchool then
+                                                "text-xs px-2 py-0.5 rounded bg-indigo-600 text-white"
+
+                                             else
+                                                "text-xs px-2 py-0.5 rounded bg-gray-700 text-gray-500 hover:text-gray-300 hover:bg-gray-600"
+                                            )
+                                        , onClick (SetSchool s)
+                                        ]
+                                        [ text s ]
+                                )
+                                schools
+                            )
+                        , if List.isEmpty sb.descriptors then
+                            text ""
+
+                          else
+                            div [ class "text-gray-400 mt-1" ] [ text descriptorStr ]
+                        ]
+
+        availableSaves =
+            availableSavingThrows model.seedInstances
+
+        savingThrowEl =
+            case availableSaves of
+                [] ->
+                    span [ class "text-gray-200" ] [ text "None" ]
+
+                [ _ ] ->
+                    span [ class "text-gray-200" ] [ text sb.savingThrow ]
+
+                _ ->
+                    let
+                        currentTypeStr =
+                            model.selectedSavingThrow
+                                |> Maybe.map (.saveType >> saveTypeLabel)
+                                |> Maybe.withDefault
+                                    (List.head availableSaves
+                                        |> Maybe.map (.saveType >> saveTypeLabel)
+                                        |> Maybe.withDefault ""
+                                    )
+
+                        effects =
+                            List.map .effect availableSaves
+
+                        effectStr =
+                            case List.head effects of
+                                Nothing ->
+                                    ""
+
+                                Just first ->
+                                    if List.all (\e -> e == first) effects then
+                                        case first of
+                                            Negates -> "negates"
+                                            Half -> "half"
+                                            Partial -> "partial"
+                                            SeeText -> "(see text)"
+
+                                    else
+                                        "(see text)"
+
+                        harmlessStr =
+                            if List.all .harmless availableSaves then
+                                " (harmless)"
+
+                            else
+                                ""
+                    in
+                    div [ class "flex flex-wrap items-center gap-1" ]
+                        [ select
+                            [ class "bg-gray-800 text-gray-200 text-xs rounded px-1 py-0.5"
+                            , onInput
+                                (\typeStr ->
+                                    SetSavingThrow
+                                        (List.filter (\st -> saveTypeLabel st.saveType == typeStr) availableSaves
+                                            |> List.head
+                                        )
+                                )
+                            , value currentTypeStr
+                            ]
+                            (List.map
+                                (\st ->
+                                    let
+                                        label =
+                                            saveTypeLabel st.saveType
+                                    in
+                                    option
+                                        [ value label
+                                        , selected (currentTypeStr == label)
+                                        ]
+                                        [ text label ]
+                                )
+                                availableSaves
+                            )
+                        , span [ class "text-gray-200" ] [ text (effectStr ++ harmlessStr) ]
+                        ]
     in
     div []
         [ div [ class "text-xs font-bold uppercase tracking-widest text-gray-400 mb-2" ] [ text "Stat Block" ]
         , div [ class "space-y-1" ]
-            [ row "School" (sb.school ++ descriptorStr)
+            [ rowEl (if List.length schools > 1 then "School (pick)" else "School") schoolEl
             , row "Components" (String.join ", " sb.components)
             , row "Casting Time" sb.castingTime
             , row "Range" sb.range
             , row "Target/Area" sb.targetAreaEffect
             , row "Duration" sb.duration
-            , row "Saving Throw" sb.savingThrow
+            , rowEl "Saving Throw" savingThrowEl
             , row "Spell Resistance" sb.spellResistance
             ]
         ]

@@ -1,4 +1,4 @@
-module Calc exposing (StatBlockData, calculateBreakdown, devCosts, statBlock)
+module Calc exposing (StatBlockData, availableSchools, availableSavingThrows, calculateBreakdown, devCosts, isFactorDisabled, statBlock)
 
 import Dict exposing (Dict)
 import Factors exposing (getFactor)
@@ -6,11 +6,32 @@ import Seeds exposing (getSeed)
 import Types exposing (..)
 
 
+
 -- ─── DC Breakdown ─────────────────────────────────────────────────────────────
 
+
+isFactorDisabled : FactorId -> List AppliedFactor -> Bool
+isFactorDisabled factorId appliedFactors =
+    case factorId of
+        ReduceCastTime1Round ->
+            List.any (\af -> af.factorId == IncreaseCastTime1Day) appliedFactors
+                || List.any (\af -> af.factorId == OneActionCastTime || af.factorId == QuickenedSpell) appliedFactors
+
+        _ ->
+            False
+
+
+filterEnabledFactors : List AppliedFactor -> List AppliedFactor
+filterEnabledFactors appliedFactors =
+    List.filter (\af -> not (isFactorDisabled af.factorId appliedFactors)) appliedFactors
+
+
 calculateBreakdown : List SeedInstance -> List AppliedFactor -> DcBreakdown
-calculateBreakdown instances globalFactors =
+calculateBreakdown instances rawFactors =
     let
+        globalFactors =
+            filterEnabledFactors rawFactors
+
         seedsTotal =
             instances
                 |> List.map effectiveSeedBaseDC
@@ -18,7 +39,7 @@ calculateBreakdown instances globalFactors =
 
         seedFactorsTotal =
             instances
-                |> List.map (seedInstanceFactorDC)
+                |> List.map seedInstanceFactorDC
                 |> List.sum
 
         augmentingTotal =
@@ -30,6 +51,7 @@ calculateBreakdown instances globalFactors =
                                 (\f ->
                                     if f.category == Augmenting && f.kind /= DcMultiplier then
                                         Just (f.dcModifier * af.quantity)
+
                                     else
                                         Nothing
                                 )
@@ -42,12 +64,14 @@ calculateBreakdown instances globalFactors =
         permanentMult =
             if List.any (\af -> af.factorId == PermanentDuration) globalFactors then
                 5
+
             else
                 1
 
         stoneTabletMult =
             if List.any (\af -> af.factorId == StoneTablet) globalFactors then
                 2
+
             else
                 1
 
@@ -60,6 +84,7 @@ calculateBreakdown instances globalFactors =
                                 (\f ->
                                     if f.category == Mitigating then
                                         Just (f.dcModifier * af.quantity)
+
                                     else
                                         Nothing
                                 )
@@ -79,8 +104,11 @@ calculateBreakdown instances globalFactors =
     }
 
 
+
 -- The effective base DC for a seed instance, accounting for mode overrides
 -- and the Foresee "×2 per interval" special case.
+
+
 effectiveSeedBaseDC : SeedInstance -> Int
 effectiveSeedBaseDC inst =
     case getSeed inst.seedId of
@@ -111,7 +139,8 @@ effectiveSeedBaseDC inst =
                             |> List.sum
                 in
                 baseDC * (2 ^ intervals)
-            -- Special case: Reveal sensor mode — "no_loe" factor multiplies seed DC by ×10.
+                -- Special case: Reveal sensor mode — "no_loe" factor multiplies seed DC by ×10.
+
             else if inst.seedId == Reveal && inst.selectedMode == Just "reveal_sensor" then
                 let
                     noLoe =
@@ -120,14 +149,19 @@ effectiveSeedBaseDC inst =
                 in
                 if noLoe then
                     baseDC * 10
+
                 else
                     baseDC
+
             else
                 baseDC
 
 
+
 -- Sum additive seed-specific factors for one instance.
 -- Foresee intervals and Reveal no_loe are handled in effectiveSeedBaseDC, not here.
+
+
 seedInstanceFactorDC : SeedInstance -> Int
 seedInstanceFactorDC inst =
     case getSeed inst.seedId of
@@ -157,6 +191,7 @@ seedInstanceFactorDC inst =
                     (\asf ->
                         if List.member asf.factorId skipIds then
                             Nothing
+
                         else
                             List.head (List.filter (\sf -> sf.id == asf.factorId) availableFactors)
                                 |> Maybe.map (\sf -> sf.dcModifier * asf.quantity)
@@ -164,7 +199,9 @@ seedInstanceFactorDC inst =
                 |> List.sum
 
 
+
 -- ─── Development Costs ────────────────────────────────────────────────────────
+
 
 devCosts : Int -> DevCosts
 devCosts finalDC =
@@ -184,9 +221,11 @@ devCosts finalDC =
     }
 
 
--- ─── Live Stat Block ──────────────────────────────────────────────────────────
 
+-- ─── Live Stat Block ──────────────────────────────────────────────────────────
 -- Derives each stat block field from seeds + global factors.
+
+
 type alias StatBlockData =
     { school : String
     , descriptors : List String
@@ -195,29 +234,75 @@ type alias StatBlockData =
     , range : String
     , targetAreaEffect : String
     , duration : String
-    , savingThrow : String    -- fully formatted, e.g. "Will negates (DC 26)"
+    , savingThrow : String -- fully formatted, e.g. "Will negates (DC 26)"
     , spellResistance : String
     }
 
 
-statBlock : List SeedInstance -> List AppliedFactor -> Int -> StatBlockData
-statBlock instances globalFactors saveDCBonus =
+availableSchools : List SeedInstance -> List String
+availableSchools instances =
+    instances
+        |> List.filterMap (\inst -> getSeed inst.seedId |> Maybe.map .school)
+        |> List.foldl (\s acc -> if List.member s acc then acc else acc ++ [ s ]) []
+
+
+availableSavingThrows : List SeedInstance -> List SavingThrow
+availableSavingThrows instances =
+    instances
+        |> List.filterMap (\inst -> getSeed inst.seedId |> Maybe.andThen .savingThrow)
+        |> List.foldl
+            (\st acc ->
+                if List.any (\s -> s.saveType == st.saveType) acc then
+                    acc
+
+                else
+                    acc ++ [ st ]
+            )
+            []
+
+
+statBlock : List SeedInstance -> List AppliedFactor -> Int -> Maybe SeedInstanceId -> Maybe String -> Maybe SavingThrow -> StatBlockData
+statBlock instances rawFactors saveDCBonus maybePrimaryId maybeSchool maybeSavingThrow =
     let
+        globalFactors =
+            filterEnabledFactors rawFactors
+
         seeds =
             List.filterMap (\inst -> getSeed inst.seedId) instances
 
         primarySeed =
-            List.head seeds
+            let
+                found =
+                    maybePrimaryId
+                        |> Maybe.andThen
+                            (\iid ->
+                                List.filter (\i -> i.instanceId == iid) instances
+                                    |> List.head
+                                    |> Maybe.andThen (\i -> getSeed i.seedId)
+                            )
+            in
+            case found of
+                Just _ ->
+                    found
+
+                Nothing ->
+                    List.head seeds
 
         school =
-            Maybe.map .school primarySeed |> Maybe.withDefault "—"
+            maybeSchool
+                |> Maybe.withDefault
+                    (availableSchools instances |> List.head |> Maybe.withDefault "—")
 
         descriptors =
             seeds
                 |> List.concatMap .descriptors
                 |> List.foldl
                     (\d acc ->
-                        if List.member d acc then acc else acc ++ [ d ]
+                        if List.member d acc then
+                            acc
+
+                        else
+                            acc ++ [ d ]
                     )
                     []
 
@@ -226,7 +311,11 @@ statBlock instances globalFactors saveDCBonus =
                 |> List.concatMap .components
                 |> List.foldl
                     (\c acc ->
-                        if List.member c acc then acc else acc ++ [ c ]
+                        if List.member c acc then
+                            acc
+
+                        else
+                            acc ++ [ c ]
                     )
                     []
 
@@ -252,13 +341,25 @@ statBlock instances globalFactors saveDCBonus =
             Maybe.map .targetAreaEffect primarySeed |> Maybe.withDefault "—"
 
         duration =
-            deriveDuration globalFactors primarySeed
+            deriveDuration globalFactors instances
+
+        resolvedSave =
+            case maybeSavingThrow of
+                Just _ ->
+                    maybeSavingThrow
+
+                Nothing ->
+                    availableSavingThrows instances |> List.head
 
         savingThrow =
-            deriveSavingThrow seeds globalFactors saveDCBonus
+            deriveSavingThrow resolvedSave globalFactors saveDCBonus
 
         spellResistance =
-            if List.any .spellResistance seeds then "Yes" else "No"
+            if List.any .spellResistance seeds then
+                "Yes"
+
+            else
+                "No"
     in
     { school = school
     , descriptors = descriptors
@@ -275,12 +376,23 @@ statBlock instances globalFactors saveDCBonus =
 componentToString : Component -> String
 componentToString c =
     case c of
-        V -> "V"
-        S -> "S"
-        M -> "M"
-        DF -> "DF"
-        F -> "F"
-        XP -> "XP"
+        V ->
+            "V"
+
+        S ->
+            "S"
+
+        M ->
+            "M"
+
+        DF ->
+            "DF"
+
+        F ->
+            "F"
+
+        XP ->
+            "XP"
 
 
 deriveCastingTime : List AppliedFactor -> Maybe Seed -> String
@@ -291,8 +403,10 @@ deriveCastingTime globalFactors primarySeed =
     in
     if List.any (\af -> af.factorId == QuickenedSpell) globalFactors then
         "Free action (quickened)"
+
     else if List.any (\af -> af.factorId == OneActionCastTime) globalFactors then
         "1 action"
+
     else
         let
             minExtra =
@@ -315,10 +429,39 @@ deriveCastingTime globalFactors primarySeed =
         in
         if dayExtra > 0 then
             String.fromInt (10 + dayExtra) ++ " minutes + " ++ String.fromInt dayExtra ++ " day(s)"
+
+        else if roundReductions > 0 then
+            let
+                totalRounds =
+                    (1 + minExtra) * 10
+
+                afterRounds =
+                    max (totalRounds - roundReductions) 1
+
+                resultMinutes =
+                    afterRounds // 10
+
+                resultRounds =
+                    modBy 10 afterRounds
+
+                minutesStr n =
+                    String.fromInt n ++ (if n == 1 then " minute" else " minutes")
+
+                roundsStr n =
+                    String.fromInt n ++ (if n == 1 then " round" else " rounds")
+            in
+            if resultMinutes > 0 && resultRounds > 0 then
+                minutesStr resultMinutes ++ " + " ++ roundsStr resultRounds
+
+            else if resultMinutes > 0 then
+                minutesStr resultMinutes
+
+            else
+                roundsStr resultRounds
+
         else if minExtra > 0 then
             String.fromInt (1 + minExtra) ++ " minutes"
-        else if roundReductions > 0 then
-            "1 minute (–" ++ String.fromInt roundReductions ++ " rounds)"
+
         else
             base
 
@@ -337,15 +480,94 @@ deriveRange globalFactors primarySeed =
     in
     if doublings > 0 then
         base ++ " (×" ++ String.fromInt (2 ^ doublings) ++ ")"
+
     else
         base
 
 
-deriveDuration : List AppliedFactor -> Maybe Seed -> String
-deriveDuration globalFactors primarySeed =
+
+-- Ranks a duration string from shortest (0) to longest.
+-- Lower rank = shorter duration = this seed wins when multiple seeds are active.
+-- Tune these ranks to match the game rules.
+
+
+durationRank : String -> Int
+durationRank d =
+    case d of
+        "5 rounds" ->
+            5
+
+        "20 rounds" ->
+            10
+
+        "20 rounds (D)" ->
+            11
+
+        "Concentration + 20 minutes" ->
+            20
+
+        "20 minutes" ->
+            30
+
+        "200 minutes" ->
+            40
+
+        "200 minutes (D)" ->
+            41
+
+        "200 minutes or until expended (D)" ->
+            42
+
+        "8 hours (simple objects last 24 hours)" ->
+            50
+
+        "Until expended (up to 12 hours)" ->
+            55
+
+        "20 hours" ->
+            60
+
+        "20 hours or until completed" ->
+            61
+
+        "24 hours (D)" ->
+            65
+
+        "Concentration + 20 hours" ->
+            70
+
+        _ ->
+            99
+
+
+
+-- Returns the effective duration string for a single instance.
+-- Accounts for mode-specific overrides once those exist; for now falls back to
+-- the seed's base duration.
+
+
+instanceDuration : SeedInstance -> String
+instanceDuration inst =
+    case getSeed inst.seedId of
+        Nothing ->
+            "—"
+
+        Just seed ->
+            inst.selectedMode
+                |> Maybe.andThen (\modeId -> List.filter (.id >> (==) modeId) seed.modes |> List.head)
+                |> Maybe.andThen .durationOverride
+                |> Maybe.withDefault seed.duration
+
+
+deriveDuration : List AppliedFactor -> List SeedInstance -> String
+deriveDuration globalFactors instances =
     let
         base =
-            Maybe.map .duration primarySeed |> Maybe.withDefault "—"
+            instances
+                |> List.map instanceDuration
+                |> List.sortBy durationRank
+                |> List.head
+                |> Maybe.withDefault "—"
 
         isPermanent =
             List.any (\af -> af.factorId == PermanentDuration) globalFactors
@@ -358,19 +580,17 @@ deriveDuration globalFactors primarySeed =
     in
     if isPermanent then
         "Permanent"
+
     else if doublings > 0 then
         base ++ " (×" ++ String.fromInt (2 ^ doublings) ++ ")"
+
     else
         base
 
 
-deriveSavingThrow : List Seed -> List AppliedFactor -> Int -> String
-deriveSavingThrow seeds globalFactors saveDCBonus =
-    let
-        firstSave =
-            List.filterMap .savingThrow seeds |> List.head
-    in
-    case firstSave of
+deriveSavingThrow : Maybe SavingThrow -> List AppliedFactor -> Int -> String
+deriveSavingThrow mst globalFactors saveDCBonus =
+    case mst of
         Nothing ->
             "None"
 
@@ -378,19 +598,35 @@ deriveSavingThrow seeds globalFactors saveDCBonus =
             let
                 typeStr =
                     case st.saveType of
-                        WillSave -> "Will"
-                        ReflexSave -> "Reflex"
-                        FortSave -> "Fortitude"
+                        WillSave ->
+                            "Will"
+
+                        ReflexSave ->
+                            "Reflex"
+
+                        FortSave ->
+                            "Fortitude"
 
                 effectStr =
                     case st.effect of
-                        Negates -> "negates"
-                        Half -> "half"
-                        Partial -> "partial"
-                        SeeText -> "(see text)"
+                        Negates ->
+                            "negates"
+
+                        Half ->
+                            "half"
+
+                        Partial ->
+                            "partial"
+
+                        SeeText ->
+                            "(see text)"
 
                 harmlessStr =
-                    if st.harmless then " (harmless)" else ""
+                    if st.harmless then
+                        " (harmless)"
+
+                    else
+                        ""
 
                 dcBonusFromFactors =
                     globalFactors
@@ -404,6 +640,7 @@ deriveSavingThrow seeds globalFactors saveDCBonus =
                 dcStr =
                     if totalBonus > 0 then
                         " (DC " ++ String.fromInt (20 + totalBonus) ++ ")"
+
                     else
                         ""
             in

@@ -1,5 +1,6 @@
 module View.FactorsPanel exposing (viewFactorsPanel)
 
+import Calc exposing (isFactorDisabled)
 import Dict
 import Factors exposing (allFactors)
 import Html exposing (..)
@@ -52,7 +53,7 @@ viewFactorsPanel model _ =
 
 
 viewSeedInstanceFactors : Model -> SeedInstance -> Html Msg
-viewSeedInstanceFactors _ inst =
+viewSeedInstanceFactors model inst =
     case getSeed inst.seedId of
         Nothing ->
             text ""
@@ -107,8 +108,31 @@ viewSeedInstanceFactors _ inst =
                         List.map (viewSeedFactor inst) availableFactors
             in
             div [ class "border-b border-gray-800" ]
-                [ div [ class "px-4 py-2 bg-gray-900 text-xs text-arcane-400 font-semibold uppercase tracking-wider" ]
-                    [ text ("── " ++ seed.name ++ " ──") ]
+                [ div [ class "flex items-center justify-between px-4 py-2 bg-gray-900" ]
+                    [ span [ class "text-xs text-arcane-400 font-semibold uppercase tracking-wider" ]
+                        [ text ("── " ++ seed.name ++ " ──") ]
+                    , div [ class "flex items-center gap-2" ]
+                        [ if List.length model.seedInstances > 1 then
+                            if model.primarySeedInstanceId == Just inst.instanceId then
+                                span [ class "text-xs text-arcane-400 font-semibold px-1.5 py-0.5 rounded border border-arcane-700 bg-arcane-950" ]
+                                    [ text "Primary" ]
+
+                            else
+                                button
+                                    [ class "text-xs text-gray-600 hover:text-gray-300 px-1.5 py-0.5 rounded border border-gray-800 hover:border-gray-600"
+                                    , onClick (SetPrimarySeed inst.instanceId)
+                                    ]
+                                    [ text "Make primary" ]
+
+                          else
+                            text ""
+                        , button
+                            [ class "text-gray-600 hover:text-red-400 text-xs"
+                            , onClick (RemoveSeedInstance inst.instanceId)
+                            ]
+                            [ text "✕" ]
+                        ]
+                    ]
                 , div [ class "px-4 py-2" ]
                     (modeRow ++ choiceRows ++ factorRows)
                 ]
@@ -239,6 +263,11 @@ viewSeedFactor inst sf =
 -- ─── Global factor section (augmenting or mitigating) ─────────────────────────
 
 
+isGlobalFactorDisabled : FactorId -> Model -> Bool
+isGlobalFactorDisabled factorId model =
+    isFactorDisabled factorId model.appliedFactors
+
+
 viewGlobalFactorSection : Model -> String -> FactorCategory -> Html Msg
 viewGlobalFactorSection model label category =
     let
@@ -254,16 +283,19 @@ viewGlobalFactorSection model label category =
                     let
                         maybeApplied =
                             List.head (List.filter (\af -> af.factorId == f.id) model.appliedFactors)
+
+                        isDisabled =
+                            isGlobalFactorDisabled f.id model
                     in
-                    viewGlobalFactorRow f maybeApplied
+                    viewGlobalFactorRow f maybeApplied isDisabled
                 )
                 categoryFactors
             )
         ]
 
 
-viewGlobalFactorRow : Factor -> Maybe AppliedFactor -> Html Msg
-viewGlobalFactorRow factor maybeApplied =
+viewGlobalFactorRow : Factor -> Maybe AppliedFactor -> Bool -> Html Msg
+viewGlobalFactorRow factor maybeApplied isDisabled =
     let
         isActive =
             maybeApplied /= Nothing
@@ -272,7 +304,10 @@ viewGlobalFactorRow factor maybeApplied =
             maybeApplied |> Maybe.map .quantity |> Maybe.withDefault 0
 
         dimClass =
-            if isActive then
+            if isDisabled then
+                " opacity-10 hover:opacity-40 transition-opacity cursor-default"
+
+            else if isActive then
                 ""
 
             else
@@ -316,59 +351,63 @@ viewGlobalFactorRow factor maybeApplied =
                     "×" ++ String.fromInt factor.multiplierValue
 
         controls =
-            case factor.kind of
-                Stackable ->
-                    div [ class "flex items-center gap-1" ]
-                        [ button
-                            [ class "w-5 h-5 rounded bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
-                            , onClick (SetGlobalFactorQty factor.id (Basics.max 0 (qty - 1)))
-                            , disabled (qty == 0)
+            if isDisabled then
+                span [ class "text-gray-500 text-xs w-10 text-right" ] [ text "N/A" ]
+
+            else
+                case factor.kind of
+                    Stackable ->
+                        div [ class "flex items-center gap-1" ]
+                            [ button
+                                [ class "w-5 h-5 rounded bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
+                                , onClick (SetGlobalFactorQty factor.id (Basics.max 0 (qty - 1)))
+                                , disabled (qty == 0)
+                                ]
+                                [ text "−" ]
+                            , span [ class "text-xs text-gray-300 w-4 text-center tabular-nums" ]
+                                [ text (String.fromInt qty) ]
+                            , button
+                                [ class "w-5 h-5 rounded bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs flex items-center justify-center"
+                                , onClick
+                                    (if isActive then
+                                        SetGlobalFactorQty factor.id (qty + 1)
+
+                                     else
+                                        AddGlobalFactor factor.id
+                                    )
+                                ]
+                                [ text "+" ]
                             ]
-                            [ text "−" ]
-                        , span [ class "text-xs text-gray-300 w-4 text-center tabular-nums" ]
-                            [ text (String.fromInt qty) ]
-                        , button
-                            [ class "w-5 h-5 rounded bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs flex items-center justify-center"
+
+                    Toggle ->
+                        input
+                            [ type_ "checkbox"
+                            , checked isActive
                             , onClick
                                 (if isActive then
-                                    SetGlobalFactorQty factor.id (qty + 1)
+                                    RemoveGlobalFactor factor.id
 
                                  else
                                     AddGlobalFactor factor.id
                                 )
+                            , class "w-4 h-4 accent-arcane-500 cursor-pointer"
                             ]
-                            [ text "+" ]
-                        ]
+                            []
 
-                Toggle ->
-                    input
-                        [ type_ "checkbox"
-                        , checked isActive
-                        , onClick
-                            (if isActive then
-                                RemoveGlobalFactor factor.id
+                    DcMultiplier ->
+                        input
+                            [ type_ "checkbox"
+                            , checked isActive
+                            , onClick
+                                (if isActive then
+                                    RemoveGlobalFactor factor.id
 
-                             else
-                                AddGlobalFactor factor.id
-                            )
-                        , class "w-4 h-4 accent-arcane-500 cursor-pointer"
-                        ]
-                        []
-
-                DcMultiplier ->
-                    input
-                        [ type_ "checkbox"
-                        , checked isActive
-                        , onClick
-                            (if isActive then
-                                RemoveGlobalFactor factor.id
-
-                             else
-                                AddGlobalFactor factor.id
-                            )
-                        , class "w-4 h-4 accent-arcane-500 cursor-pointer"
-                        ]
-                        []
+                                 else
+                                    AddGlobalFactor factor.id
+                                )
+                            , class "w-4 h-4 accent-arcane-500 cursor-pointer"
+                            ]
+                            []
     in
     div [ class ("flex items-center justify-between py-1 gap-2 text-sm h-10" ++ dimClass) ]
         [ div [ class "flex-1 min-w-0" ]

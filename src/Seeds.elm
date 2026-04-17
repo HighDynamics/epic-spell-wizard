@@ -235,6 +235,7 @@ conceal =
         [ { id = "conceal_invisibility"
           , name = "Invisibility"
           , baseDCOverride = Nothing
+          , durationOverride = Nothing
           , factors =
                 [ { id = "conceal_persist", name = "Persistent invisibility (regardless of actions)", description = "Normally ends if subject attacks; this removes that restriction", dcModifier = 4, kind = SeedToggle, maxQuantity = Just 1 }
                 ]
@@ -242,6 +243,7 @@ conceal =
         , { id = "conceal_displacement"
           , name = "Displacement"
           , baseDCOverride = Nothing
+          , durationOverride = Nothing
           , factors = []
           }
         ]
@@ -273,6 +275,7 @@ The Conjure seed can be used in conjunction with the life and fortify seeds for 
         [ { id = "conjure_object"
           , name = "Simple Object Creation"
           , baseDCOverride = Nothing
+          , durationOverride = Nothing
           , factors =
                 [ { id = "conjure_vol", name = "Each additional cu. ft. of matter", description = "Above base 20 cu. ft.", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
                 ]
@@ -280,6 +283,7 @@ The Conjure seed can be used in conjunction with the life and fortify seeds for 
         , { id = "conjure_creature"
           , name = "Creature Creation (with Life + Fortify)"
           , baseDCOverride = Nothing
+          , durationOverride = Nothing
           , factors = []
           }
         ]
@@ -309,6 +313,7 @@ At the base Spellcraft DC of 20, a caster can also use the contact seed to imbue
         [ { id = "contact_bond"
           , name = "Telepathic Bond"
           , baseDCOverride = Nothing
+          , durationOverride = Nothing
           , factors =
                 [ { id = "contact_extra_creature", name = "Each additional creature in bond", description = "Bond only among willing subjects (no save or SR)", dcModifier = 1, kind = SeedStackable, maxQuantity = Nothing }
                 , { id = "contact_language", name = "Telepathic communication regardless of language", description = "", dcModifier = 4, kind = SeedToggle, maxQuantity = Just 1 }
@@ -316,7 +321,8 @@ At the base Spellcraft DC of 20, a caster can also use the contact seed to imbue
           }
         , { id = "contact_messenger"
           , name = "Messenger"
-          , baseDCOverride = Just 20 -- SRD states base DC 20 for this mode
+          , baseDCOverride = Just 20
+          , durationOverride = Nothing -- SRD states base DC 20 for this mode
           , factors = []
           }
         ]
@@ -418,6 +424,7 @@ The caster can also use the energy seed to create a spell that carefully release
         [ { id = "energy_bolt"
           , name = "Bolt"
           , baseDCOverride = Nothing
+          , durationOverride = Nothing
           , factors =
                 [ { id = "energy_bolt_damage", name = "Each additional 1d6 damage", description = "Above base 10d6", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
                 , { id = "energy_bolt_imbue", name = "Imbue another creature with bolt ability", description = "As a spell-like ability, at its option or on trigger", dcModifier = 25, kind = SeedToggle, maxQuantity = Just 1 }
@@ -426,6 +433,7 @@ The caster can also use the energy seed to create a spell that carefully release
         , { id = "energy_emanation"
           , name = "Emanation"
           , baseDCOverride = Nothing
+          , durationOverride = Nothing
           , factors =
                 [ { id = "energy_em_damage", name = "Each additional 1d6 damage per round", description = "Above base 2d6/round", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
                 ]
@@ -433,6 +441,7 @@ The caster can also use the energy seed to create a spell that carefully release
         , { id = "energy_wall"
           , name = "Wall / Dome / Sphere"
           , baseDCOverride = Nothing
+          , durationOverride = Nothing
           , factors =
                 [ { id = "energy_wall_damage", name = "Each additional 1d4 damage (wall proximity)", description = "Above base 2d4 near / 1d4 far; passage damage scales with proximity damage", dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
                 ]
@@ -440,6 +449,7 @@ The caster can also use the energy seed to create a spell that carefully release
         , { id = "energy_weather"
           , name = "Weather Effects"
           , baseDCOverride = Just 25
+          , durationOverride = Nothing
           , factors = []
           }
         ]
@@ -469,6 +479,7 @@ foresee =
         [ { id = "foresee_predict"
           , name = "Predict the Future (30 min)"
           , baseDCOverride = Nothing
+          , durationOverride = Nothing
 
           -- NOTE: Each additional 30-min interval multiplies the *seed's effective DC* by ×2.
           -- Implemented in DC calc as: effectiveSeedDC = baseDC * (2 ^ quantity).
@@ -480,11 +491,13 @@ foresee =
         , { id = "foresee_questions"
           , name = "Ask Questions (10 questions)"
           , baseDCOverride = Just 23
+          , durationOverride = Nothing
           , factors = []
           }
         , { id = "foresee_info"
           , name = "Targeted Info"
           , baseDCOverride = Nothing
+          , durationOverride = Nothing
           , factors =
                 [ { id = "foresee_extra_info", name = "Each additional piece of info about target", description = "Level, class, alignment, special ability, or magic item ability", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
                 ]
@@ -506,7 +519,7 @@ fortify =
     , castingTime = "1 minute"
     , range = "Touch"
     , targetAreaEffect = "Creature touched"
-    , duration = "20 hours; permanent for age adjustment"
+    , duration = "20 hours"
     , savingThrow = Just { saveType = WillSave, effect = Negates, harmless = True }
     , spellResistance = True
     , description = """Spells using the fortify seed grant a +1 enhancement bonus to whichever one of the following the caster chooses:
@@ -530,6 +543,7 @@ A special use of the fortify seed grants the target a permanent +1 year to its c
         [ { id = "fortify_enhance"
           , name = "Enhancement Bonus"
           , baseDCOverride = Nothing
+          , durationOverride = Nothing
           , factors =
                 [ { id = "fortify_enhance_plus", name = "Each additional +1 (or 1 energy resist / 1 temp hp)", description = "Above base +1", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
                 ]
@@ -537,6 +551,7 @@ A special use of the fortify seed grants the target a permanent +1 year to its c
         , { id = "fortify_nonenhance"
           , name = "Non-Enhancement Bonus"
           , baseDCOverride = Just 23
+          , durationOverride = Nothing
           , factors =
                 [ { id = "fortify_other_plus", name = "Each additional +1 non-enhancement bonus", description = "", dcModifier = 6, kind = SeedStackable, maxQuantity = Nothing }
                 ]
@@ -544,6 +559,7 @@ A special use of the fortify seed grants the target a permanent +1 year to its c
         , { id = "fortify_new"
           , name = "Bonus to New Statistic (target doesn't have it)"
           , baseDCOverride = Just 27
+          , durationOverride = Nothing
           , factors =
                 [ { id = "fortify_new_plus", name = "Each additional +1", description = "", dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
                 ]
@@ -551,6 +567,7 @@ A special use of the fortify seed grants the target a permanent +1 year to its c
         , { id = "fortify_sr"
           , name = "Grant Spell Resistance 25"
           , baseDCOverride = Just 27
+          , durationOverride = Nothing
           , factors =
                 [ { id = "fortify_sr_plus", name = "Each +1 SR above 25", description = "", dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
                 , { id = "fortify_sr_minus", name = "Each –1 SR below 25", description = "", dcModifier = -2, kind = SeedStackable, maxQuantity = Nothing }
@@ -560,6 +577,7 @@ A special use of the fortify seed grants the target a permanent +1 year to its c
         , { id = "fortify_age"
           , name = "Expand Age Category"
           , baseDCOverride = Nothing
+          , durationOverride = Just "Permanent"
           , factors =
                 [ { id = "fortify_age_year", name = "Each +1 year to current age category", description = "Increments do not stack; they overlap", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
                 ]
@@ -599,6 +617,7 @@ An epic caster with 24 ranks in Knowledge (arcana), Knowledge (nature), or Knowl
         [ { id = "heal_heal"
           , name = "Heal"
           , baseDCOverride = Nothing
+          , durationOverride = Nothing
           , factors =
                 [ { id = "heal_drain", name = "Restore drained ability scores", description = "", dcModifier = 6, kind = SeedToggle, maxQuantity = Just 1 }
                 , { id = "heal_neg_levels", name = "Dispel all negative levels", description = "", dcModifier = 2, kind = SeedToggle, maxQuantity = Just 1 }
@@ -608,6 +627,7 @@ An epic caster with 24 ranks in Knowledge (arcana), Knowledge (nature), or Knowl
         , { id = "heal_harm"
           , name = "Harm (requires 24 ranks Knowledge)"
           , baseDCOverride = Nothing
+          , durationOverride = Nothing
           , factors =
                 [ { id = "heal_neg_level_extra", name = "Each additional negative level bestowed", description = "", dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
                 , { id = "heal_neg_level_hour", name = "Each extra hour negative levels persist", description = "", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
@@ -646,6 +666,7 @@ The newly living object, intelligent animal, or sentient plant is friendly towar
         [ { id = "life_resurrect"
           , name = "Resurrection"
           , baseDCOverride = Nothing
+          , durationOverride = Nothing
           , factors =
                 [ { id = "life_extra_decade", name = "Each additional 10 years beyond 200", description = "Target can have been dead longer", dcModifier = 1, kind = SeedStackable, maxQuantity = Nothing }
                 ]
@@ -653,6 +674,7 @@ The newly living object, intelligent animal, or sentient plant is friendly towar
         , { id = "life_give"
           , name = "Give Life (to object/plant/animal)"
           , baseDCOverride = Nothing
+          , durationOverride = Nothing
           , factors = []
           }
         ]
@@ -686,6 +708,7 @@ If the reflect seed is used against a melee attack or ranged attack, five such a
         [ { id = "reflect_spell"
           , name = "Spell Reflection"
           , baseDCOverride = Nothing
+          , durationOverride = Nothing
           , factors =
                 [ { id = "reflect_aoe", name = "Reflect AoE spell (not directly targeted)", description = "", dcModifier = 20, kind = SeedToggle, maxQuantity = Just 1 }
                 , { id = "reflect_spell_level", name = "Each additional spell level reflected", description = "Base reflects up to 1st level; each +1 level costs +20 DC; epic spells count as 10th level", dcModifier = 20, kind = SeedStackable, maxQuantity = Nothing }
@@ -694,6 +717,7 @@ If the reflect seed is used against a melee attack or ranged attack, five such a
         , { id = "reflect_ranged"
           , name = "Ranged Attack Reflection"
           , baseDCOverride = Nothing
+          , durationOverride = Nothing
           , factors =
                 [ { id = "reflect_ranged_extra", name = "Each additional ranged attack reflected", description = "Base: 5 attacks", dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
                 ]
@@ -701,6 +725,7 @@ If the reflect seed is used against a melee attack or ranged attack, five such a
         , { id = "reflect_melee"
           , name = "Melee Attack Reflection"
           , baseDCOverride = Nothing
+          , durationOverride = Nothing
           , factors =
                 [ { id = "reflect_melee_extra", name = "Each additional melee attack reflected", description = "Base: 5 attacks", dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
                 ]
@@ -736,6 +761,7 @@ The reveal seed can also be used to develop spells that will do any one of the f
         [ { id = "reveal_sensor"
           , name = "Sensor"
           , baseDCOverride = Nothing
+          , durationOverride = Nothing
           , factors =
                 [ { id = "reveal_hear", name = "Both see and hear through sensor", description = "", dcModifier = 2, kind = SeedToggle, maxQuantity = Just 1 }
                 , { id = "reveal_mobile", name = "Mobile sensor (speed 30 ft.)", description = "", dcModifier = 2, kind = SeedToggle, maxQuantity = Just 1 }
@@ -750,11 +776,13 @@ The reveal seed can also be used to develop spells that will do any one of the f
         , { id = "reveal_truesight"
           , name = "Pierce Illusions (True Sight, 120 ft.)"
           , baseDCOverride = Just 25
+          , durationOverride = Nothing
           , factors = []
           }
         , { id = "reveal_language"
           , name = "Languages"
           , baseDCOverride = Nothing
+          , durationOverride = Nothing
           , factors =
                 [ { id = "reveal_both_lang", name = "Both comprehend and speak a language", description = "", dcModifier = 4, kind = SeedToggle, maxQuantity = Just 1 }
                 ]
@@ -784,6 +812,7 @@ slay =
         [ { id = "slay_kill"
           , name = "Kill"
           , baseDCOverride = Nothing
+          , durationOverride = Nothing
           , factors =
                 [ { id = "slay_hd", name = "Each additional 80 HD affected", description = "Or each additional creature affected", dcModifier = 8, kind = SeedStackable, maxQuantity = Nothing }
                 ]
@@ -791,6 +820,7 @@ slay =
         , { id = "slay_enervate"
           , name = "Enervate (negative levels)"
           , baseDCOverride = Nothing
+          , durationOverride = Nothing
           , factors =
                 [ { id = "slay_neg_level", name = "Each additional 1d4 negative levels", description = "Base: 2d4 negative levels", dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
                 ]
@@ -824,6 +854,7 @@ Finally, by increasing the Spellcraft DC by +60, the caster can summon a unique 
         [ { id = "summon_generic"
           , name = "Summon Generic Creature"
           , baseDCOverride = Nothing
+          , durationOverride = Nothing
           , factors =
                 [ { id = "summon_cr", name = "Each +1 CR above CR 1", description = "", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
                 , { id = "summon_nonoutsider", name = "Summon a non-outsider creature type", description = "+10 DC flat surcharge", dcModifier = 10, kind = SeedToggle, maxQuantity = Just 1 }
@@ -834,6 +865,7 @@ Finally, by increasing the Spellcraft DC by +60, the caster can summon a unique 
         , { id = "summon_unique"
           , name = "Summon Unique Individual"
           , baseDCOverride = Nothing
+          , durationOverride = Nothing
           , factors =
                 [ { id = "summon_unique_dc", name = "Summon specific named individual", description = "+60 DC flat surcharge", dcModifier = 60, kind = SeedToggle, maxQuantity = Just 1 }
                 ]
@@ -891,7 +923,7 @@ transport =
     , castingTime = "1 minute"
     , range = "Touch"
     , targetAreaEffect = "You and touched willing creatures up to 1,000 lb."
-    , duration = "Instantaneous, or 5 rounds for temporal"
+    , duration = "Instantaneous"
     , savingThrow = Nothing
     , spellResistance = False
     , description = """Spells using the transport seed instantly take the caster to a designated destination, regardless of distance. For interplanar travel, increase the Spellcraft DC by +4. For each additional 50 pounds in objects and willing creatures beyond the base 1,000 pounds, increase the Spellcraft DC by +2. The base use of the transport seed provides instantaneous travel through the Astral Plane. To shift the transportation medium to another medium increase the Spellcraft DC by +2. The caster does not need to make a saving throw, nor is spell resistance applicable to him or her. Only objects worn or carried (attended) by another person receive saving throws and spell resistance. For a spell intended to transport unwilling creatures, increase the Spellcraft DC by +4. The caster must have at least a reliable description of the place to which he or she is transporting. If the caster attempts to use the transport seed with insufficient or misleading information, the character disappears and simply reappear in his or her original location.
@@ -901,6 +933,7 @@ As a special use of the transport seed, a caster can develop a spell that tempor
         [ { id = "transport_spatial"
           , name = "Spatial (Teleport)"
           , baseDCOverride = Nothing
+          , durationOverride = Nothing
           , factors =
                 [ { id = "transport_interplanar", name = "Interplanar travel", description = "", dcModifier = 4, kind = SeedToggle, maxQuantity = Just 1 }
                 , { id = "transport_weight", name = "Each additional 50 lbs. beyond 1,000", description = "", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
@@ -911,6 +944,7 @@ As a special use of the transport seed, a caster can develop a spell that tempor
         , { id = "transport_temporal"
           , name = "Temporal (time stream)"
           , baseDCOverride = Nothing
+          , durationOverride = Just "5 rounds"
           , factors =
                 [ { id = "transport_temporal_dc", name = "Temporal transport surcharge", description = "+8 DC to enter a different time stream (freeze or accelerate)", dcModifier = 8, kind = SeedToggle, maxQuantity = Just 1 }
                 ]
@@ -918,6 +952,7 @@ As a special use of the transport seed, a caster can develop a spell that tempor
         , { id = "transport_temporal_lite"
           , name = "Temporal Lite (haste/slow 20 rounds)"
           , baseDCOverride = Nothing
+          , durationOverride = Just "20 rounds"
           , factors =
                 [ { id = "transport_lite_dc", name = "Temporal lite discount", description = "–4 DC for haste/slow effect only", dcModifier = -4, kind = SeedToggle, maxQuantity = Just 1 }
                 ]
@@ -955,6 +990,7 @@ Instead of creating an epic spell that uses the ward seed to nullify all spells 
         [ { id = "ward_damage"
           , name = "Damage Ward (B/P/S)"
           , baseDCOverride = Nothing
+          , durationOverride = Nothing
           , factors =
                 [ { id = "ward_all_three", name = "Ward all three damage types (B, P, and S)", description = "Base covers two; +4 DC for all three", dcModifier = 4, kind = SeedToggle, maxQuantity = Just 1 }
                 , { id = "ward_dmg_pts", name = "Each additional point of damage absorbed per round", description = "Above base 5", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
@@ -963,6 +999,7 @@ Instead of creating an epic spell that uses the ward seed to nullify all spells 
         , { id = "ward_energy"
           , name = "Energy Ward"
           , baseDCOverride = Nothing
+          , durationOverride = Nothing
           , factors =
                 [ { id = "ward_energy_pts", name = "Each additional point of energy absorbed per round", description = "Above base 5", dcModifier = 1, kind = SeedStackable, maxQuantity = Nothing }
                 ]
@@ -970,11 +1007,13 @@ Instead of creating an epic spell that uses the ward seed to nullify all spells 
         , { id = "ward_creature"
           , name = "Creature Ward"
           , baseDCOverride = Nothing
+          , durationOverride = Nothing
           , factors = []
           }
         , { id = "ward_magic"
           , name = "Magic Ward (spell level exclusion)"
           , baseDCOverride = Nothing
+          , durationOverride = Nothing
           , factors =
                 [ { id = "ward_magic_level", name = "Each additional spell level excluded", description = "Above 1st level; +20 DC per level", dcModifier = 20, kind = SeedStackable, maxQuantity = Nothing }
                 , { id = "ward_specific_spell", name = "Each specific spell nullified (per spell level above 1st)", description = "+2 DC per spell level above 1st", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }

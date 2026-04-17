@@ -46,7 +46,10 @@ init =
     { spellName = ""
     , seedInstances = []
     , nextInstanceId = 0
+    , primarySeedInstanceId = Nothing
     , appliedFactors = []
+    , selectedSchool = Nothing
+    , selectedSavingThrow = Nothing
     , seedsPanelOpen = True
     , factorsPanelOpen = True
     , summaryPanelOpen = True
@@ -73,18 +76,46 @@ update msg model =
                     , appliedSeedFactors = []
                     , choices = Dict.empty
                     }
+
+                newPrimary =
+                    case model.primarySeedInstanceId of
+                        Nothing -> Just model.nextInstanceId
+                        Just _ -> model.primarySeedInstanceId
             in
             ( { model
                 | seedInstances = model.seedInstances ++ [ newInstance ]
                 , nextInstanceId = model.nextInstanceId + 1
+                , primarySeedInstanceId = newPrimary
               }
             , Cmd.none
             )
 
         RemoveSeedInstance iid ->
-            ( { model | seedInstances = List.filter (\i -> i.instanceId /= iid) model.seedInstances }
+            let
+                remaining =
+                    List.filter (\i -> i.instanceId /= iid) model.seedInstances
+
+                newPrimary =
+                    if model.primarySeedInstanceId == Just iid then
+                        List.head remaining |> Maybe.map .instanceId
+                    else
+                        model.primarySeedInstanceId
+            in
+            ( { model
+                | seedInstances = remaining
+                , primarySeedInstanceId = newPrimary
+              }
             , Cmd.none
             )
+
+        SetPrimarySeed iid ->
+            ( { model | primarySeedInstanceId = Just iid }, Cmd.none )
+
+        SetSchool school ->
+            ( { model | selectedSchool = Just school }, Cmd.none )
+
+        SetSavingThrow mst ->
+            ( { model | selectedSavingThrow = mst }, Cmd.none )
 
         SelectMode iid modeId ->
             let
@@ -211,6 +242,7 @@ update msg model =
                         model.appliedFactors
                         (Export.generateDescription model.seedInstances model.appliedFactors)
                         0
+                        model.primarySeedInstanceId
             in
             ( { model | copySuccess = Nothing }, copyToClipboard markdown )
 
@@ -232,7 +264,7 @@ view model =
             devCosts breakdown.finalDC
 
         sb =
-            statBlock model.seedInstances model.appliedFactors 0
+            statBlock model.seedInstances model.appliedFactors 0 model.primarySeedInstanceId model.selectedSchool model.selectedSavingThrow
     in
     div [ class "flex flex-col h-screen bg-gray-950 text-gray-100 overflow-hidden" ]
         [ viewHeader model breakdown
