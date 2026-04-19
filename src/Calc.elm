@@ -10,27 +10,94 @@ import Types exposing (..)
 -- ─── DC Breakdown ─────────────────────────────────────────────────────────────
 
 
-isFactorDisabled : FactorId -> List AppliedFactor -> Bool
-isFactorDisabled factorId appliedFactors =
+isFactorDisabled : FactorId -> List AppliedFactor -> List SeedInstance -> Bool
+isFactorDisabled factorId appliedFactors instances =
+    if List.isEmpty instances then
+        True
+
+    else
+    let
+        has id =
+            List.any (\af -> af.factorId == id) appliedFactors
+
+        baseDuration =
+            instances
+                |> List.map instanceDuration
+                |> List.sortBy durationRank
+                |> List.head
+                |> Maybe.withDefault "—"
+
+        isInstantaneous =
+            baseDuration == "Instantaneous"
+
+        baseRange =
+            instances
+                |> List.head
+                |> Maybe.andThen (\inst -> getSeed inst.seedId)
+                |> Maybe.map .range
+                |> Maybe.withDefault ""
+
+        isPersonalOrTouch =
+            let
+                lower =
+                    String.toLower baseRange
+            in
+            String.contains "personal" lower || String.contains "touch" lower
+    in
     case factorId of
         ReduceCastTime1Round ->
-            List.any (\af -> af.factorId == IncreaseCastTime1Day) appliedFactors
-                || List.any (\af -> af.factorId == OneActionCastTime || af.factorId == QuickenedSpell) appliedFactors
+            has IncreaseCastTime1Day || has OneActionCastTime || has QuickenedSpell
+
+        QuickenedSpell ->
+            has OneActionCastTime || has IncreaseCastTime1Min || has IncreaseCastTime1Day
+
+        OneActionCastTime ->
+            has QuickenedSpell || has IncreaseCastTime1Min || has IncreaseCastTime1Day
+
+        IncreaseCastTime1Min ->
+            has OneActionCastTime || has QuickenedSpell
+
+        IncreaseCastTime1Day ->
+            has OneActionCastTime || has QuickenedSpell
+
+        IncreaseDuration ->
+            has PermanentDuration || isInstantaneous || baseDuration == "Permanent"
+
+        PermanentDuration ->
+            isInstantaneous
+
+        Dismissible ->
+            isInstantaneous || List.any (instanceDuration >> String.contains "(D)") instances
+
+        IncreaseRange ->
+            isPersonalOrTouch
+
+        AddExtraTarget ->
+            let
+                anyNativeTarget =
+                    List.any
+                        (\inst -> getSeed inst.seedId |> Maybe.andThen .target |> (/=) Nothing)
+                        instances
+
+                spellHasTarget =
+                    (anyNativeTarget && not (has TargetToArea)) || has AreaToTarget
+            in
+            not spellHasTarget
 
         _ ->
             False
 
 
-filterEnabledFactors : List AppliedFactor -> List AppliedFactor
-filterEnabledFactors appliedFactors =
-    List.filter (\af -> not (isFactorDisabled af.factorId appliedFactors)) appliedFactors
+filterEnabledFactors : List SeedInstance -> List AppliedFactor -> List AppliedFactor
+filterEnabledFactors instances appliedFactors =
+    List.filter (\af -> not (isFactorDisabled af.factorId appliedFactors instances)) appliedFactors
 
 
 calculateBreakdown : List SeedInstance -> List AppliedFactor -> DcBreakdown
 calculateBreakdown instances rawFactors =
     let
         globalFactors =
-            filterEnabledFactors rawFactors
+            filterEnabledFactors instances rawFactors
 
         seedsTotal =
             instances
@@ -232,7 +299,9 @@ type alias StatBlockData =
     , components : List String
     , castingTime : String
     , range : String
-    , targetAreaEffect : String
+    , target : Maybe String
+    , area : Maybe String
+    , effect : Maybe String
     , duration : String
     , savingThrow : String -- fully formatted, e.g. "Will negates (DC 26)"
     , spellResistance : String
@@ -265,7 +334,7 @@ statBlock : List SeedInstance -> List AppliedFactor -> Int -> Maybe SeedInstance
 statBlock instances rawFactors saveDCBonus maybePrimaryId maybeSchool maybeSavingThrow =
     let
         globalFactors =
-            filterEnabledFactors rawFactors
+            filterEnabledFactors instances rawFactors
 
         seeds =
             List.filterMap (\inst -> getSeed inst.seedId) instances
@@ -337,8 +406,14 @@ statBlock instances rawFactors saveDCBonus maybePrimaryId maybeSchool maybeSavin
         range =
             deriveRange globalFactors primarySeed
 
-        targetAreaEffect =
-            Maybe.map .targetAreaEffect primarySeed |> Maybe.withDefault "—"
+        target =
+            Maybe.andThen .target primarySeed
+
+        area =
+            Maybe.andThen .area primarySeed
+
+        effect =
+            Maybe.andThen .effect primarySeed
 
         duration =
             deriveDuration globalFactors instances
@@ -366,7 +441,9 @@ statBlock instances rawFactors saveDCBonus maybePrimaryId maybeSchool maybeSavin
     , components = components
     , castingTime = castingTime
     , range = range
-    , targetAreaEffect = targetAreaEffect
+    , target = target
+    , area = area
+    , effect = effect
     , duration = duration
     , savingThrow = savingThrow
     , spellResistance = spellResistance
@@ -466,6 +543,64 @@ deriveCastingTime globalFactors primarySeed =
             base
 
 
+formatLargeInt : Int -> String
+formatLargeInt n =
+    if n >= 1000 then
+        formatLargeInt (n // 1000) ++ "," ++ String.padLeft 3 '0' (String.fromInt (modBy 1000 n))
+
+    else
+        String.fromInt n
+
+
+-- Scale only distance values (numbers followed by " ft.") in a range string.
+-- Comma-formatted thousands ("12,000 ft.") are handled as a unit.
+-- Non-distance numbers like weights ("2,000 lb.") are passed through unchanged.
+scaleRange : Int -> String -> String
+scaleRange mult s =
+    case String.uncons s of
+        Nothing ->
+            ""
+
+        Just ( c, rest ) ->
+            if Char.isDigit c then
+                let
+                    ( digits, afterDigits ) =
+                        leadingDigits s
+
+                    -- Absorb a comma-thousands group if it precedes " ft."
+                    ( fullNumStr, remaining ) =
+                        if String.startsWith "," afterDigits then
+                            let
+                                commaTail =
+                                    String.dropLeft 1 afterDigits
+
+                                ( extraDigits, afterExtra ) =
+                                    leadingDigits commaTail
+                            in
+                            if String.length extraDigits == 3 && String.startsWith " ft." afterExtra then
+                                ( digits ++ "," ++ extraDigits, afterExtra )
+
+                            else
+                                ( digits, afterDigits )
+
+                        else
+                            ( digits, afterDigits )
+                in
+                if String.startsWith " ft." remaining then
+                    case String.toInt (String.replace "," "" fullNumStr) of
+                        Nothing ->
+                            fullNumStr ++ scaleRange mult remaining
+
+                        Just n ->
+                            formatLargeInt (n * mult) ++ scaleRange mult remaining
+
+                else
+                    fullNumStr ++ scaleRange mult remaining
+
+            else
+                String.fromChar c ++ scaleRange mult rest
+
+
 deriveRange : List AppliedFactor -> Maybe Seed -> String
 deriveRange globalFactors primarySeed =
     let
@@ -479,7 +614,7 @@ deriveRange globalFactors primarySeed =
                 |> List.sum
     in
     if doublings > 0 then
-        base ++ " (×" ++ String.fromInt (2 ^ doublings) ++ ")"
+        scaleRange (doublings + 1) base
 
     else
         base
@@ -559,6 +694,53 @@ instanceDuration inst =
                 |> Maybe.withDefault seed.duration
 
 
+-- Extract the leading run of digit characters from a string.
+leadingDigits : String -> ( String, String )
+leadingDigits s =
+    case String.uncons s of
+        Nothing ->
+            ( "", "" )
+
+        Just ( c, rest ) ->
+            if Char.isDigit c then
+                let
+                    ( moreDigits, remaining ) =
+                        leadingDigits rest
+                in
+                ( String.fromChar c ++ moreDigits, remaining )
+
+            else
+                ( "", s )
+
+
+-- Scale every number in a duration string by `mult`.
+-- Each application of "increase duration 100%" adds one more base value,
+-- so n applications → multiplier of (n + 1).
+-- Walks the full string so multiple numeric values (e.g. Conjure's
+-- "8 hours (simple objects last 24 hours)") are all scaled.
+scaleDuration : Int -> String -> String
+scaleDuration mult s =
+    case String.uncons s of
+        Nothing ->
+            ""
+
+        Just ( c, rest ) ->
+            if Char.isDigit c then
+                let
+                    ( digits, remaining ) =
+                        leadingDigits s
+                in
+                case String.toInt digits of
+                    Nothing ->
+                        digits ++ scaleDuration mult remaining
+
+                    Just n ->
+                        String.fromInt (n * mult) ++ scaleDuration mult remaining
+
+            else
+                String.fromChar c ++ scaleDuration mult rest
+
+
 deriveDuration : List AppliedFactor -> List SeedInstance -> String
 deriveDuration globalFactors instances =
     let
@@ -577,15 +759,26 @@ deriveDuration globalFactors instances =
                 |> List.filter (\af -> af.factorId == IncreaseDuration)
                 |> List.map .quantity
                 |> List.sum
+
+        isDismissable =
+            List.any (\af -> af.factorId == Dismissible) globalFactors
+                || List.any (instanceDuration >> String.contains "(D)") instances
+
+        addDismissTag s =
+            if isDismissable && not (String.contains "(D)" s) then
+                s ++ " (D)"
+
+            else
+                s
     in
     if isPermanent then
-        "Permanent"
+        addDismissTag "Permanent"
 
     else if doublings > 0 then
-        base ++ " (×" ++ String.fromInt (2 ^ doublings) ++ ")"
+        addDismissTag (scaleDuration (doublings + 1) base)
 
     else
-        base
+        addDismissTag base
 
 
 deriveSavingThrow : Maybe SavingThrow -> List AppliedFactor -> Int -> String

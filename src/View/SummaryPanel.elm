@@ -289,15 +289,21 @@ viewStatBlock model sb =
     div []
         [ div [ class "text-xs font-bold uppercase tracking-widest text-gray-400 mb-2" ] [ text "Stat Block" ]
         , div [ class "space-y-1" ]
-            [ rowEl (if List.length schools > 1 then "School (pick)" else "School") schoolEl
-            , row "Components" (String.join ", " sb.components)
-            , row "Casting Time" sb.castingTime
-            , row "Range" sb.range
-            , row "Target/Area" sb.targetAreaEffect
-            , row "Duration" sb.duration
-            , rowEl "Saving Throw" savingThrowEl
-            , row "Spell Resistance" sb.spellResistance
-            ]
+            ([ rowEl (if List.length schools > 1 then "School (pick)" else "School") schoolEl
+             , row "Components" (String.join ", " sb.components)
+             , row "Casting Time" sb.castingTime
+             , row "Range" sb.range
+             ]
+                ++ List.filterMap identity
+                    [ Maybe.map (row "Target") sb.target
+                    , Maybe.map (row "Area") sb.area
+                    , Maybe.map (row "Effect") sb.effect
+                    ]
+                ++ [ row "Duration" sb.duration
+                   , rowEl "Saving Throw" savingThrowEl
+                   , row "Spell Resistance" sb.spellResistance
+                   ]
+            )
         ]
 
 

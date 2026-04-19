@@ -169,7 +169,9 @@ type alias Seed =
     , components : List Component
     , castingTime : String
     , range : String
-    , targetAreaEffect : String
+    , target : Maybe String
+    , area : Maybe String
+    , effect : Maybe String
     , duration : String
     , savingThrow : Maybe SavingThrow
     , spellResistance : Bool

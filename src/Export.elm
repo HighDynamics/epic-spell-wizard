@@ -565,7 +565,9 @@ generateMarkdown spellName instances globalFactors description casterSaveDCBonus
         ++ "**Components:** " ++ String.join ", " sb.components ++ "  \n"
         ++ "**Casting Time:** " ++ sb.castingTime ++ "  \n"
         ++ "**Range:** " ++ sb.range ++ "  \n"
-        ++ "**Target/Area/Effect:** " ++ sb.targetAreaEffect ++ "  \n"
+        ++ (sb.target |> Maybe.map (\t -> "**Target:** " ++ t ++ "  \n") |> Maybe.withDefault "")
+        ++ (sb.area |> Maybe.map (\a -> "**Area:** " ++ a ++ "  \n") |> Maybe.withDefault "")
+        ++ (sb.effect |> Maybe.map (\e -> "**Effect:** " ++ e ++ "  \n") |> Maybe.withDefault "")
         ++ "**Duration:** " ++ sb.duration ++ "  \n"
         ++ "**Saving Throw:** " ++ sb.savingThrow ++ "  \n"
         ++ "**Spell Resistance:** " ++ sb.spellResistance ++ "\n\n"
