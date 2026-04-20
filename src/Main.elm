@@ -258,7 +258,7 @@ view : Model -> Html Msg
 view model =
     let
         breakdown =
-            calculateBreakdown model.seedInstances model.appliedFactors
+            calculateBreakdown model.seedInstances model.appliedFactors model.primarySeedInstanceId
 
         costs =
             devCosts breakdown.finalDC

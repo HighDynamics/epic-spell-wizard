@@ -265,7 +265,7 @@ viewSeedFactor inst sf =
 
 isGlobalFactorDisabled : FactorId -> Model -> Bool
 isGlobalFactorDisabled factorId model =
-    isFactorDisabled factorId model.appliedFactors model.seedInstances
+    isFactorDisabled factorId model.appliedFactors model.seedInstances model.primarySeedInstanceId
 
 
 viewGlobalFactorSection : Model -> String -> FactorCategory -> Html Msg

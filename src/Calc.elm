@@ -10,8 +10,8 @@ import Types exposing (..)
 -- ─── DC Breakdown ─────────────────────────────────────────────────────────────
 
 
-isFactorDisabled : FactorId -> List AppliedFactor -> List SeedInstance -> Bool
-isFactorDisabled factorId appliedFactors instances =
+isFactorDisabled : FactorId -> List AppliedFactor -> List SeedInstance -> Maybe SeedInstanceId -> Bool
+isFactorDisabled factorId appliedFactors instances maybePrimaryId =
     if List.isEmpty instances then
         True
 
@@ -30,19 +30,38 @@ isFactorDisabled factorId appliedFactors instances =
         isInstantaneous =
             baseDuration == "Instantaneous"
 
-        baseRange =
-            instances
-                |> List.head
+        primarySeed =
+            (case maybePrimaryId of
+                Just pid ->
+                    instances
+                        |> List.filter (\inst -> inst.instanceId == pid)
+                        |> List.head
+
+                Nothing ->
+                    List.head instances
+            )
                 |> Maybe.andThen (\inst -> getSeed inst.seedId)
-                |> Maybe.map .range
-                |> Maybe.withDefault ""
+
+        baseRange =
+            primarySeed |> Maybe.map .range |> Maybe.withDefault ""
+
+        lowerRange =
+            String.toLower baseRange
+
+        isPersonal =
+            String.contains "personal" lowerRange
+
+        isTouch =
+            String.contains "touch" lowerRange
 
         isPersonalOrTouch =
-            let
-                lower =
-                    String.toLower baseRange
-            in
-            String.contains "personal" lower || String.contains "touch" lower
+            isPersonal || isTouch
+
+        anyNativeTarget =
+            primarySeed |> Maybe.andThen .target |> (/=) Nothing
+
+        anyNativeArea =
+            primarySeed |> Maybe.andThen .area |> (/=) Nothing
     in
     case factorId of
         ReduceCastTime1Round ->
@@ -73,31 +92,61 @@ isFactorDisabled factorId appliedFactors instances =
             isPersonalOrTouch
 
         AddExtraTarget ->
-            let
-                anyNativeTarget =
-                    List.any
-                        (\inst -> getSeed inst.seedId |> Maybe.andThen .target |> (/=) Nothing)
-                        instances
+            not ((anyNativeTarget && not (has TargetToArea)) || has AreaToTarget)
 
-                spellHasTarget =
-                    (anyNativeTarget && not (has TargetToArea)) || has AreaToTarget
-            in
-            not spellHasTarget
+        TargetToArea ->
+            not anyNativeTarget
+
+        TargetToTouch ->
+            not anyNativeTarget
+
+        PersonalToArea ->
+            not isPersonal
+
+        TouchToTarget ->
+            not isTouch
+
+        AreaToTarget ->
+            not anyNativeArea
+
+        AreaToTouch ->
+            not anyNativeArea
+
+        ChangeToBolt ->
+            not anyNativeArea
+
+        ChangeToCylinder ->
+            not anyNativeArea
+
+        ChangeToCone ->
+            not anyNativeArea
+
+        ChangeToFourCubes ->
+            not anyNativeArea
+
+        ChangeToRadius ->
+            not anyNativeArea
+
+        IncreaseArea ->
+            not anyNativeArea
+
+        ChangeToPersonal ->
+            isPersonal || (not anyNativeTarget && not anyNativeArea && not isTouch)
 
         _ ->
             False
 
 
-filterEnabledFactors : List SeedInstance -> List AppliedFactor -> List AppliedFactor
-filterEnabledFactors instances appliedFactors =
-    List.filter (\af -> not (isFactorDisabled af.factorId appliedFactors instances)) appliedFactors
+filterEnabledFactors : List SeedInstance -> List AppliedFactor -> Maybe SeedInstanceId -> List AppliedFactor
+filterEnabledFactors instances appliedFactors maybePrimaryId =
+    List.filter (\af -> not (isFactorDisabled af.factorId appliedFactors instances maybePrimaryId)) appliedFactors
 
 
-calculateBreakdown : List SeedInstance -> List AppliedFactor -> DcBreakdown
-calculateBreakdown instances rawFactors =
+calculateBreakdown : List SeedInstance -> List AppliedFactor -> Maybe SeedInstanceId -> DcBreakdown
+calculateBreakdown instances rawFactors maybePrimaryId =
     let
         globalFactors =
-            filterEnabledFactors instances rawFactors
+            filterEnabledFactors instances rawFactors maybePrimaryId
 
         seedsTotal =
             instances
@@ -334,7 +383,7 @@ statBlock : List SeedInstance -> List AppliedFactor -> Int -> Maybe SeedInstance
 statBlock instances rawFactors saveDCBonus maybePrimaryId maybeSchool maybeSavingThrow =
     let
         globalFactors =
-            filterEnabledFactors instances rawFactors
+            filterEnabledFactors instances rawFactors maybePrimaryId
 
         seeds =
             List.filterMap (\inst -> getSeed inst.seedId) instances

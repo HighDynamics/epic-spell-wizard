@@ -505,7 +505,7 @@ generateMarkdown : String -> List SeedInstance -> List AppliedFactor -> String -
 generateMarkdown spellName instances globalFactors description casterSaveDCBonus maybePrimaryId =
     let
         breakdown =
-            calculateBreakdown instances globalFactors
+            calculateBreakdown instances globalFactors maybePrimaryId
 
         costs =
             devCosts breakdown.finalDC
