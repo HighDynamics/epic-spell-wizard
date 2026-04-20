@@ -22,11 +22,13 @@ jobs:
           sudo mv elm /usr/local/bin/elm
 
       - name: Build
-        run: elm make src/Main.elm --optimize --output=elm.js
+        run: |
+          mkdir dist
+          elm make src/Main.elm --optimize --output=dist/elm.js
+          cp index.html dist/
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./
-          exclude_assets: '.github,src,docs,elm.json,seed-info.md,README.md'
+          publish_dir: ./dist

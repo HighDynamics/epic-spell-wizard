@@ -1,4 +1,5 @@
 *.ignore*
 .claude
 elm.js
+dist/
 elm-stuff/
