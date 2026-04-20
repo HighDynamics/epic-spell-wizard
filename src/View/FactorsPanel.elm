@@ -1,6 +1,6 @@
 module View.FactorsPanel exposing (viewFactorsPanel)
 
-import Calc exposing (isFactorDisabled)
+import Calc exposing (isFactorDisabled, targetToAreaShapes)
 import Dict
 import Factors exposing (allFactors)
 import Html exposing (..)
@@ -278,7 +278,7 @@ viewGlobalFactorSection model label category =
         [ div [ class "px-4 py-2 bg-gray-900 text-xs text-gray-400 font-semibold uppercase tracking-wider" ]
             [ text ("── Global " ++ label ++ " ──") ]
         , div [ class "px-4 py-2" ]
-            (List.map
+            (List.concatMap
                 (\f ->
                     let
                         maybeApplied =
@@ -286,10 +286,44 @@ viewGlobalFactorSection model label category =
 
                         isDisabled =
                             isGlobalFactorDisabled f.id model
+
+                        isActive =
+                            maybeApplied /= Nothing
                     in
                     viewGlobalFactorRow f maybeApplied isDisabled
+                        :: (if f.id == TargetToArea && isActive then
+                                [ viewAreaShapeDropdown model.targetToAreaShape SetTargetToAreaShape ]
+
+                            else if f.id == PersonalToArea && isActive then
+                                [ viewAreaShapeDropdown model.personalToAreaShape SetPersonalToAreaShape ]
+
+                            else
+                                []
+                           )
                 )
                 categoryFactors
+            )
+        ]
+
+
+viewAreaShapeDropdown : Maybe String -> (String -> Msg) -> Html Msg
+viewAreaShapeDropdown maybeShape toMsg =
+    div [ class "flex items-center justify-between py-1 gap-2 pl-4" ]
+        [ label [ class "text-xs text-gray-400 shrink-0" ] [ text "Area shape" ]
+        , select
+            [ class "flex-1 bg-gray-800 text-gray-200 text-xs rounded px-2 py-1 border border-gray-700"
+            , onInput toMsg
+            ]
+            (option [ value "", Html.Attributes.selected (maybeShape == Nothing) ] [ text "— select —" ]
+                :: List.map
+                    (\shape ->
+                        option
+                            [ value shape
+                            , Html.Attributes.selected (maybeShape == Just shape)
+                            ]
+                            [ text shape ]
+                    )
+                    targetToAreaShapes
             )
         ]
 

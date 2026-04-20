@@ -501,8 +501,8 @@ ritualLine count slotLevel =
 
 -- ─── Markdown export ──────────────────────────────────────────────────────────
 
-generateMarkdown : String -> List SeedInstance -> List AppliedFactor -> String -> Int -> Maybe SeedInstanceId -> String
-generateMarkdown spellName instances globalFactors description casterSaveDCBonus maybePrimaryId =
+generateMarkdown : String -> List SeedInstance -> List AppliedFactor -> String -> Int -> Maybe SeedInstanceId -> Maybe String -> Maybe String -> String
+generateMarkdown spellName instances globalFactors description casterSaveDCBonus maybePrimaryId maybeTargetToAreaShape maybePersonalToAreaShape =
     let
         breakdown =
             calculateBreakdown instances globalFactors maybePrimaryId
@@ -511,7 +511,7 @@ generateMarkdown spellName instances globalFactors description casterSaveDCBonus
             devCosts breakdown.finalDC
 
         sb =
-            statBlock instances globalFactors casterSaveDCBonus maybePrimaryId Nothing Nothing
+            statBlock instances globalFactors casterSaveDCBonus maybePrimaryId Nothing Nothing maybeTargetToAreaShape maybePersonalToAreaShape
 
         seedList =
             instances

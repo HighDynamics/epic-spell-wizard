@@ -50,6 +50,8 @@ init =
     , appliedFactors = []
     , selectedSchool = Nothing
     , selectedSavingThrow = Nothing
+    , targetToAreaShape = Nothing
+    , personalToAreaShape = Nothing
     , seedsPanelOpen = True
     , factorsPanelOpen = True
     , summaryPanelOpen = True
@@ -198,9 +200,21 @@ update msg model =
                 )
 
         RemoveGlobalFactor factorId ->
-            ( { model | appliedFactors = List.filter (\af -> af.factorId /= factorId) model.appliedFactors }
+            ( { model
+                | appliedFactors = List.filter (\af -> af.factorId /= factorId) model.appliedFactors
+                , targetToAreaShape =
+                    if factorId == TargetToArea then Nothing else model.targetToAreaShape
+                , personalToAreaShape =
+                    if factorId == PersonalToArea then Nothing else model.personalToAreaShape
+              }
             , Cmd.none
             )
+
+        SetTargetToAreaShape shape ->
+            ( { model | targetToAreaShape = Just shape }, Cmd.none )
+
+        SetPersonalToAreaShape shape ->
+            ( { model | personalToAreaShape = Just shape }, Cmd.none )
 
         SetGlobalFactorQty factorId qty ->
             if qty <= 0 then
@@ -243,6 +257,8 @@ update msg model =
                         (Export.generateDescription model.seedInstances model.appliedFactors)
                         0
                         model.primarySeedInstanceId
+                        model.targetToAreaShape
+                        model.personalToAreaShape
             in
             ( { model | copySuccess = Nothing }, copyToClipboard markdown )
 
@@ -264,7 +280,7 @@ view model =
             devCosts breakdown.finalDC
 
         sb =
-            statBlock model.seedInstances model.appliedFactors 0 model.primarySeedInstanceId model.selectedSchool model.selectedSavingThrow
+            statBlock model.seedInstances model.appliedFactors 0 model.primarySeedInstanceId model.selectedSchool model.selectedSavingThrow model.targetToAreaShape model.personalToAreaShape
     in
     div [ class "flex flex-col h-screen bg-gray-950 text-gray-100 overflow-hidden" ]
         [ viewHeader model breakdown

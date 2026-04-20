@@ -296,6 +296,8 @@ type alias Model =
     , appliedFactors : List AppliedFactor
     , selectedSchool : Maybe String
     , selectedSavingThrow : Maybe SavingThrow
+    , targetToAreaShape : Maybe String
+    , personalToAreaShape : Maybe String
     , seedsPanelOpen : Bool
     , factorsPanelOpen : Bool
     , summaryPanelOpen : Bool
@@ -316,6 +318,8 @@ type Msg
     | SetPrimarySeed SeedInstanceId
     | SetSchool String
     | SetSavingThrow (Maybe SavingThrow)
+    | SetTargetToAreaShape String
+    | SetPersonalToAreaShape String
     | ToggleSeedsPanel
     | ToggleFactorsPanel
     | ToggleSummaryPanel

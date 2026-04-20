@@ -1,4 +1,4 @@
-module Calc exposing (StatBlockData, availableSchools, availableSavingThrows, calculateBreakdown, devCosts, isFactorDisabled, statBlock)
+module Calc exposing (StatBlockData, availableSchools, availableSavingThrows, calculateBreakdown, devCosts, isFactorDisabled, statBlock, targetToAreaShapes, targetToAreaText)
 
 import Dict exposing (Dict)
 import Factors exposing (getFactor)
@@ -338,6 +338,34 @@ devCosts finalDC =
 
 
 
+-- ─── Target → Area shape options ─────────────────────────────────────────────
+
+
+targetToAreaShapes : List String
+targetToAreaShapes =
+    [ "Bolt (5 ft. × 300 ft.)"
+    , "Bolt (10 ft. × 150 ft.)"
+    , "Cylinder"
+    , "40-ft. cone"
+    , "Four 10-ft. cubes"
+    , "20-ft. radius"
+    ]
+
+
+targetToAreaText : String -> String
+targetToAreaText label =
+    case label of
+        "Cylinder" ->
+            "Cylinder (10-ft. radius, 30 ft. high)"
+
+        "20-ft. radius" ->
+            "20-ft.-radius spread"
+
+        _ ->
+            label
+
+
+
 -- ─── Live Stat Block ──────────────────────────────────────────────────────────
 -- Derives each stat block field from seeds + global factors.
 
@@ -379,8 +407,8 @@ availableSavingThrows instances =
             []
 
 
-statBlock : List SeedInstance -> List AppliedFactor -> Int -> Maybe SeedInstanceId -> Maybe String -> Maybe SavingThrow -> StatBlockData
-statBlock instances rawFactors saveDCBonus maybePrimaryId maybeSchool maybeSavingThrow =
+statBlock : List SeedInstance -> List AppliedFactor -> Int -> Maybe SeedInstanceId -> Maybe String -> Maybe SavingThrow -> Maybe String -> Maybe String -> StatBlockData
+statBlock instances rawFactors saveDCBonus maybePrimaryId maybeSchool maybeSavingThrow maybeTargetToAreaShape maybePersonalToAreaShape =
     let
         globalFactors =
             filterEnabledFactors instances rawFactors maybePrimaryId
@@ -455,11 +483,54 @@ statBlock instances rawFactors saveDCBonus maybePrimaryId maybeSchool maybeSavin
         range =
             deriveRange globalFactors primarySeed
 
+        targetToAreaActive =
+            List.any (\af -> af.factorId == TargetToArea) globalFactors
+
+        personalToAreaActive =
+            List.any (\af -> af.factorId == PersonalToArea) globalFactors
+
+        activeToAreaShape =
+            if targetToAreaActive then
+                maybeTargetToAreaShape
+
+            else if personalToAreaActive then
+                maybePersonalToAreaShape
+
+            else
+                Nothing
+
+        convertingToArea =
+            targetToAreaActive || personalToAreaActive
+
+        extraTargets =
+            globalFactors
+                |> List.filter (\af -> af.factorId == AddExtraTarget)
+                |> List.head
+                |> Maybe.map .quantity
+                |> Maybe.withDefault 0
+
         target =
-            Maybe.andThen .target primarySeed
+            if convertingToArea then
+                Nothing
+
+            else
+                primarySeed
+                    |> Maybe.andThen .target
+                    |> Maybe.map
+                        (\t ->
+                            if extraTargets > 0 then
+                                t ++ " (+" ++ String.fromInt extraTargets ++ " additional " ++ (if extraTargets == 1 then "target" else "targets") ++ ")"
+
+                            else
+                                t
+                        )
 
         area =
-            Maybe.andThen .area primarySeed
+            if convertingToArea then
+                activeToAreaShape |> Maybe.map targetToAreaText
+
+            else
+                Maybe.andThen .area primarySeed
 
         effect =
             Maybe.andThen .effect primarySeed
