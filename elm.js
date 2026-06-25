@@ -8896,6 +8896,19 @@ var $author$project$View$FactorsPanel$viewChoiceDropdown = F2(
 						choice.af))
 				]));
 	});
+var $elm$html$Html$blockquote = _VirtualDom_node('blockquote');
+var $author$project$View$FactorsPanel$viewSeedDescriptionQuote = function (seed) {
+	return A2(
+		$elm$html$Html$blockquote,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('border-l-2 border-gray-700 pl-3 mb-3 text-gray-400 text-xs italic leading-relaxed')
+			]),
+		_List_fromArray(
+			[
+				$elm$html$Html$text(seed.aA)
+			]));
+};
 var $author$project$Types$SetSeedFactor = F3(
 	function (a, b, c) {
 		return {$: 3, a: a, b: b, c: c};
@@ -9293,8 +9306,11 @@ var $author$project$View$FactorsPanel$viewSeedInstanceFactors = F2(
 							]),
 						A2(
 							$elm$core$List$cons,
-							baseDCRow,
-							_Utils_ap(choiceRows, factorRows)))
+							$author$project$View$FactorsPanel$viewSeedDescriptionQuote(seed),
+							A2(
+								$elm$core$List$cons,
+								baseDCRow,
+								_Utils_ap(choiceRows, factorRows))))
 					]));
 		}
 	});
@@ -9494,64 +9510,6 @@ var $author$project$View$SeedsPanel$viewSeedCard = F2(
 						]))
 				]));
 	});
-var $author$project$View$SeedsPanel$viewSeedInstance = function (inst) {
-	var _v0 = $author$project$Seeds$getSeed(inst.v);
-	if (_v0.$ === 1) {
-		return $elm$html$Html$text('');
-	} else {
-		var seed = _v0.a;
-		return A2(
-			$elm$html$Html$div,
-			_List_fromArray(
-				[
-					$elm$html$Html$Attributes$class('px-3 py-3 border-b border-gray-800')
-				]),
-			_List_fromArray(
-				[
-					A2(
-					$elm$html$Html$div,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$class('flex items-center justify-between mb-2')
-						]),
-					_List_fromArray(
-						[
-							A2(
-							$elm$html$Html$span,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$class('text-sm font-semibold text-arcane-400')
-								]),
-							_List_fromArray(
-								[
-									$elm$html$Html$text(seed.q)
-								])),
-							A2(
-							$elm$html$Html$button,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$class('text-gray-600 hover:text-red-400 text-xs'),
-									$elm$html$Html$Events$onClick(
-									$author$project$Types$RemoveSeedInstance(inst.bg))
-								]),
-							_List_fromArray(
-								[
-									$elm$html$Html$text('✕')
-								]))
-						])),
-					A2(
-					$elm$html$Html$p,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$class('text-xs text-gray-500 italic mb-2 leading-relaxed')
-						]),
-					_List_fromArray(
-						[
-							$elm$html$Html$text(seed.aA)
-						]))
-				]));
-	}
-};
 var $author$project$View$SeedsPanel$viewSeedsPanel = function (model) {
 	return model.al ? A2(
 		$elm$html$Html$div,
@@ -9596,28 +9554,22 @@ var $author$project$View$SeedsPanel$viewSeedsPanel = function (model) {
 				$elm$html$Html$div,
 				_List_fromArray(
 					[
+						$elm$html$Html$Attributes$class('px-4 py-3 text-gray-500 text-xs text-center border-b border-gray-800')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Click/Tap to add a seed to your spell')
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
 						$elm$html$Html$Attributes$class('p-3 grid grid-cols-1 gap-1')
 					]),
 				A2(
 					$elm$core$List$map,
 					$author$project$View$SeedsPanel$viewSeedCard(model.j),
-					$author$project$Seeds$allSeeds)),
-				$elm$core$List$isEmpty(model.j) ? A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$class('px-4 py-6 text-gray-600 text-sm text-center')
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text('Click a seed to add it to the spell.')
-					])) : A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$class('border-t border-gray-700')
-					]),
-				A2($elm$core$List$map, $author$project$View$SeedsPanel$viewSeedInstance, model.j))
+					$author$project$Seeds$allSeeds))
 			])) : A2(
 		$elm$html$Html$div,
 		_List_fromArray(
