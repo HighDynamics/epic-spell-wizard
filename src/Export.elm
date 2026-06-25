@@ -3,7 +3,7 @@ module Export exposing (generateMarkdown, generatePlainText)
 import Calc exposing (StatBlockData, calculateBreakdown, devCosts, statBlock)
 import Dict
 import Factors exposing (getFactor)
-import Seeds exposing (getSeed)
+import Seeds exposing (getSeed, isSpecialSeedFactor)
 import Types exposing (..)
 
 
@@ -239,7 +239,7 @@ seedFactorBlocks instances =
                                                                 else
                                                                     ""
                                                                )
-                                                            ++ (if sf.dcModifier == 0 then
+                                                            ++ (if isSpecialSeedFactor sf.id then
                                                                     " (special)"
 
                                                                 else

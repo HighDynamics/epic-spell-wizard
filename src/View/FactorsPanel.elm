@@ -6,7 +6,7 @@ import Factors exposing (allFactors)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
-import Seeds exposing (getSeed)
+import Seeds exposing (getSeed, isSpecialSeedFactor)
 import Types exposing (..)
 
 
@@ -71,7 +71,7 @@ viewSeedInstanceFactors model inst =
                         |> List.filter (\m -> not (List.isEmpty m.factors))
                         |> List.concatMap
                             (\m ->
-                                div [ class "text-xs text-gray-500 font-semibold uppercase tracking-wider mt-2 mb-1 pt-2 border-t border-gray-800" ]
+                                div [ class "text-xs text-indigo-500 font-semibold uppercase tracking-wider mt-2 mb-1 pt-2 border-t border-gray-800" ]
                                     [ text m.name ]
                                     :: List.map (viewSeedFactor inst) m.factors
                             )
@@ -188,13 +188,13 @@ viewSeedFactor inst sf =
 
         dimClass =
             if isActive then
-                ""
+                " bg-arcane-800/50 rounded"
 
             else
-                " opacity-40"
+                " opacity-60"
 
         dcLabel =
-            if sf.dcModifier == 0 then
+            if isSpecialSeedFactor sf.id then
                 "(special)"
 
             else if sf.dcModifier > 0 then
@@ -203,7 +203,7 @@ viewSeedFactor inst sf =
             else
                 String.fromInt (sf.dcModifier * Basics.max 1 currentQty) ++ " DC"
     in
-    div [ class ("flex items-center justify-between py-1 gap-2 text-sm" ++ dimClass) ]
+    div [ class ("flex items-center justify-between py-1 px-2 -mx-2 gap-2 text-sm" ++ dimClass) ]
         [ div [ class "flex-1 min-w-0" ]
             [ div [ class "text-gray-200 text-xs truncate" ] [ text sf.name ]
             , if String.isEmpty sf.description then
@@ -287,29 +287,45 @@ viewGlobalFactorSection model label category =
         [ div [ class "px-4 py-2 bg-gray-900 text-xs text-gray-400 font-semibold uppercase tracking-wider" ]
             [ text ("── Global " ++ label ++ " ──") ]
         , div [ class "px-4 py-2" ]
-            (List.concatMap
-                (\f ->
-                    let
-                        maybeApplied =
-                            List.head (List.filter (\af -> af.factorId == f.id) model.appliedFactors)
+            (categoryFactors
+                |> List.foldl
+                    (\f ( lastSection, rows ) ->
+                        let
+                            maybeApplied =
+                                List.head (List.filter (\af -> af.factorId == f.id) model.appliedFactors)
 
-                        isActive =
-                            maybeApplied /= Nothing
-                    in
-                    viewGlobalFactorRow f maybeApplied
-                        :: (if f.id == TargetToArea && isActive then
-                                [ viewAreaShapeDropdown model.targetToAreaShape SetTargetToAreaShape ]
+                            isActive =
+                                maybeApplied /= Nothing
 
-                            else if f.id == PersonalToArea && isActive then
-                                [ viewAreaShapeDropdown model.personalToAreaShape SetPersonalToAreaShape ]
+                            extraRows =
+                                if f.id == TargetToArea && isActive then
+                                    [ viewAreaShapeDropdown model.targetToAreaShape SetTargetToAreaShape ]
 
-                            else
-                                []
-                           )
-                )
-                categoryFactors
+                                else if f.id == PersonalToArea && isActive then
+                                    [ viewAreaShapeDropdown model.personalToAreaShape SetPersonalToAreaShape ]
+
+                                else
+                                    []
+
+                            headerRow =
+                                if Just f.section /= lastSection then
+                                    [ viewFactorSectionHeader f.section ]
+
+                                else
+                                    []
+                        in
+                        ( Just f.section, rows ++ headerRow ++ (viewGlobalFactorRow f maybeApplied :: extraRows) )
+                    )
+                    ( Nothing, [] )
+                |> Tuple.second
             )
         ]
+
+
+viewFactorSectionHeader : String -> Html Msg
+viewFactorSectionHeader sectionName =
+    div [ class "text-xs text-indigo-500 font-semibold uppercase tracking-wider mt-2 mb-1 pt-2 border-t border-gray-800 first:mt-0 first:border-t-0" ]
+        [ text sectionName ]
 
 
 viewAreaShapeDropdown : Maybe String -> (String -> Msg) -> Html Msg
@@ -345,10 +361,10 @@ viewGlobalFactorRow factor maybeApplied =
 
         dimClass =
             if isActive then
-                ""
+                " bg-arcane-800/50 rounded"
 
             else
-                " opacity-40"
+                " opacity-60"
 
         dcDisplay =
             case factor.kind of
@@ -442,7 +458,7 @@ viewGlobalFactorRow factor maybeApplied =
                         ]
                         []
     in
-    div [ class ("flex items-center justify-between py-1 gap-2 text-sm h-10" ++ dimClass) ]
+    div [ class ("flex items-center justify-between py-1 px-2 -mx-2 gap-2 text-sm h-10" ++ dimClass) ]
         [ div [ class "flex-1 min-w-0" ]
             [ div [ class "text-gray-200 text-xs truncate" ] [ text factor.name ]
             , div [ class "text-gray-500 text-xs" ] [ text factor.shortDesc ]

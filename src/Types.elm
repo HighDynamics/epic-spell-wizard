@@ -219,6 +219,7 @@ type alias Factor =
     , multiplierValue : Int -- only meaningful for DcMultiplier kind (5 or 2)
     , statBlockField : StatBlockField
     , shortDesc : String -- shown in the factors panel
+    , section : String -- rulebook table section heading, e.g. "Casting Time", "Area"
     }
 
 

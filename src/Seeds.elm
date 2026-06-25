@@ -1,4 +1,4 @@
-module Seeds exposing (allSeeds, getSeed)
+module Seeds exposing (allSeeds, getSeed, isSpecialSeedFactor)
 
 import Dict exposing (Dict)
 import Types exposing (..)
@@ -40,6 +40,20 @@ allSeeds =
 getSeed : SeedId -> Maybe Seed
 getSeed id =
     List.head (List.filter (\s -> s.id == id) allSeeds)
+
+
+
+-- These seed factors carry `dcModifier = 0` as a placeholder because their
+-- real DC effect is multiplicative, computed in Calc.elm's
+-- effectiveSeedBaseDC (Foresee ×2/interval, Reveal ×10 for no_loe) rather
+-- than added like every other seed factor. Anything else with a genuine
+-- dcModifier of 0 (e.g. AnimateDead's "Undead type: Mummy") is a normal,
+-- accurate +0 and should display as such.
+
+
+isSpecialSeedFactor : String -> Bool
+isSpecialSeedFactor id =
+    id == "foresee_interval" || id == "reveal_no_loe"
 
 
 

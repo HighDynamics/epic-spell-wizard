@@ -6,7 +6,7 @@ import Factors exposing (allFactors)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
-import Seeds exposing (getSeed)
+import Seeds exposing (getSeed, isSpecialSeedFactor)
 import Types exposing (..)
 
 
@@ -459,7 +459,7 @@ viewSeedFactorsBySeed model =
                                                             (\sf ->
                                                                 sf.name
                                                                     ++ (if asf.quantity > 1 then " ×" ++ String.fromInt asf.quantity else "")
-                                                                    ++ (if sf.dcModifier == 0 then
+                                                                    ++ (if isSpecialSeedFactor sf.id then
                                                                             " (special)"
 
                                                                         else
