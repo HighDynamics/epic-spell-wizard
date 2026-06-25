@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Epic Spell Wizard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        arcane: {
+                            400: '#e8a84a',
+                            500: '#d4893a',
+                            900: '#1a0f04'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen">
+    <div id="elm-app"></div>
+    <script src="elm.js"></script>
+    <script>
+        var app = Elm.Main.init({
+            node: document.getElementById('elm-app'),
+            flags: null
+        });
+
+        // Clipboard port — wired up in Section 11
+        if (app.ports && app.ports.copyToClipboard) {
+            app.ports.copyToClipboard.subscribe(function(text) {
+                navigator.clipboard.writeText(text).then(function() {
+                    app.ports.copyResult.send(true);
+                }).catch(function() {
+                    app.ports.copyResult.send(false);
+                });
+            });
+        }
+    </script>
+</body>
+</html>
