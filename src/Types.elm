@@ -283,6 +283,15 @@ type alias DevCosts =
 
 
 
+-- ─── Export ──────────────────────────────────────────────────────────────────
+
+
+type ExportFormat
+    = MarkdownExport
+    | PlainTextExport
+
+
+
 -- ─── App state ───────────────────────────────────────────────────────────────
 
 
@@ -300,6 +309,7 @@ type alias Model =
     , factorsPanelOpen : Bool
     , summaryPanelOpen : Bool
     , copySuccess : Maybe Bool
+    , exportFormat : ExportFormat
     }
 
 
@@ -321,5 +331,6 @@ type Msg
     | ToggleSeedsPanel
     | ToggleFactorsPanel
     | ToggleSummaryPanel
-    | ExportMarkdown
+    | SetExportFormat ExportFormat
+    | CopySpellSummary
     | CopyResult Bool

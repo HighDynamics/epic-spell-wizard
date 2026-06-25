@@ -1,19 +1,21 @@
 module View.SummaryPanel exposing (viewSummaryPanel)
 
 import Calc exposing (StatBlockData, availableSavingThrows, availableSchools)
-import Export
+import Dict
+import Factors exposing (allFactors)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
+import Seeds exposing (getSeed)
 import Types exposing (..)
 
 
 viewSummaryPanel : Model -> DcBreakdown -> DevCosts -> StatBlockData -> Html Msg
 viewSummaryPanel model breakdown costs sb =
     if model.summaryPanelOpen then
-        div [ class "w-96 shrink-0 flex flex-col bg-gray-900 overflow-y-auto" ]
+        div [ class "w-96 shrink-0 flex flex-col bg-gray-900 overflow-hidden" ]
             [ -- Panel header
-              div [ class "flex items-center justify-between px-4 py-3 border-b border-gray-700 sticky top-0 bg-gray-900 z-10" ]
+              div [ class "flex items-center justify-between px-4 py-3 border-b border-gray-700 shrink-0" ]
                 [ span [ class "text-xs font-bold uppercase tracking-widest text-gray-400" ] [ text "Summary" ]
                 , button
                     [ class "text-gray-500 hover:text-gray-300 text-lg"
@@ -22,13 +24,17 @@ viewSummaryPanel model breakdown costs sb =
                     ]
                     [ text "▶" ]
                 ]
-            , div [ class "p-4 space-y-5" ]
-                [ viewDcBreakdown breakdown
+            , div [ class "flex-1 overflow-y-auto p-4 space-y-5" ]
+                [ viewSpellName model
+                , viewStatBlock model breakdown sb
+                , viewSeedsUsed model
+                , viewDcBreakdown breakdown
                 , viewDevCosts costs
-                , viewStatBlock model sb
-                , viewDescriptionBox model
-                , viewExportButton model
+                , viewSeedFactorsBySeed model
+                , viewGlobalFactorList model "Global Augments" Augmenting
+                , viewGlobalFactorList model "Global Mitigations" Mitigating
                 ]
+            , viewCopyFooter model
             ]
 
     else
@@ -40,6 +46,62 @@ viewSummaryPanel model breakdown costs sb =
             [ div [ class "mt-4 text-gray-500 text-xs rotate-90 whitespace-nowrap select-none" ]
                 [ text "SUMMARY" ]
             ]
+
+
+viewSpellName : Model -> Html Msg
+viewSpellName model =
+    div [ class "text-sm font-semibold text-gray-200 truncate" ]
+        [ text (if String.isEmpty model.spellName then "Unnamed Spell" else model.spellName) ]
+
+
+resolvePrimaryInstanceId : Model -> Maybe SeedInstanceId
+resolvePrimaryInstanceId model =
+    case model.primarySeedInstanceId of
+        Just pid ->
+            if List.any (\i -> i.instanceId == pid) model.seedInstances then
+                Just pid
+
+            else
+                List.head model.seedInstances |> Maybe.map .instanceId
+
+        Nothing ->
+            List.head model.seedInstances |> Maybe.map .instanceId
+
+
+viewSeedsUsed : Model -> Html Msg
+viewSeedsUsed model =
+    let
+        primaryId =
+            resolvePrimaryInstanceId model
+
+        showPrimaryTag =
+            List.length model.seedInstances > 1
+
+        names =
+            model.seedInstances
+                |> List.filterMap
+                    (\inst ->
+                        getSeed inst.seedId
+                            |> Maybe.map
+                                (\s ->
+                                    s.name
+                                        ++ " ("
+                                        ++ String.fromInt (Maybe.withDefault s.baseDC inst.baseDCOverride)
+                                        ++ ")"
+                                        ++ (if showPrimaryTag && primaryId == Just inst.instanceId then
+                                                " [Primary]"
+
+                                            else
+                                                ""
+                                           )
+                                )
+                    )
+    in
+    div []
+        [ div [ class "text-xs font-bold uppercase tracking-widest text-gray-400 mb-2" ] [ text "Seeds Used" ]
+        , div [ class "text-xs text-gray-200" ]
+            [ text (if List.isEmpty names then "None" else String.join ", " names) ]
+        ]
 
 
 viewDcBreakdown : DcBreakdown -> Html Msg
@@ -137,8 +199,8 @@ saveTypeLabel st =
             "Fortitude"
 
 
-viewStatBlock : Model -> StatBlockData -> Html Msg
-viewStatBlock model sb =
+viewStatBlock : Model -> DcBreakdown -> StatBlockData -> Html Msg
+viewStatBlock model breakdown sb =
     let
         row label val =
             div [ class "flex gap-2 text-xs" ]
@@ -290,6 +352,7 @@ viewStatBlock model sb =
         [ div [ class "text-xs font-bold uppercase tracking-widest text-gray-400 mb-2" ] [ text "Stat Block" ]
         , div [ class "space-y-1" ]
             ([ rowEl (if List.length schools > 1 then "School (pick)" else "School") schoolEl
+             , row "Spellcraft DC" (String.fromInt breakdown.finalDC)
              , row "Components" (String.join ", " sb.components)
              , row "Casting Time" sb.castingTime
              , row "Range" sb.range
@@ -307,36 +370,175 @@ viewStatBlock model sb =
         ]
 
 
-viewDescriptionBox : Model -> Html Msg
-viewDescriptionBox model =
+viewGlobalFactorList : Model -> String -> FactorCategory -> Html Msg
+viewGlobalFactorList model label category =
     let
-        description =
-            Export.generateDescription model.seedInstances model.appliedFactors
+        lines =
+            model.appliedFactors
+                |> List.filterMap
+                    (\af ->
+                        allFactors
+                            |> List.filter (\f -> f.id == af.factorId && f.category == category)
+                            |> List.head
+                            |> Maybe.map
+                                (\f ->
+                                    f.name
+                                        ++ (if af.quantity > 1 then " ×" ++ String.fromInt af.quantity else "")
+                                        ++ (if f.kind == DcMultiplier then
+                                                " (×" ++ String.fromInt f.multiplierValue ++ ")"
+
+                                            else
+                                                " (" ++ showSign (f.dcModifier * af.quantity) ++ ")"
+                                           )
+                                )
+                    )
     in
     div []
-        [ div [ class "mb-1" ]
-            [ span [ class "text-xs font-bold uppercase tracking-widest text-gray-400" ] [ text "Description" ] ]
-        , div
-            [ class "w-full text-gray-200 text-xs py-2 whitespace-pre-wrap leading-relaxed" ]
-            [ text description ]
+        [ div [ class "text-xs font-bold uppercase tracking-widest text-gray-400 mb-2" ] [ text label ]
+        , if List.isEmpty lines then
+            p [ class "text-gray-500 text-xs italic" ] [ text "None active" ]
+
+          else
+            div [ class "space-y-1" ]
+                (List.map (\l -> div [ class "text-gray-200 text-xs" ] [ text l ]) lines)
         ]
 
 
-viewExportButton : Model -> Html Msg
-viewExportButton model =
+viewSeedFactorsBySeed : Model -> Html Msg
+viewSeedFactorsBySeed model =
+    let
+        blocks =
+            model.seedInstances
+                |> List.foldl
+                    (\inst ( seenCounts, acc ) ->
+                        case getSeed inst.seedId of
+                            Nothing ->
+                                ( seenCounts, acc )
+
+                            Just seed ->
+                                let
+                                    priorCount =
+                                        Dict.get seed.name seenCounts |> Maybe.withDefault 0
+
+                                    label =
+                                        if priorCount == 0 then
+                                            seed.name
+
+                                        else
+                                            seed.name ++ " (" ++ String.fromInt (priorCount + 1) ++ ")"
+
+                                    choiceLines =
+                                        seed.choices
+                                            |> List.map
+                                                (\c ->
+                                                    c.label ++ ": " ++ (Dict.get c.id inst.choices |> Maybe.withDefault c.default)
+                                                )
+
+                                    overrideLines =
+                                        case inst.baseDCOverride of
+                                            Just dc ->
+                                                if dc /= seed.baseDC then
+                                                    [ "Base DC override: " ++ String.fromInt dc ]
+
+                                                else
+                                                    []
+
+                                            Nothing ->
+                                                []
+
+                                    availableFactors =
+                                        seed.universalFactors ++ List.concatMap .factors seed.modes
+
+                                    factorLines =
+                                        inst.appliedSeedFactors
+                                            |> List.filter (\asf -> asf.quantity > 0)
+                                            |> List.filterMap
+                                                (\asf ->
+                                                    List.head (List.filter (\sf -> sf.id == asf.factorId) availableFactors)
+                                                        |> Maybe.map
+                                                            (\sf ->
+                                                                sf.name
+                                                                    ++ (if asf.quantity > 1 then " ×" ++ String.fromInt asf.quantity else "")
+                                                                    ++ (if sf.dcModifier == 0 then
+                                                                            " (special)"
+
+                                                                        else
+                                                                            " (" ++ showSign (sf.dcModifier * asf.quantity) ++ ")"
+                                                                       )
+                                                            )
+                                                )
+
+                                    lines =
+                                        choiceLines ++ overrideLines ++ factorLines
+                                in
+                                if List.isEmpty lines then
+                                    ( Dict.insert seed.name (priorCount + 1) seenCounts, acc )
+
+                                else
+                                    ( Dict.insert seed.name (priorCount + 1) seenCounts
+                                    , acc ++ [ ( label, lines ) ]
+                                    )
+                    )
+                    ( Dict.empty, [] )
+                |> Tuple.second
+                |> List.sortBy Tuple.first
+    in
     div []
-        [ button
-            [ class "w-full py-2 rounded bg-arcane-500 hover:bg-arcane-400 text-white text-sm font-semibold"
-            , onClick ExportMarkdown
+        [ div [ class "text-xs font-bold uppercase tracking-widest text-gray-400 mb-2" ] [ text "Seed Factors" ]
+        , if List.isEmpty blocks then
+            p [ class "text-gray-500 text-xs italic" ] [ text "No seed-specific factors active" ]
+
+          else
+            div [ class "space-y-2" ]
+                (List.map
+                    (\( label, lines ) ->
+                        div []
+                            [ div [ class "text-arcane-400 text-xs font-semibold mb-1" ] [ text label ]
+                            , div [ class "space-y-0.5" ]
+                                (List.map (\l -> div [ class "text-gray-200 text-xs" ] [ text l ]) lines)
+                            ]
+                    )
+                    blocks
+                )
+        ]
+
+
+viewCopyFooter : Model -> Html Msg
+viewCopyFooter model =
+    div [ class "shrink-0 border-t border-gray-700 bg-gray-900 p-4 space-y-2" ]
+        [ div [ class "flex rounded overflow-hidden border border-gray-700" ]
+            [ formatButton model MarkdownExport "Markdown"
+            , formatButton model PlainTextExport "Plain Text"
             ]
-            [ text "Copy Spell Details" ]
+        , button
+            [ class "w-full py-2 rounded bg-arcane-500 hover:bg-arcane-400 text-white text-sm font-semibold"
+            , onClick CopySpellSummary
+            ]
+            [ text "Copy Spell Summary" ]
         , case model.copySuccess of
             Just True ->
-                div [ class "text-green-400 text-xs text-center mt-1" ] [ text "Copied to clipboard!" ]
+                div [ class "text-green-400 text-xs text-center" ] [ text "Copied to clipboard!" ]
 
             Just False ->
-                div [ class "text-red-400 text-xs text-center mt-1" ] [ text "Copy failed — check browser permissions." ]
+                div [ class "text-red-400 text-xs text-center" ] [ text "Copy failed — check browser permissions." ]
 
             Nothing ->
                 text ""
         ]
+
+
+formatButton : Model -> ExportFormat -> String -> Html Msg
+formatButton model fmt label =
+    button
+        [ class
+            ("flex-1 py-1.5 text-xs font-semibold "
+                ++ (if model.exportFormat == fmt then
+                        "bg-arcane-500 text-white"
+
+                    else
+                        "bg-gray-800 text-gray-400 hover:bg-gray-700"
+                   )
+            )
+        , onClick (SetExportFormat fmt)
+        ]
+        [ text label ]

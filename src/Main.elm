@@ -56,6 +56,7 @@ init =
     , factorsPanelOpen = True
     , summaryPanelOpen = True
     , copySuccess = Nothing
+    , exportFormat = MarkdownExport
     }
 
 
@@ -247,20 +248,30 @@ update msg model =
         ToggleSummaryPanel ->
             ( { model | summaryPanelOpen = not model.summaryPanelOpen }, Cmd.none )
 
-        ExportMarkdown ->
+        SetExportFormat fmt ->
+            ( { model | exportFormat = fmt }, Cmd.none )
+
+        CopySpellSummary ->
             let
-                markdown =
-                    Export.generateMarkdown
+                generate =
+                    case model.exportFormat of
+                        MarkdownExport ->
+                            Export.generateMarkdown
+
+                        PlainTextExport ->
+                            Export.generatePlainText
+
+                output =
+                    generate
                         model.spellName
                         model.seedInstances
                         model.appliedFactors
-                        (Export.generateDescription model.seedInstances model.appliedFactors)
                         0
                         model.primarySeedInstanceId
                         model.targetToAreaShape
                         model.personalToAreaShape
             in
-            ( { model | copySuccess = Nothing }, copyToClipboard markdown )
+            ( { model | copySuccess = Nothing }, copyToClipboard output )
 
         CopyResult success ->
             ( { model | copySuccess = Just success }, Cmd.none )
