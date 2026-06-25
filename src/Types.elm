@@ -310,6 +310,7 @@ type alias Model =
     , summaryPanelOpen : Bool
     , copySuccess : Maybe Bool
     , exportFormat : ExportFormat
+    , baseUrl : String
     }
 
 

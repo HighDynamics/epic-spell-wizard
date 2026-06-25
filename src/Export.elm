@@ -344,8 +344,8 @@ formatNum n =
 -- ─── Markdown export ──────────────────────────────────────────────────────────
 
 
-generateMarkdown : String -> List SeedInstance -> List AppliedFactor -> Int -> Maybe SeedInstanceId -> Maybe String -> Maybe String -> String
-generateMarkdown spellName instances globalFactors casterSaveDCBonus maybePrimaryId maybeTargetToAreaShape maybePersonalToAreaShape =
+generateMarkdown : String -> String -> List SeedInstance -> List AppliedFactor -> Int -> Maybe SeedInstanceId -> Maybe String -> Maybe String -> String
+generateMarkdown link spellName instances globalFactors casterSaveDCBonus maybePrimaryId maybeTargetToAreaShape maybePersonalToAreaShape =
     let
         breakdown =
             calculateBreakdown instances globalFactors
@@ -390,6 +390,9 @@ generateMarkdown spellName instances globalFactors casterSaveDCBonus maybePrimar
     in
     "# "
         ++ title
+        ++ "\n\n"
+        ++ "## Epic Spell Wizard Link\n\n"
+        ++ link
         ++ "\n\n"
         ++ "## Stat Block\n\n"
         ++ mdRows (statBlockRows breakdown.finalDC sb)
@@ -478,8 +481,8 @@ generateMarkdown spellName instances globalFactors casterSaveDCBonus maybePrimar
 -- ─── Plain text export ────────────────────────────────────────────────────────
 
 
-generatePlainText : String -> List SeedInstance -> List AppliedFactor -> Int -> Maybe SeedInstanceId -> Maybe String -> Maybe String -> String
-generatePlainText spellName instances globalFactors casterSaveDCBonus maybePrimaryId maybeTargetToAreaShape maybePersonalToAreaShape =
+generatePlainText : String -> String -> List SeedInstance -> List AppliedFactor -> Int -> Maybe SeedInstanceId -> Maybe String -> Maybe String -> String
+generatePlainText link spellName instances globalFactors casterSaveDCBonus maybePrimaryId maybeTargetToAreaShape maybePersonalToAreaShape =
     let
         breakdown =
             calculateBreakdown instances globalFactors
@@ -530,6 +533,9 @@ generatePlainText spellName instances globalFactors casterSaveDCBonus maybePrima
             bar ++ "\n" ++ String.toUpper label ++ "\n" ++ bar ++ "\n\n"
     in
     title
+        ++ "\n\n"
+        ++ header "Epic Spell Wizard Link"
+        ++ link
         ++ "\n\n"
         ++ header "Stat Block"
         ++ ptRows (statBlockRows breakdown.finalDC sb)

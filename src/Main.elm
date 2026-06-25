@@ -7,6 +7,7 @@ import Export
 import Html exposing (..)
 import Html.Attributes exposing (class)
 import Types exposing (..)
+import UrlState
 import View.FactorsPanel exposing (viewFactorsPanel)
 import View.Header exposing (viewHeader)
 import View.SeedsPanel exposing (viewSeedsPanel)
@@ -23,14 +24,23 @@ port copyToClipboard : String -> Cmd msg
 port copyResult : (Bool -> msg) -> Sub msg
 
 
+port pushUrl : String -> Cmd msg
+
+
 
 -- ─── Main ────────────────────────────────────────────────────────────────────
 
 
-main : Program () Model Msg
+type alias Flags =
+    { baseUrl : String
+    , search : String
+    }
+
+
+main : Program Flags Model Msg
 main =
     Browser.element
-        { init = \_ -> ( init, Cmd.none )
+        { init = init
         , update = update
         , subscriptions = \_ -> copyResult CopyResult
         , view = view
@@ -41,8 +51,8 @@ main =
 -- ─── Init ────────────────────────────────────────────────────────────────────
 
 
-init : Model
-init =
+defaultModel : Model
+defaultModel =
     { spellName = ""
     , seedInstances = []
     , nextInstanceId = 0
@@ -57,7 +67,20 @@ init =
     , summaryPanelOpen = True
     , copySuccess = Nothing
     , exportFormat = MarkdownExport
+    , baseUrl = ""
     }
+
+
+init : Flags -> ( Model, Cmd Msg )
+init flags =
+    let
+        decoded =
+            UrlState.applyQuery flags.search defaultModel
+
+        model =
+            { decoded | baseUrl = flags.baseUrl }
+    in
+    ( model, pushUrl (UrlState.encode model) )
 
 
 
@@ -66,6 +89,15 @@ init =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
+    let
+        ( newModel, cmd ) =
+            updateInner msg model
+    in
+    ( newModel, Cmd.batch [ cmd, pushUrl (UrlState.encode newModel) ] )
+
+
+updateInner : Msg -> Model -> ( Model, Cmd Msg )
+updateInner msg model =
     case msg of
         SetSpellName name ->
             ( { model | spellName = name }, Cmd.none )
@@ -261,8 +293,12 @@ update msg model =
                         PlainTextExport ->
                             Export.generatePlainText
 
+                link =
+                    model.baseUrl ++ UrlState.encode model
+
                 output =
                     generate
+                        link
                         model.spellName
                         model.seedInstances
                         model.appliedFactors
