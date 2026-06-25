@@ -1,4 +1,4 @@
-module View.Icons exposing (factorsIcon, seedsIcon, shareIcon, summaryIcon)
+module View.Icons exposing (factorsIcon, importIcon, seedsIcon, shareIcon, summaryIcon)
 
 import Html exposing (Html)
 import Svg exposing (circle, line, rect, svg)
@@ -45,6 +45,15 @@ summaryIcon cls =
         , line [ SA.x1 "8", SA.y1 "8", SA.x2 "16", SA.y2 "8" ] []
         , line [ SA.x1 "8", SA.y1 "12", SA.x2 "16", SA.y2 "12" ] []
         , line [ SA.x1 "8", SA.y1 "16", SA.x2 "13", SA.y2 "16" ] []
+        ]
+
+
+importIcon : String -> Html msg
+importIcon cls =
+    svg (baseAttrs cls)
+        [ Svg.path [ SA.d "M12 3V14" ] []
+        , Svg.path [ SA.d "M7.5 9.5L12 14L16.5 9.5" ] []
+        , Svg.path [ SA.d "M4 16V18C4 19.1046 4.89543 20 6 20H18C19.1046 20 20 19.1046 20 18V16" ] []
         ]
 
 

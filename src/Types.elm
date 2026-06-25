@@ -332,6 +332,10 @@ type alias Model =
     , renamingSpell : Bool
     , helpModalOpen : Bool
     , activeMobileTab : MobileTab
+    , importModalOpen : Bool
+    , importInput : String
+    , importError : Maybe String
+    , isStandalone : Bool
     }
 
 
@@ -360,3 +364,6 @@ type Msg
     | CopyShareLink
     | ToggleHelpModal
     | SetMobileTab MobileTab
+    | ToggleImportModal
+    | SetImportInput String
+    | LoadImportedLink

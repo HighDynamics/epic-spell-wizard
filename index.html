@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Epic Spell Wizard</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#1a0f04">
+    <link rel="icon" type="image/png" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -27,11 +33,15 @@
     <div id="elm-app"></div>
     <script src="elm.js"></script>
     <script>
+        var isStandalone = window.matchMedia('(display-mode: standalone)').matches
+            || window.navigator.standalone === true;
+
         var app = Elm.Main.init({
             node: document.getElementById('elm-app'),
             flags: {
                 baseUrl: location.origin + location.pathname,
-                search: location.search
+                search: location.search,
+                isStandalone: isStandalone
             }
         });
 
@@ -51,6 +61,11 @@
             app.ports.pushUrl.subscribe(function(query) {
                 history.replaceState(null, '', location.pathname + query);
             });
+        }
+
+        // PWA installability + offline support
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
         }
     </script>
 </body>

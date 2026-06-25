@@ -1,4 +1,4 @@
-module UrlState exposing (applyQuery, encode)
+module UrlState exposing (applyQuery, encode, extractQuery)
 
 import Dict exposing (Dict)
 import Factors exposing (allFactors, getFactor)

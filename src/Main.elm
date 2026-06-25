@@ -11,6 +11,7 @@ import UrlState
 import View.FactorsPanel exposing (viewFactorsPanel)
 import View.Header exposing (viewHeader)
 import View.HelpModal exposing (viewHelpModal)
+import View.ImportLinkModal exposing (viewImportLinkModal)
 import View.MobileNav exposing (viewMobileNav)
 import View.SeedsPanel exposing (viewSeedsPanel)
 import View.SummaryPanel exposing (viewSummaryPanel)
@@ -36,6 +37,7 @@ port pushUrl : String -> Cmd msg
 type alias Flags =
     { baseUrl : String
     , search : String
+    , isStandalone : Bool
     }
 
 
@@ -74,6 +76,10 @@ defaultModel =
     , renamingSpell = False
     , helpModalOpen = False
     , activeMobileTab = SeedsTab
+    , importModalOpen = False
+    , importInput = ""
+    , importError = Nothing
+    , isStandalone = False
     }
 
 
@@ -84,7 +90,7 @@ init flags =
             UrlState.applyQuery flags.search defaultModel
 
         model =
-            { decoded | baseUrl = flags.baseUrl }
+            { decoded | baseUrl = flags.baseUrl, isStandalone = flags.isStandalone }
     in
     ( model, pushUrl (UrlState.encode model) )
 
@@ -339,6 +345,42 @@ updateInner msg model =
         SetMobileTab tab ->
             ( { model | activeMobileTab = tab }, Cmd.none )
 
+        ToggleImportModal ->
+            ( { model
+                | importModalOpen = not model.importModalOpen
+                , importInput = ""
+                , importError = Nothing
+              }
+            , Cmd.none
+            )
+
+        SetImportInput text ->
+            ( { model | importInput = text }, Cmd.none )
+
+        LoadImportedLink ->
+            let
+                query =
+                    UrlState.extractQuery model.importInput
+            in
+            if String.isEmpty query || not (String.contains "=" query) then
+                ( { model | importError = Just "That doesn't look like a valid Epic Spell Wizard link." }
+                , Cmd.none
+                )
+
+            else
+                let
+                    decoded =
+                        UrlState.applyQuery query defaultModel
+                in
+                ( { decoded
+                    | baseUrl = model.baseUrl
+                    , importModalOpen = False
+                    , importInput = ""
+                    , importError = Nothing
+                  }
+                , Cmd.none
+                )
+
 
 
 -- ─── View ────────────────────────────────────────────────────────────────────
@@ -366,6 +408,11 @@ view model =
         , viewMobileNav model
         , if model.helpModalOpen then
             viewHelpModal
+
+          else
+            text ""
+        , if model.importModalOpen then
+            viewImportLinkModal model
 
           else
             text ""
