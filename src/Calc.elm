@@ -152,18 +152,42 @@ seedInstanceFactorDC inst =
                 -- Skip factors whose DC is already handled via seed base DC multiplication
                 skipIds =
                     [ "foresee_interval", "reveal_no_loe" ]
-            in
-            inst.appliedSeedFactors
-                |> List.filterMap
-                    (\asf ->
-                        if List.member asf.factorId skipIds then
-                            Nothing
 
-                        else
-                            List.head (List.filter (\sf -> sf.id == asf.factorId) availableFactors)
-                                |> Maybe.map (\sf -> sf.dcModifier * asf.quantity)
-                    )
-                |> List.sum
+                factorTotal =
+                    inst.appliedSeedFactors
+                        |> List.filterMap
+                            (\asf ->
+                                if List.member asf.factorId skipIds then
+                                    Nothing
+
+                                else
+                                    List.head (List.filter (\sf -> sf.id == asf.factorId) availableFactors)
+                                        |> Maybe.map (\sf -> sf.dcModifier * asf.quantity)
+                            )
+                        |> List.sum
+
+                -- Choices (e.g. Animate Dead's "Undead Type") may carry a
+                -- per-option DC modifier instead of using a seed factor.
+                choiceTotal =
+                    seed.choices
+                        |> List.filterMap
+                            (\choice ->
+                                if List.isEmpty choice.dcModifiers then
+                                    Nothing
+
+                                else
+                                    let
+                                        selected =
+                                            Dict.get choice.id inst.choices |> Maybe.withDefault choice.default
+                                    in
+                                    choice.dcModifiers
+                                        |> List.filter (\( opt, _ ) -> opt == selected)
+                                        |> List.head
+                                        |> Maybe.map Tuple.second
+                            )
+                        |> List.sum
+            in
+            factorTotal + choiceTotal
 
 
 

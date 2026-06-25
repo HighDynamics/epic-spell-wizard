@@ -155,6 +155,7 @@ type alias SeedChoice =
     , label : String
     , options : List String
     , default : String
+    , dcModifiers : List ( String, Int ) -- per-option DC modifier; [] if the choice has no DC effect
     }
 
 

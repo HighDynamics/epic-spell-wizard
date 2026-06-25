@@ -204,9 +204,18 @@ seedFactorBlocks instances =
                                 seed.choices
                                     |> List.map
                                         (\c ->
-                                            c.label
-                                                ++ ": "
-                                                ++ (Dict.get c.id inst.choices |> Maybe.withDefault c.default)
+                                            let
+                                                selected =
+                                                    Dict.get c.id inst.choices |> Maybe.withDefault c.default
+
+                                                dcSuffix =
+                                                    c.dcModifiers
+                                                        |> List.filter (\( opt, _ ) -> opt == selected)
+                                                        |> List.head
+                                                        |> Maybe.map (\( _, dc ) -> " (" ++ showSign dc ++ " DC)")
+                                                        |> Maybe.withDefault ""
+                                            in
+                                            c.label ++ ": " ++ selected ++ dcSuffix
                                         )
 
                             overrideLines =

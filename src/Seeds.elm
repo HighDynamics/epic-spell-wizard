@@ -123,6 +123,25 @@ animate =
     }
 
 
+-- Per-type Spellcraft DC modifier for the Animate Dead seed's "Undead Type"
+-- choice (SRD table: more powerful undead raise the DC, weaker ones lower it).
+undeadTypeDcModifiers : List ( String, Int )
+undeadTypeDcModifiers =
+    [ ( "Skeleton", -12 )
+    , ( "Zombie", -12 )
+    , ( "Ghoul", -10 )
+    , ( "Shadow", -8 )
+    , ( "Ghast", -6 )
+    , ( "Wight", -4 )
+    , ( "Wraith", -2 )
+    , ( "Mummy", 0 )
+    , ( "Spectre", 2 )
+    , ( "Mohrg", 4 )
+    , ( "Vampire", 6 )
+    , ( "Ghost", 8 )
+    ]
+
+
 animateDead : Seed
 animateDead =
     { id = AnimateDead
@@ -146,22 +165,15 @@ Type of Undead: All types of undead can be created with the animate dead seed, a
     , universalFactors =
         [ { id = "adead_extra_hd_create", name = "Each additional 1 HD of undead created", description = "Above base 20 HD", dcModifier = 1, kind = SeedStackable, maxQuantity = Nothing }
         , { id = "adead_extra_hd_control", name = "Each additional 2 HD to control", description = "Control undead beyond free limit (above 20 HD created)", dcModifier = 1, kind = SeedStackable, maxQuantity = Nothing }
-
-        -- Undead type modifiers (applied as a single toggle per type):
-        , { id = "adead_skeleton", name = "Undead type: Skeleton", description = "DC modifier for skeleton type", dcModifier = -12, kind = SeedToggle, maxQuantity = Just 1 }
-        , { id = "adead_zombie", name = "Undead type: Zombie", description = "DC modifier for zombie type", dcModifier = -12, kind = SeedToggle, maxQuantity = Just 1 }
-        , { id = "adead_ghoul", name = "Undead type: Ghoul", description = "DC modifier for ghoul type", dcModifier = -10, kind = SeedToggle, maxQuantity = Just 1 }
-        , { id = "adead_shadow", name = "Undead type: Shadow", description = "DC modifier for shadow type", dcModifier = -8, kind = SeedToggle, maxQuantity = Just 1 }
-        , { id = "adead_ghast", name = "Undead type: Ghast", description = "DC modifier for ghast type", dcModifier = -6, kind = SeedToggle, maxQuantity = Just 1 }
-        , { id = "adead_wight", name = "Undead type: Wight", description = "DC modifier for wight type", dcModifier = -4, kind = SeedToggle, maxQuantity = Just 1 }
-        , { id = "adead_wraith", name = "Undead type: Wraith", description = "DC modifier for wraith type", dcModifier = -2, kind = SeedToggle, maxQuantity = Just 1 }
-        , { id = "adead_mummy", name = "Undead type: Mummy", description = "DC modifier for mummy type", dcModifier = 0, kind = SeedToggle, maxQuantity = Just 1 }
-        , { id = "adead_spectre", name = "Undead type: Spectre", description = "DC modifier for spectre type", dcModifier = 2, kind = SeedToggle, maxQuantity = Just 1 }
-        , { id = "adead_mohrg", name = "Undead type: Mohrg", description = "DC modifier for mohrg type", dcModifier = 4, kind = SeedToggle, maxQuantity = Just 1 }
-        , { id = "adead_vampire", name = "Undead type: Vampire", description = "DC modifier for vampire type", dcModifier = 6, kind = SeedToggle, maxQuantity = Just 1 }
-        , { id = "adead_ghost", name = "Undead type: Ghost", description = "DC modifier for ghost type", dcModifier = 8, kind = SeedToggle, maxQuantity = Just 1 }
         ]
-    , choices = []
+    , choices =
+        [ { id = "adead_undead_type"
+          , label = "Undead Type"
+          , options = List.map Tuple.first undeadTypeDcModifiers
+          , default = "Mummy"
+          , dcModifiers = undeadTypeDcModifiers
+          }
+        ]
     }
 
 
@@ -475,7 +487,7 @@ The caster can also use the energy seed to create a spell that carefully release
         ]
     , universalFactors = []
     , choices =
-        [ { id = "energyType", label = "Energy Type", options = [ "acid", "cold", "electricity", "fire", "sonic" ], default = "fire" }
+        [ { id = "energyType", label = "Energy Type", options = [ "acid", "cold", "electricity", "fire", "sonic" ], default = "fire", dcModifiers = [] }
         ]
     }
 
@@ -1006,7 +1018,7 @@ Instead of creating an epic spell that uses the ward seed to nullify all spells 
         ]
     , universalFactors = []
     , choices =
-        [ { id = "wardEnergyType", label = "Energy Type (Energy Ward)", options = [ "acid", "cold", "electricity", "fire", "sonic" ], default = "fire" }
-        , { id = "wardCreatureType", label = "Creature Type (Creature Ward)", options = [ "aberrations", "animals", "constructs", "dragons", "elementals", "fey", "giants", "humanoids", "magical beasts", "monstrous humanoids", "oozes", "outsiders", "plants", "undead", "vermin" ], default = "undead" }
+        [ { id = "wardEnergyType", label = "Energy Type (Energy Ward)", options = [ "acid", "cold", "electricity", "fire", "sonic" ], default = "fire", dcModifiers = [] }
+        , { id = "wardCreatureType", label = "Creature Type (Creature Ward)", options = [ "aberrations", "animals", "constructs", "dragons", "elementals", "fey", "giants", "humanoids", "magical beasts", "monstrous humanoids", "oozes", "outsiders", "plants", "undead", "vermin" ], default = "undead", dcModifiers = [] }
         ]
     }

@@ -157,20 +157,51 @@ viewChoiceDropdown inst choice =
     let
         current =
             Dict.get choice.id inst.choices |> Maybe.withDefault choice.default
+
+        dcModifierFor opt =
+            choice.dcModifiers
+                |> List.filter (\( o, _ ) -> o == opt)
+                |> List.head
+                |> Maybe.map Tuple.second
+
+        optionLabel opt =
+            case dcModifierFor opt of
+                Just dc ->
+                    opt ++ " (" ++ showSign dc ++ " DC)"
+
+                Nothing ->
+                    opt
+
+        currentDcLabel =
+            case dcModifierFor current of
+                Just dc ->
+                    " — " ++ showSign dc ++ " DC"
+
+                Nothing ->
+                    ""
     in
     div [ class "mb-2" ]
-        [ label [ class "text-xs text-gray-500 mb-1 block" ] [ text choice.label ]
+        [ label [ class "text-xs text-gray-500 mb-1 block" ] [ text (choice.label ++ currentDcLabel) ]
         , select
             [ class "w-full bg-gray-800 text-gray-200 text-xs rounded px-2 py-1 border border-gray-700"
             , onInput (SetChoice inst.instanceId choice.id)
             ]
             (List.map
                 (\opt ->
-                    option [ value opt, selected (current == opt) ] [ text opt ]
+                    option [ value opt, selected (current == opt) ] [ text (optionLabel opt) ]
                 )
                 choice.options
             )
         ]
+
+
+showSign : Int -> String
+showSign n =
+    if n >= 0 then
+        "+" ++ String.fromInt n
+
+    else
+        String.fromInt n
 
 
 viewSeedFactor : SeedInstance -> SeedFactor -> Html Msg
