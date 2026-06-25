@@ -80,87 +80,6 @@ function A9(fun, a, b, c, d, e, f, g, h, i) {
 
 
 
-var _List_Nil = { $: 0 };
-var _List_Nil_UNUSED = { $: '[]' };
-
-function _List_Cons(hd, tl) { return { $: 1, a: hd, b: tl }; }
-function _List_Cons_UNUSED(hd, tl) { return { $: '::', a: hd, b: tl }; }
-
-
-var _List_cons = F2(_List_Cons);
-
-function _List_fromArray(arr)
-{
-	var out = _List_Nil;
-	for (var i = arr.length; i--; )
-	{
-		out = _List_Cons(arr[i], out);
-	}
-	return out;
-}
-
-function _List_toArray(xs)
-{
-	for (var out = []; xs.b; xs = xs.b) // WHILE_CONS
-	{
-		out.push(xs.a);
-	}
-	return out;
-}
-
-var _List_map2 = F3(function(f, xs, ys)
-{
-	for (var arr = []; xs.b && ys.b; xs = xs.b, ys = ys.b) // WHILE_CONSES
-	{
-		arr.push(A2(f, xs.a, ys.a));
-	}
-	return _List_fromArray(arr);
-});
-
-var _List_map3 = F4(function(f, xs, ys, zs)
-{
-	for (var arr = []; xs.b && ys.b && zs.b; xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
-	{
-		arr.push(A3(f, xs.a, ys.a, zs.a));
-	}
-	return _List_fromArray(arr);
-});
-
-var _List_map4 = F5(function(f, ws, xs, ys, zs)
-{
-	for (var arr = []; ws.b && xs.b && ys.b && zs.b; ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
-	{
-		arr.push(A4(f, ws.a, xs.a, ys.a, zs.a));
-	}
-	return _List_fromArray(arr);
-});
-
-var _List_map5 = F6(function(f, vs, ws, xs, ys, zs)
-{
-	for (var arr = []; vs.b && ws.b && xs.b && ys.b && zs.b; vs = vs.b, ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
-	{
-		arr.push(A5(f, vs.a, ws.a, xs.a, ys.a, zs.a));
-	}
-	return _List_fromArray(arr);
-});
-
-var _List_sortBy = F2(function(f, xs)
-{
-	return _List_fromArray(_List_toArray(xs).sort(function(a, b) {
-		return _Utils_cmp(f(a), f(b));
-	}));
-});
-
-var _List_sortWith = F2(function(f, xs)
-{
-	return _List_fromArray(_List_toArray(xs).sort(function(a, b) {
-		var ord = A2(f, a, b);
-		return ord === $elm$core$Basics$EQ ? 0 : ord === $elm$core$Basics$LT ? -1 : 1;
-	}));
-});
-
-
-
 var _JsArray_empty = [];
 
 function _JsArray_singleton(value)
@@ -600,11 +519,11 @@ function _Debug_crash_UNUSED(identifier, fact1, fact2, fact3, fact4)
 
 function _Debug_regionToString(region)
 {
-	if (region.ar.M === region.aB.M)
+	if (region.aB.R === region.aN.R)
 	{
-		return 'on line ' + region.ar.M;
+		return 'on line ' + region.aB.R;
 	}
-	return 'on lines ' + region.ar.M + ' through ' + region.aB.M;
+	return 'on lines ' + region.aB.R + ' through ' + region.aN.R;
 }
 
 
@@ -790,6 +709,87 @@ function _Utils_ap(xs, ys)
 	}
 	return root;
 }
+
+
+
+var _List_Nil = { $: 0 };
+var _List_Nil_UNUSED = { $: '[]' };
+
+function _List_Cons(hd, tl) { return { $: 1, a: hd, b: tl }; }
+function _List_Cons_UNUSED(hd, tl) { return { $: '::', a: hd, b: tl }; }
+
+
+var _List_cons = F2(_List_Cons);
+
+function _List_fromArray(arr)
+{
+	var out = _List_Nil;
+	for (var i = arr.length; i--; )
+	{
+		out = _List_Cons(arr[i], out);
+	}
+	return out;
+}
+
+function _List_toArray(xs)
+{
+	for (var out = []; xs.b; xs = xs.b) // WHILE_CONS
+	{
+		out.push(xs.a);
+	}
+	return out;
+}
+
+var _List_map2 = F3(function(f, xs, ys)
+{
+	for (var arr = []; xs.b && ys.b; xs = xs.b, ys = ys.b) // WHILE_CONSES
+	{
+		arr.push(A2(f, xs.a, ys.a));
+	}
+	return _List_fromArray(arr);
+});
+
+var _List_map3 = F4(function(f, xs, ys, zs)
+{
+	for (var arr = []; xs.b && ys.b && zs.b; xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
+	{
+		arr.push(A3(f, xs.a, ys.a, zs.a));
+	}
+	return _List_fromArray(arr);
+});
+
+var _List_map4 = F5(function(f, ws, xs, ys, zs)
+{
+	for (var arr = []; ws.b && xs.b && ys.b && zs.b; ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
+	{
+		arr.push(A4(f, ws.a, xs.a, ys.a, zs.a));
+	}
+	return _List_fromArray(arr);
+});
+
+var _List_map5 = F6(function(f, vs, ws, xs, ys, zs)
+{
+	for (var arr = []; vs.b && ws.b && xs.b && ys.b && zs.b; vs = vs.b, ws = ws.b, xs = xs.b, ys = ys.b, zs = zs.b) // WHILE_CONSES
+	{
+		arr.push(A5(f, vs.a, ws.a, xs.a, ys.a, zs.a));
+	}
+	return _List_fromArray(arr);
+});
+
+var _List_sortBy = F2(function(f, xs)
+{
+	return _List_fromArray(_List_toArray(xs).sort(function(a, b) {
+		return _Utils_cmp(f(a), f(b));
+	}));
+});
+
+var _List_sortWith = F2(function(f, xs)
+{
+	return _List_fromArray(_List_toArray(xs).sort(function(a, b) {
+		var ord = A2(f, a, b);
+		return ord === $elm$core$Basics$EQ ? 0 : ord === $elm$core$Basics$LT ? -1 : 1;
+	}));
+});
 
 
 
@@ -1857,9 +1857,9 @@ var _Platform_worker = F4(function(impl, flagDecoder, debugMetadata, args)
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.bf,
-		impl.bx,
-		impl.bt,
+		impl.br,
+		impl.bJ,
+		impl.bF,
 		function() { return function() {} }
 	);
 });
@@ -2719,9 +2719,9 @@ var _VirtualDom_mapEventTuple = F2(function(func, tuple)
 var _VirtualDom_mapEventRecord = F2(function(func, record)
 {
 	return {
-		y: func(record.y),
-		as: record.as,
-		ag: record.ag
+		A: func(record.A),
+		aC: record.aC,
+		ao: record.ao
 	}
 });
 
@@ -2989,11 +2989,11 @@ function _VirtualDom_makeCallback(eventNode, initialHandler)
 		// 3 = Custom
 
 		var value = result.a;
-		var message = !tag ? value : tag < 3 ? value.a : value.y;
-		var stopPropagation = tag == 1 ? value.b : tag == 3 && value.as;
+		var message = !tag ? value : tag < 3 ? value.a : value.A;
+		var stopPropagation = tag == 1 ? value.b : tag == 3 && value.aC;
 		var currentEventNode = (
 			stopPropagation && event.stopPropagation(),
-			(tag == 2 ? value.b : tag == 3 && value.ag) && event.preventDefault(),
+			(tag == 2 ? value.b : tag == 3 && value.ao) && event.preventDefault(),
 			eventNode
 		);
 		var tagger;
@@ -3943,11 +3943,11 @@ var _Browser_element = _Debugger_element || F4(function(impl, flagDecoder, debug
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.bf,
-		impl.bx,
-		impl.bt,
+		impl.br,
+		impl.bJ,
+		impl.bF,
 		function(sendToApp, initialModel) {
-			var view = impl.by;
+			var view = impl.bK;
 			/**/
 			var domNode = args['node'];
 			//*/
@@ -3979,12 +3979,12 @@ var _Browser_document = _Debugger_document || F4(function(impl, flagDecoder, deb
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.bf,
-		impl.bx,
-		impl.bt,
+		impl.br,
+		impl.bJ,
+		impl.bF,
 		function(sendToApp, initialModel) {
-			var divertHrefToApp = impl.ao && impl.ao(sendToApp)
-			var view = impl.by;
+			var divertHrefToApp = impl.ay && impl.ay(sendToApp)
+			var view = impl.bK;
 			var title = _VirtualDom_doc.title;
 			var bodyNode = _VirtualDom_doc.body;
 			var currNode = _VirtualDom_virtualize(bodyNode);
@@ -3992,12 +3992,12 @@ var _Browser_document = _Debugger_document || F4(function(impl, flagDecoder, deb
 			{
 				_VirtualDom_divertHrefToApp = divertHrefToApp;
 				var doc = view(model);
-				var nextNode = _VirtualDom_node('body')(_List_Nil)(doc.a2);
+				var nextNode = _VirtualDom_node('body')(_List_Nil)(doc.bf);
 				var patches = _VirtualDom_diff(currNode, nextNode);
 				bodyNode = _VirtualDom_applyPatches(bodyNode, currNode, patches, sendToApp);
 				currNode = nextNode;
 				_VirtualDom_divertHrefToApp = 0;
-				(title !== doc.bv) && (_VirtualDom_doc.title = title = doc.bv);
+				(title !== doc.bH) && (_VirtualDom_doc.title = title = doc.bH);
 			});
 		}
 	);
@@ -4053,12 +4053,12 @@ function _Browser_makeAnimator(model, draw)
 
 function _Browser_application(impl)
 {
-	var onUrlChange = impl.bl;
-	var onUrlRequest = impl.bm;
+	var onUrlChange = impl.bx;
+	var onUrlRequest = impl.by;
 	var key = function() { key.a(onUrlChange(_Browser_getUrl())); };
 
 	return _Browser_document({
-		ao: function(sendToApp)
+		ay: function(sendToApp)
 		{
 			key.a = sendToApp;
 			_Browser_window.addEventListener('popstate', key);
@@ -4074,9 +4074,9 @@ function _Browser_application(impl)
 					var next = $elm$url$Url$fromString(href).a;
 					sendToApp(onUrlRequest(
 						(next
-							&& curr.aO === next.aO
-							&& curr.aF === next.aF
-							&& curr.aL.a === next.aL.a
+							&& curr.a$ === next.a$
+							&& curr.aR === next.aR
+							&& curr.aY.a === next.aY.a
 						)
 							? $elm$browser$Browser$Internal(next)
 							: $elm$browser$Browser$External(href)
@@ -4084,13 +4084,13 @@ function _Browser_application(impl)
 				}
 			});
 		},
-		bf: function(flags)
+		br: function(flags)
 		{
-			return A3(impl.bf, flags, _Browser_getUrl(), key);
+			return A3(impl.br, flags, _Browser_getUrl(), key);
 		},
-		by: impl.by,
-		bx: impl.bx,
-		bt: impl.bt
+		bK: impl.bK,
+		bJ: impl.bJ,
+		bF: impl.bF
 	});
 }
 
@@ -4156,17 +4156,17 @@ var _Browser_decodeEvent = F2(function(decoder, event)
 function _Browser_visibilityInfo()
 {
 	return (typeof _VirtualDom_doc.hidden !== 'undefined')
-		? { bc: 'hidden', a3: 'visibilitychange' }
+		? { bp: 'hidden', bg: 'visibilitychange' }
 		:
 	(typeof _VirtualDom_doc.mozHidden !== 'undefined')
-		? { bc: 'mozHidden', a3: 'mozvisibilitychange' }
+		? { bp: 'mozHidden', bg: 'mozvisibilitychange' }
 		:
 	(typeof _VirtualDom_doc.msHidden !== 'undefined')
-		? { bc: 'msHidden', a3: 'msvisibilitychange' }
+		? { bp: 'msHidden', bg: 'msvisibilitychange' }
 		:
 	(typeof _VirtualDom_doc.webkitHidden !== 'undefined')
-		? { bc: 'webkitHidden', a3: 'webkitvisibilitychange' }
-		: { bc: 'hidden', a3: 'visibilitychange' };
+		? { bp: 'webkitHidden', bg: 'webkitvisibilitychange' }
+		: { bp: 'hidden', bg: 'visibilitychange' };
 }
 
 
@@ -4247,12 +4247,12 @@ var _Browser_call = F2(function(functionName, id)
 function _Browser_getViewport()
 {
 	return {
-		aS: _Browser_getScene(),
-		aV: {
-			aX: _Browser_window.pageXOffset,
-			aY: _Browser_window.pageYOffset,
-			aW: _Browser_doc.documentElement.clientWidth,
-			aE: _Browser_doc.documentElement.clientHeight
+		a3: _Browser_getScene(),
+		a6: {
+			a8: _Browser_window.pageXOffset,
+			a9: _Browser_window.pageYOffset,
+			a7: _Browser_doc.documentElement.clientWidth,
+			aQ: _Browser_doc.documentElement.clientHeight
 		}
 	};
 }
@@ -4262,8 +4262,8 @@ function _Browser_getScene()
 	var body = _Browser_doc.body;
 	var elem = _Browser_doc.documentElement;
 	return {
-		aW: Math.max(body.scrollWidth, body.offsetWidth, elem.scrollWidth, elem.offsetWidth, elem.clientWidth),
-		aE: Math.max(body.scrollHeight, body.offsetHeight, elem.scrollHeight, elem.offsetHeight, elem.clientHeight)
+		a7: Math.max(body.scrollWidth, body.offsetWidth, elem.scrollWidth, elem.offsetWidth, elem.clientWidth),
+		aQ: Math.max(body.scrollHeight, body.offsetHeight, elem.scrollHeight, elem.offsetHeight, elem.clientHeight)
 	};
 }
 
@@ -4286,15 +4286,15 @@ function _Browser_getViewportOf(id)
 	return _Browser_withNode(id, function(node)
 	{
 		return {
-			aS: {
-				aW: node.scrollWidth,
-				aE: node.scrollHeight
+			a3: {
+				a7: node.scrollWidth,
+				aQ: node.scrollHeight
 			},
-			aV: {
-				aX: node.scrollLeft,
-				aY: node.scrollTop,
-				aW: node.clientWidth,
-				aE: node.clientHeight
+			a6: {
+				a8: node.scrollLeft,
+				a9: node.scrollTop,
+				a7: node.clientWidth,
+				aQ: node.clientHeight
 			}
 		};
 	});
@@ -4324,18 +4324,18 @@ function _Browser_getElement(id)
 		var x = _Browser_window.pageXOffset;
 		var y = _Browser_window.pageYOffset;
 		return {
-			aS: _Browser_getScene(),
-			aV: {
-				aX: x,
-				aY: y,
-				aW: _Browser_doc.documentElement.clientWidth,
-				aE: _Browser_doc.documentElement.clientHeight
-			},
+			a3: _Browser_getScene(),
 			a6: {
-				aX: x + rect.left,
-				aY: y + rect.top,
-				aW: rect.width,
-				aE: rect.height
+				a8: x,
+				a9: y,
+				a7: _Browser_doc.documentElement.clientWidth,
+				aQ: _Browser_doc.documentElement.clientHeight
+			},
+			bj: {
+				a8: x + rect.left,
+				a9: y + rect.top,
+				a7: rect.width,
+				aQ: rect.height
 			}
 		};
 	});
@@ -4372,6 +4372,23 @@ function _Browser_load(url)
 }
 
 
+function _Url_percentEncode(string)
+{
+	return encodeURIComponent(string);
+}
+
+function _Url_percentDecode(string)
+{
+	try
+	{
+		return $elm$core$Maybe$Just(decodeURIComponent(string));
+	}
+	catch (e)
+	{
+		return $elm$core$Maybe$Nothing;
+	}
+}
+
 
 var _Bitwise_and = F2(function(a, b)
 {
@@ -4407,8 +4424,9 @@ var _Bitwise_shiftRightZfBy = F2(function(offset, a)
 {
 	return a >>> offset;
 });
-var $elm$core$Basics$EQ = 1;
-var $elm$core$Basics$LT = 0;
+var $author$project$Types$CopyResult = function (a) {
+	return {$: 19, a: a};
+};
 var $elm$core$List$cons = _List_cons;
 var $elm$core$Elm$JsArray$foldr = _JsArray_foldr;
 var $elm$core$Array$foldr = F3(
@@ -4486,10 +4504,9 @@ var $elm$core$Set$toList = function (_v0) {
 	var dict = _v0;
 	return $elm$core$Dict$keys(dict);
 };
+var $elm$core$Basics$EQ = 1;
 var $elm$core$Basics$GT = 2;
-var $author$project$Types$CopyResult = function (a) {
-	return {$: 19, a: a};
-};
+var $elm$core$Basics$LT = 0;
 var $elm$core$Result$Err = function (a) {
 	return {$: 1, a: a};
 };
@@ -4816,25 +4833,25 @@ var $elm$core$Array$treeFromBuilder = F2(
 	});
 var $elm$core$Array$builderToArray = F2(
 	function (reverseNodeList, builder) {
-		if (!builder.e) {
+		if (!builder.f) {
 			return A4(
 				$elm$core$Array$Array_elm_builtin,
-				$elm$core$Elm$JsArray$length(builder.g),
+				$elm$core$Elm$JsArray$length(builder.h),
 				$elm$core$Array$shiftStep,
 				$elm$core$Elm$JsArray$empty,
-				builder.g);
+				builder.h);
 		} else {
-			var treeLen = builder.e * $elm$core$Array$branchFactor;
+			var treeLen = builder.f * $elm$core$Array$branchFactor;
 			var depth = $elm$core$Basics$floor(
 				A2($elm$core$Basics$logBase, $elm$core$Array$branchFactor, treeLen - 1));
-			var correctNodeList = reverseNodeList ? $elm$core$List$reverse(builder.h) : builder.h;
-			var tree = A2($elm$core$Array$treeFromBuilder, correctNodeList, builder.e);
+			var correctNodeList = reverseNodeList ? $elm$core$List$reverse(builder.i) : builder.i;
+			var tree = A2($elm$core$Array$treeFromBuilder, correctNodeList, builder.f);
 			return A4(
 				$elm$core$Array$Array_elm_builtin,
-				$elm$core$Elm$JsArray$length(builder.g) + treeLen,
+				$elm$core$Elm$JsArray$length(builder.h) + treeLen,
 				A2($elm$core$Basics$max, 5, depth * $elm$core$Array$shiftStep),
 				tree,
-				builder.g);
+				builder.h);
 		}
 	});
 var $elm$core$Basics$idiv = _Basics_idiv;
@@ -4847,7 +4864,7 @@ var $elm$core$Array$initializeHelp = F5(
 				return A2(
 					$elm$core$Array$builderToArray,
 					false,
-					{h: nodeList, e: (len / $elm$core$Array$branchFactor) | 0, g: tail});
+					{i: nodeList, f: (len / $elm$core$Array$branchFactor) | 0, h: tail});
 			} else {
 				var leaf = $elm$core$Array$Leaf(
 					A3($elm$core$Elm$JsArray$initialize, $elm$core$Array$branchFactor, fromIndex, fn));
@@ -4885,6 +4902,7 @@ var $elm$core$Result$isOk = function (result) {
 		return false;
 	}
 };
+var $elm$json$Json$Decode$andThen = _Json_andThen;
 var $elm$json$Json$Decode$bool = _Json_decodeBool;
 var $author$project$Main$copyResult = _Platform_incomingPort('copyResult', $elm$json$Json$Decode$bool);
 var $elm$json$Json$Decode$map = _Json_map1;
@@ -4916,7 +4934,7 @@ var $elm$url$Url$Http = 0;
 var $elm$url$Url$Https = 1;
 var $elm$url$Url$Url = F6(
 	function (protocol, host, port_, path, query, fragment) {
-		return {aD: fragment, aF: host, aJ: path, aL: port_, aO: protocol, aP: query};
+		return {aP: fragment, aR: host, aW: path, aY: port_, a$: protocol, a0: query};
 	});
 var $elm$core$String$contains = _String_contains;
 var $elm$core$String$length = _String_length;
@@ -5195,53 +5213,7 @@ var $elm$core$Task$perform = F2(
 			A2($elm$core$Task$map, toMessage, task));
 	});
 var $elm$browser$Browser$element = _Browser_element;
-var $author$project$Types$MarkdownExport = 0;
-var $author$project$Main$init = {k: _List_Nil, X: $elm$core$Maybe$Nothing, aa: 0, ab: true, N: 0, G: $elm$core$Maybe$Nothing, t: $elm$core$Maybe$Nothing, j: _List_Nil, al: true, am: $elm$core$Maybe$Nothing, an: $elm$core$Maybe$Nothing, ap: '', at: true, I: $elm$core$Maybe$Nothing};
-var $elm$core$Platform$Cmd$batch = _Platform_batch;
-var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
-var $author$project$Types$PersonalToArea = 12;
-var $author$project$Types$TargetToArea = 11;
-var $elm$core$List$any = F2(
-	function (isOkay, list) {
-		any:
-		while (true) {
-			if (!list.b) {
-				return false;
-			} else {
-				var x = list.a;
-				var xs = list.b;
-				if (isOkay(x)) {
-					return true;
-				} else {
-					var $temp$isOkay = isOkay,
-						$temp$list = xs;
-					isOkay = $temp$isOkay;
-					list = $temp$list;
-					continue any;
-				}
-			}
-		}
-	});
-var $elm$json$Json$Encode$string = _Json_wrap;
-var $author$project$Main$copyToClipboard = _Platform_outgoingPort('copyToClipboard', $elm$json$Json$Encode$string);
-var $elm$core$Dict$RBEmpty_elm_builtin = {$: -2};
-var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
-var $elm$core$List$filter = F2(
-	function (isGood, list) {
-		return A3(
-			$elm$core$List$foldr,
-			F2(
-				function (x, xs) {
-					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
-				}),
-			_List_Nil,
-			list);
-	});
-var $author$project$Types$Augmenting = 0;
-var $author$project$Types$Mitigating = 1;
-var $author$project$Types$DcMultiplier = 2;
-var $author$project$Types$PermanentDuration = 7;
-var $author$project$Types$StoneTablet = 26;
+var $elm$json$Json$Decode$field = _Json_decodeField;
 var $elm$core$Maybe$andThen = F2(
 	function (callback, maybeValue) {
 		if (!maybeValue.$) {
@@ -5251,1387 +5223,17 @@ var $elm$core$Maybe$andThen = F2(
 			return $elm$core$Maybe$Nothing;
 		}
 	});
-var $author$project$Types$Foresee = 13;
-var $author$project$Types$Reveal = 18;
-var $author$project$Types$Afflict = 0;
-var $author$project$Types$Negates = 0;
-var $author$project$Types$S = 1;
-var $author$project$Types$SeedStackable = 1;
-var $author$project$Types$V = 0;
-var $author$project$Types$WillSave = 0;
-var $author$project$Seeds$afflict = {
-	U: $elm$core$Maybe$Nothing,
-	a0: 14,
-	V: '1 minute',
-	ay: _List_Nil,
-	W: _List_fromArray(
-		[0, 1]),
-	aA: 'Afflicts the target with a –2 morale penalty on attack rolls, checks, and saving throws. For each additional –1 penalty assessed on either the target\'s attack rolls, checks, or saving throws, increase the Spellcraft DC by +2. A character may also develop a spell with this seed that afflicts the target with a –1 penalty on caster level checks, a –1 penalty to an ability score, a –1 penalty to Spell Resistance, or a –1 penalty to some other aspect of the target. For each additional –1 penalty assessed in one of the above categories, increase the Spellcraft DC by +4. This seed can afflict a character\'s ability scores to the point where they reach 0, except for Constitution where 1 is the minimum. If a factor is applied to increase the duration of this seed, ability score penalties instead become temporary ability damage. If a factor is applied to make the duration permanent, any ability score penalties become permanent ability drain. Finally, by increasing the Spellcraft DC by +2, one of the target\'s senses can be afflicted: sight, smell, hearing, taste, touch, or a special sense the target possesses. If the target fails its saving throw, the sense selected doesn\'t function for the spell\'s duration, with all attendant penalties that apply for losing the specified sense.',
-	Z: _List_fromArray(
-		['Fear', 'Mind-Affecting']),
-	_: '20 minutes',
-	S: $elm$core$Maybe$Nothing,
-	bd: 0,
-	bj: _List_Nil,
-	q: 'Afflict',
-	ah: '300 ft.',
-	aj: $elm$core$Maybe$Just(
-		{S: 0, bb: false, ai: 0}),
-	ak: 'Enchantment (Compulsion)',
-	aq: true,
-	au: $elm$core$Maybe$Just('One living creature'),
-	bw: _List_fromArray(
-		[
-			{Y: 2, aA: 'Each additional –1 morale penalty beyond base –2', bd: 'afflict_rolls', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Additional –1 to rolls/checks/saves'},
-			{Y: 4, aA: 'Each –1 penalty to Strength score', bd: 'afflict_ability_str', bh: 1, a: $elm$core$Maybe$Nothing, q: '–1 to Strength'},
-			{Y: 4, aA: 'Each –1 penalty to Dexterity score', bd: 'afflict_ability_dex', bh: 1, a: $elm$core$Maybe$Nothing, q: '–1 to Dexterity'},
-			{Y: 4, aA: 'Each –1 penalty to Constitution score', bd: 'afflict_ability_con', bh: 1, a: $elm$core$Maybe$Nothing, q: '–1 to Constitution'},
-			{Y: 4, aA: 'Each –1 penalty to Intelligence score', bd: 'afflict_ability_int', bh: 1, a: $elm$core$Maybe$Nothing, q: '–1 to Intelligence'},
-			{Y: 4, aA: 'Each –1 penalty to Wisdom score', bd: 'afflict_ability_wis', bh: 1, a: $elm$core$Maybe$Nothing, q: '–1 to Wisdom'},
-			{Y: 4, aA: 'Each –1 penalty to Charisma score', bd: 'afflict_ability_cha', bh: 1, a: $elm$core$Maybe$Nothing, q: '–1 to Charisma'},
-			{Y: 4, aA: 'Each –1 penalty to caster level checks', bd: 'afflict_cl', bh: 1, a: $elm$core$Maybe$Nothing, q: '–1 to caster level checks'},
-			{Y: 4, aA: 'Each –1 penalty to spell resistance', bd: 'afflict_sr', bh: 1, a: $elm$core$Maybe$Nothing, q: '–1 to spell resistance'},
-			{Y: 4, aA: 'Each –1 penalty to some other aspect of the target', bd: 'afflict_other', bh: 1, a: $elm$core$Maybe$Nothing, q: '–1 to other aspect'},
-			{Y: 2, aA: 'One sense (sight, smell, hearing, taste, touch, or special) ceases to function for duration', bd: 'afflict_sense', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Afflict a sense'}
-		])
-};
-var $author$project$Types$Animate = 1;
-var $author$project$Types$SeedToggle = 0;
-var $author$project$Seeds$animate = {
-	U: $elm$core$Maybe$Nothing,
-	a0: 25,
-	V: '1 minute',
-	ay: _List_Nil,
-	W: _List_fromArray(
-		[0, 1]),
-	aA: 'This seed can imbue inanimate objects with mobility and a semblance of life (not actual life). The animated object attacks whomever or whatever the caster initially designates. The animated object can be of any nonmagical material. The caster can also animate part of a larger mass of raw matter, such as a volume of water in the ocean, part of a stony wall, or the earth itself, as long as the volume of material does not exceed 20 cubic feet. For each additional 10 cubic feet of matter animated, increase the Spellcraft DC by +1, up to 1,000 cubic feet. For each additional 100 cubic feet of matter animated after the first 1,000 cubic feet, increase the Spellcraft DC by +1. For each additional Hit Die granted to an animated object of a given size, increase the Spellcraft DC by +2. To animate attended objects (objects carried or worn by another creature), increase the Spellcraft DC by +10.',
-	Z: _List_Nil,
-	_: '20 rounds',
-	S: $elm$core$Maybe$Nothing,
-	bd: 1,
-	bj: _List_Nil,
-	q: 'Animate',
-	ah: '300 ft.',
-	aj: $elm$core$Maybe$Nothing,
-	ak: 'Transmutation',
-	aq: false,
-	au: $elm$core$Maybe$Just('Object or 20 cu. ft. of matter'),
-	bw: _List_fromArray(
-		[
-			{
-			Y: 1,
-			aA: 'Increases animated volume beyond base 20 cu. ft., up to 1,000 cu. ft.',
-			bd: 'animate_vol_1k',
-			bh: 1,
-			a: $elm$core$Maybe$Just(98),
-			q: 'Each additional 10 cu. ft. (up to 1,000)'
-		},
-			{Y: 1, aA: 'Increases animated volume beyond 1,000 cu. ft.', bd: 'animate_vol_over1k', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each additional 100 cu. ft. (beyond 1,000)'},
-			{Y: 2, aA: 'Each additional HD granted to the animated object', bd: 'animate_hd', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Additional Hit Die for animated object'},
-			{
-			Y: 10,
-			aA: 'Objects carried or worn by another creature',
-			bd: 'animate_attended',
-			bh: 0,
-			a: $elm$core$Maybe$Just(1),
-			q: 'Animate attended objects'
-		}
-		])
-};
-var $author$project$Types$AnimateDead = 2;
-var $elm$core$Basics$negate = function (n) {
-	return -n;
-};
-var $author$project$Seeds$animateDead = {
-	U: $elm$core$Maybe$Nothing,
-	a0: 23,
-	V: '1 minute',
-	ay: _List_Nil,
-	W: _List_fromArray(
-		[0, 1]),
-	aA: 'The caster can turn the bones or bodies of dead creatures into undead that follow his or her spoken commands. The undead can follow the caster, or they can remain in an area and attack any creature (or a specific type of creature) entering the place. The undead remain animated until they are destroyed. (A destroyed undead can\'t be animated again.) Intelligent undead can follow more sophisticated commands. The animate dead seed allows a character to create 20 HD of undead. For each additional 1 HD of undead created, increase the Spellcraft DC by +1. The undead created remain under the caster\'s control indefinitely. A caster can naturally control 1 HD per caster level of undead creatures he or she has personally created, regardless of the method used. If the caster exceeds this number, newly created creatures fall under his or her control, and excess undead from previous castings become uncontrolled (the caster chooses which creatures are released). If the caster is a cleric, any undead he or she commands through his or her ability to command or rebuke undead do not count toward the limit. For each additional 2 HD of undead to be controlled, increase the Spellcraft DC by +1. Only undead in excess of 20 HD created with this seed can be controlled using this DC adjustment. To both create and control more than 20 HD of undead, increase the Spellcraft DC by +3 per additional 2 HD of undead.\n\nType of Undead: All types of undead can be created with the animate dead seed, although creating more powerful undead increases the Spellcraft DC of the epic spell, according to the table below. The GM must set the Spellcraft DC for undead not included on the table, using similar undead as a basis for comparison.',
-	Z: _List_fromArray(
-		['Evil']),
-	_: 'Instantaneous',
-	S: $elm$core$Maybe$Nothing,
-	bd: 2,
-	bj: _List_Nil,
-	q: 'Animate Dead',
-	ah: 'Touch',
-	aj: $elm$core$Maybe$Nothing,
-	ak: 'Necromancy',
-	aq: false,
-	au: $elm$core$Maybe$Just('One or more corpses touched'),
-	bw: _List_fromArray(
-		[
-			{Y: 1, aA: 'Above base 20 HD', bd: 'adead_extra_hd_create', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each additional 1 HD of undead created'},
-			{Y: 1, aA: 'Control undead beyond free limit (above 20 HD created)', bd: 'adead_extra_hd_control', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each additional 2 HD to control'},
-			{
-			Y: -12,
-			aA: 'DC modifier for skeleton type',
-			bd: 'adead_skeleton',
-			bh: 0,
-			a: $elm$core$Maybe$Just(1),
-			q: 'Undead type: Skeleton'
-		},
-			{
-			Y: -12,
-			aA: 'DC modifier for zombie type',
-			bd: 'adead_zombie',
-			bh: 0,
-			a: $elm$core$Maybe$Just(1),
-			q: 'Undead type: Zombie'
-		},
-			{
-			Y: -10,
-			aA: 'DC modifier for ghoul type',
-			bd: 'adead_ghoul',
-			bh: 0,
-			a: $elm$core$Maybe$Just(1),
-			q: 'Undead type: Ghoul'
-		},
-			{
-			Y: -8,
-			aA: 'DC modifier for shadow type',
-			bd: 'adead_shadow',
-			bh: 0,
-			a: $elm$core$Maybe$Just(1),
-			q: 'Undead type: Shadow'
-		},
-			{
-			Y: -6,
-			aA: 'DC modifier for ghast type',
-			bd: 'adead_ghast',
-			bh: 0,
-			a: $elm$core$Maybe$Just(1),
-			q: 'Undead type: Ghast'
-		},
-			{
-			Y: -4,
-			aA: 'DC modifier for wight type',
-			bd: 'adead_wight',
-			bh: 0,
-			a: $elm$core$Maybe$Just(1),
-			q: 'Undead type: Wight'
-		},
-			{
-			Y: -2,
-			aA: 'DC modifier for wraith type',
-			bd: 'adead_wraith',
-			bh: 0,
-			a: $elm$core$Maybe$Just(1),
-			q: 'Undead type: Wraith'
-		},
-			{
-			Y: 0,
-			aA: 'DC modifier for mummy type',
-			bd: 'adead_mummy',
-			bh: 0,
-			a: $elm$core$Maybe$Just(1),
-			q: 'Undead type: Mummy'
-		},
-			{
-			Y: 2,
-			aA: 'DC modifier for spectre type',
-			bd: 'adead_spectre',
-			bh: 0,
-			a: $elm$core$Maybe$Just(1),
-			q: 'Undead type: Spectre'
-		},
-			{
-			Y: 4,
-			aA: 'DC modifier for mohrg type',
-			bd: 'adead_mohrg',
-			bh: 0,
-			a: $elm$core$Maybe$Just(1),
-			q: 'Undead type: Mohrg'
-		},
-			{
-			Y: 6,
-			aA: 'DC modifier for vampire type',
-			bd: 'adead_vampire',
-			bh: 0,
-			a: $elm$core$Maybe$Just(1),
-			q: 'Undead type: Vampire'
-		},
-			{
-			Y: 8,
-			aA: 'DC modifier for ghost type',
-			bd: 'adead_ghost',
-			bh: 0,
-			a: $elm$core$Maybe$Just(1),
-			q: 'Undead type: Ghost'
-		}
-		])
-};
-var $author$project$Types$Armor = 3;
-var $author$project$Seeds$armor = {
-	U: $elm$core$Maybe$Nothing,
-	a0: 14,
-	V: '1 minute',
-	ay: _List_Nil,
-	W: _List_fromArray(
-		[0, 1]),
-	aA: 'This seed grants a creature additional armor, providing a +4 bonus to Armor Class. The bonus is either an armor bonus or a natural armor bonus, whichever the caster selects. Unlike mundane armor, the armor seed provides an intangible protection that entails no armor check penalty, arcane spell failure chance, or speed reduction. Incorporeal creatures can\'t bypass the armor seed the way they can ignore normal armor. For each additional point of Armor Class bonus, increase the Spellcraft DC by +2. The caster can also grant a creature a +1 bonus to Armor Class using a different bonus type, such as deflection, divine, or insight. For each additional point of bonus to Armor Class of one of these types, increase the Spellcraft DC by +10.',
-	Z: _List_fromArray(
-		['Force']),
-	_: '24 hours (D)',
-	S: $elm$core$Maybe$Nothing,
-	bd: 3,
-	bj: _List_Nil,
-	q: 'Armor',
-	ah: 'Touch',
-	aj: $elm$core$Maybe$Just(
-		{S: 0, bb: true, ai: 0}),
-	ak: 'Conjuration (Creation)',
-	aq: true,
-	au: $elm$core$Maybe$Just('Creature touched'),
-	bw: _List_fromArray(
-		[
-			{Y: 2, aA: 'Above base +4', bd: 'armor_ac_bonus', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each additional +1 armor/natural armor bonus'},
-			{Y: 10, aA: 'Bonus type other than armor/natural armor, per +1', bd: 'armor_other_type', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each +1 bonus of other type (deflection, divine, insight…)'}
-		])
-};
-var $author$project$Types$Banish = 4;
-var $author$project$Seeds$banish = {
-	U: $elm$core$Maybe$Nothing,
-	a0: 27,
-	V: '1 minute',
-	ay: _List_Nil,
-	W: _List_fromArray(
-		[0, 1]),
-	aA: 'This seed forces extraplanar creatures out of the caster\'s home plane. The caster can banish up to 14 HD of extraplanar creatures. For each additional 2 HD of extraplanar creatures banished, increase the Spellcraft DC by +1. To specify a type or subtype of creature other than outsider to be banished, increase the Spellcraft DC by +20.',
-	Z: _List_Nil,
-	_: 'Instantaneous',
-	S: $elm$core$Maybe$Nothing,
-	bd: 4,
-	bj: _List_Nil,
-	q: 'Banish',
-	ah: '75 ft.',
-	aj: $elm$core$Maybe$Just(
-		{S: 0, bb: false, ai: 0}),
-	ak: 'Abjuration',
-	aq: true,
-	au: $elm$core$Maybe$Just('One or more extraplanar creatures, no two more than 30 ft. apart'),
-	bw: _List_fromArray(
-		[
-			{Y: 1, aA: 'Above base 14 HD', bd: 'banish_hd', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each additional 2 HD banished'},
-			{
-			Y: 20,
-			aA: 'Banish a creature type other than outsider',
-			bd: 'banish_type',
-			bh: 0,
-			a: $elm$core$Maybe$Just(1),
-			q: 'Specify non-outsider creature type/subtype'
-		}
-		])
-};
-var $author$project$Types$Compel = 5;
-var $author$project$Types$M = 2;
-var $author$project$Seeds$compel = {
-	U: $elm$core$Maybe$Nothing,
-	a0: 19,
-	V: '1 minute',
-	ay: _List_Nil,
-	W: _List_fromArray(
-		[0, 2]),
-	aA: 'This seed compels a target to follow a course of activity. At the basic level of effect, a spell using the compel seed must be worded in such a manner as to make the activity sound reasonable. Asking the creature to do an obviously harmful act automatically negates the effect (unless the Spellcraft DC has been increased to avoid this limitation; see below). To compel a creature to follow an outright unreasonable course of action, increase the Spellcraft DC by +10. The compelled course of activity can continue for the entire duration. If the compelled activity can be completed in a shorter time, the spell ends when the subject finishes what he or she was asked to do. The caster can instead specify conditions that will trigger a special activity during the duration. If the condition is not met before the spell using this seed expires, the activity is not performed.',
-	Z: _List_fromArray(
-		['Mind-Affecting']),
-	_: '20 hours or until completed',
-	S: $elm$core$Maybe$Nothing,
-	bd: 5,
-	bj: _List_Nil,
-	q: 'Compel',
-	ah: '75 ft.',
-	aj: $elm$core$Maybe$Just(
-		{S: 0, bb: false, ai: 0}),
-	ak: 'Enchantment (Compulsion)',
-	aq: true,
-	au: $elm$core$Maybe$Just('One living creature'),
-	bw: _List_fromArray(
-		[
-			{
-			Y: 10,
-			aA: 'Removes the \'sounds reasonable\' restriction',
-			bd: 'compel_unreasonable',
-			bh: 0,
-			a: $elm$core$Maybe$Just(1),
-			q: 'Compel outright unreasonable / self-harmful action'
-		}
-		])
-};
-var $author$project$Types$Conceal = 6;
-var $author$project$Seeds$conceal = {
-	U: $elm$core$Maybe$Nothing,
-	a0: 17,
-	V: '1 minute',
-	ay: _List_Nil,
-	W: _List_fromArray(
-		[0, 1]),
-	aA: 'This seed can conceal a creature or object touched from sight, even from darkvision. If the subject is a creature carrying gear, the gear vanishes too, rendering the creature invisible. A spell using the conceal seed ends if the subject attacks any creature. Actions directed at unattended objects do not break the spell, and causing harm indirectly is not an attack. To create invisibility that lasts regardless of the actions of the subject, increase the Spellcraft DC by +4. Alternatively, this seed can conceal the exact location of the subject so that it appears to be about 2 feet away from its true location; this increases the Spellcraft DC by +2. The subject benefits from a 50% miss chance as if it had total concealment. However, unlike actual total concealment, this displacement effect does not prevent enemies from targeting him or her normally. The conceal seed can also be used to block divination spells, spell-like effects, and epic spells developed using the reveal seed; this increases the Spellcraft DC by +6. In all cases where divination magic of any level, including epic level, is employed against the subject of a spell using the conceal seed for this purpose, an opposed caster level check determines which spell works.',
-	Z: _List_Nil,
-	_: '200 minutes or until expended (D)',
-	S: $elm$core$Maybe$Nothing,
-	bd: 6,
-	bj: _List_fromArray(
-		[
-			{
-			a8: _List_fromArray(
-				[
-					{
-					Y: 4,
-					aA: 'Normally ends if subject attacks; this removes that restriction',
-					bd: 'conceal_persist',
-					bh: 0,
-					a: $elm$core$Maybe$Just(1),
-					q: 'Persistent invisibility (regardless of actions)'
-				}
-				]),
-			bd: 'conceal_invisibility',
-			q: 'Invisibility'
-		},
-			{a8: _List_Nil, bd: 'conceal_displacement', q: 'Displacement'}
-		]),
-	q: 'Conceal',
-	ah: 'Personal or touch',
-	aj: $elm$core$Maybe$Nothing,
-	ak: 'Illusion (Glamer)',
-	aq: false,
-	au: $elm$core$Maybe$Just('You or a creature or object of up to 2,000 lb.'),
-	bw: _List_fromArray(
-		[
-			{
-			Y: 6,
-			aA: 'Opposed caster level check determines which spell works',
-			bd: 'conceal_block_divination',
-			bh: 0,
-			a: $elm$core$Maybe$Just(1),
-			q: 'Block divination / reveal-seed spells'
-		}
-		])
-};
-var $author$project$Types$Conjure = 7;
-var $author$project$Seeds$conjure = {
-	U: $elm$core$Maybe$Nothing,
-	a0: 21,
-	V: '1 minute',
-	ay: _List_Nil,
-	W: _List_fromArray(
-		[0, 1]),
-	aA: 'This seed creates a nonmagical, unattended object of nonliving matter of up to 20 cubic feet in volume. The caster must succeed at an appropriate skill check to make a complex item. The seed can create matter ranging in hardness and rarity from vegetable matter all the way up to mithral and even adamantine. Simple objects have a natural duration of 24 hours. For each additional cubic foot of matter created, increase the Spellcraft DC by +2. Attempting to use any created object as a material component or a resource during epic spell development causes the spell to fail and the object to disappear.\n\nThe Conjure seed can be used in conjunction with the life and fortify seeds for an epic spell that creates an entirely new creature, if made permanent. To give a creature spell-like abilities, apply other epic seeds to the epic spell that replicate the desired ability. To give the creature a supernatural or extraordinary ability rather than a spell-like ability, double the cost of the relevant seed. Remember that two doublings equals a tripling, and so forth. To give a creature Hit Dice, use the fortify seed. Each 5 hit points granted to the creature gives it an additional 1 HD. Once successfully created, the new creature will breed true.',
-	Z: _List_Nil,
-	_: '8 hours (simple objects last 24 hours)',
-	S: $elm$core$Maybe$Just('Unattended, nonmagical object of nonliving matter up to 20 cu. ft.'),
-	bd: 7,
-	bj: _List_fromArray(
-		[
-			{
-			a8: _List_fromArray(
-				[
-					{Y: 2, aA: 'Above base 20 cu. ft.', bd: 'conjure_vol', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each additional cu. ft. of matter'}
-				]),
-			bd: 'conjure_object',
-			q: 'Simple Object Creation'
-		},
-			{a8: _List_Nil, bd: 'conjure_creature', q: 'Creature Creation (with Life + Fortify)'}
-		]),
-	q: 'Conjure',
-	ah: '0 ft.',
-	aj: $elm$core$Maybe$Nothing,
-	ak: 'Conjuration (Creation)',
-	aq: false,
-	au: $elm$core$Maybe$Nothing,
-	bw: _List_Nil
-};
-var $author$project$Types$Contact = 8;
-var $author$project$Seeds$contact = {
-	U: $elm$core$Maybe$Nothing,
-	a0: 23,
-	V: '1 minute',
-	ay: _List_Nil,
-	W: _List_fromArray(
-		[0, 1]),
-	aA: 'This seed forges a telepathic bond with a particular creature with which the caster is familiar (or one that the caster can currently see directly or through magical means) and can converse back and forth. The subject recognizes the caster if it knows him or her. It can answer in like manner immediately, though it does not have to. The caster can forge a communal bond among more than two creatures. For each additional creature contacted, increase the Spellcraft DC by +1. The bond can be established only among willing subjects, which therefore receive no saving throw or Spell Resistance. For telepathic communication through the bond regardless of language, increase the Spellcraft DC by +4. No special influence is established as a result of the bond, only the power to communicate at a distance.\n\nAt the base Spellcraft DC of 20, a caster can also use the contact seed to imbue an object (or creature) with a message he or she prepares that appears as written text for the spell\'s duration or is spoken aloud in a language the caster knows. The spoken message can be of any length, but the length of written text is limited to what can be contained (as text of a readable size) on the surface of the target. The message is delivered when specific conditions are fulfilled according to the caster\'s desire when the spell is cast.',
-	Z: _List_Nil,
-	_: '200 minutes',
-	S: $elm$core$Maybe$Nothing,
-	bd: 8,
-	bj: _List_fromArray(
-		[
-			{
-			a8: _List_fromArray(
-				[
-					{Y: 1, aA: 'Bond only among willing subjects (no save or SR)', bd: 'contact_extra_creature', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each additional creature in bond'},
-					{
-					Y: 4,
-					aA: '',
-					bd: 'contact_language',
-					bh: 0,
-					a: $elm$core$Maybe$Just(1),
-					q: 'Telepathic communication regardless of language'
-				}
-				]),
-			bd: 'contact_bond',
-			q: 'Telepathic Bond'
-		},
-			{a8: _List_Nil, bd: 'contact_messenger', q: 'Messenger'}
-		]),
-	q: 'Contact',
-	ah: 'See text',
-	aj: $elm$core$Maybe$Nothing,
-	ak: 'Divination',
-	aq: false,
-	au: $elm$core$Maybe$Just('One creature'),
-	bw: _List_Nil
-};
-var $author$project$Types$Delude = 9;
-var $author$project$Seeds$delude = {
-	U: $elm$core$Maybe$Nothing,
-	a0: 14,
-	V: '1 minute',
-	ay: _List_Nil,
-	W: _List_fromArray(
-		[0, 1]),
-	aA: 'A spell developed with the delude seed creates the visual illusion of an object, creature, or force, as visualized by the caster. The caster can move the image within the limits of the size of the effect by concentrating (the image is otherwise stationary). The image disappears when struck by an opponent unless the caster causes the illusion to react appropriately. For an illusion that includes audible, olfactory, tactile, taste, and thermal aspects, increase the Spellcraft DC by +2 per extra aspect. Even realistic tactile and thermal illusions can\'t deal damage, however. For each additional image to be created, increase the Spellcraft DC by +1. For an illusion that follows a script determined by the caster, increase the Spellcraft DC by +9. The figment follows the script without the caster having to concentrate on it. The illusion can include intelligible speech if desired. For an illusion that makes any area appear to be something other than it is, increase the Spellcraft DC by +4. Additional components, such as sounds, can be added as noted above. Concealing creatures requires additional spell development using this or other seeds.',
-	Z: _List_Nil,
-	_: 'Concentration + 20 hours',
-	S: $elm$core$Maybe$Just('Visual figment up to twenty 30-ft. cubes (S)'),
-	bd: 9,
-	bj: _List_Nil,
-	q: 'Delude',
-	ah: '12,000 ft.',
-	aj: $elm$core$Maybe$Just(
-		{S: 0, bb: false, ai: 0}),
-	ak: 'Illusion (Figment)',
-	aq: false,
-	au: $elm$core$Maybe$Nothing,
-	bw: _List_fromArray(
-		[
-			{
-			Y: 2,
-			aA: 'Audible, olfactory, tactile, taste, or thermal (cannot deal damage)',
-			bd: 'delude_sense',
-			bh: 1,
-			a: $elm$core$Maybe$Just(5),
-			q: 'Each additional sensory aspect'
-		},
-			{Y: 1, aA: '', bd: 'delude_extra_image', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each additional image'},
-			{
-			Y: 9,
-			aA: 'Can include intelligible speech',
-			bd: 'delude_script',
-			bh: 0,
-			a: $elm$core$Maybe$Just(1),
-			q: 'Illusion follows a script (no concentration)'
-		},
-			{
-			Y: 4,
-			aA: '',
-			bd: 'delude_area',
-			bh: 0,
-			a: $elm$core$Maybe$Just(1),
-			q: 'Make an area appear to be something other than it is'
-		}
-		])
-};
-var $author$project$Types$Destroy = 10;
-var $author$project$Types$FortSave = 2;
-var $author$project$Types$Half = 1;
-var $author$project$Seeds$destroy = {
-	U: $elm$core$Maybe$Nothing,
-	a0: 29,
-	V: '1 minute',
-	ay: _List_Nil,
-	W: _List_fromArray(
-		[0, 1]),
-	aA: 'This seed deals 20d6 points of damage to the target. The damage is of no particular type or energy. For each additional 1d6 points of damage dealt, increase the Spellcraft DC by +2. If the target is reduced to -10 hit points or less (or a construct, object, or undead is reduced to 0 hit points), it is utterly destroyed as if disintegrated, leaving behind only a trace of fine dust. Up to a 10-foot cube of nonliving matter is affected, so a spell using the destroy seed destroys only part of any very large object or structure targeted. The destroy seed affects even magical matter, energy fields, and force effects that are normally only affected by the disintegrate spell. Such effects are automatically destroyed. Epic spells using the ward seed may also be destroyed, though the caster must succeed at an opposed caster level check against the other spellcaster to bring down a ward spell.',
-	Z: _List_Nil,
-	_: 'Instantaneous',
-	S: $elm$core$Maybe$Nothing,
-	bd: 10,
-	bj: _List_Nil,
-	q: 'Destroy',
-	ah: '12,000 ft.',
-	aj: $elm$core$Maybe$Just(
-		{S: 1, bb: false, ai: 2}),
-	ak: 'Transmutation',
-	aq: true,
-	au: $elm$core$Maybe$Just('One creature, or up to a 10-ft. cube of nonliving matter'),
-	bw: _List_fromArray(
-		[
-			{Y: 2, aA: 'Above base 20d6', bd: 'destroy_damage', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each additional 1d6 damage'}
-		])
-};
-var $author$project$Types$Dispel = 11;
-var $author$project$Seeds$dispel = {
-	U: $elm$core$Maybe$Nothing,
-	a0: 19,
-	V: '1 minute',
-	ay: _List_Nil,
-	W: _List_fromArray(
-		[0, 1]),
-	aA: 'This seed can end ongoing spells that have been cast on a creature or object, temporarily suppress the magical abilities of a magic item, or end ongoing spells (or at least their effects) within an area. A dispelled spell ends as if its duration had expired. The dispel seed can defeat all spells, even those not normally subject to dispel magic. The dispel seed can dispel (but not counter) the ongoing effects of supernatural abilities as well as spells, and it affects spell-like effects just as it affects spells. One creature, object, or spell is the target of the dispel seed. The caster makes a dispel check against the spell or against each ongoing spell currently in effect on the object or creature. A dispel check is 1d20 + 10 against a DC of 11 + the target spell\'s caster level. For each additional +1 on the dispel check, increase the Spellcraft DC by +1. If targeting an object or creature that is the effect of an ongoing spell, make a dispel check to end the spell that affects the object or creature. If the object targeted is a magic item, make a dispel check against the item\'s caster level. If succeessful, all the item\'s magical properties are suppressed for 1d4 rounds, after which the item recovers on its own. A suppressed item becomes nonmagical for the duration of the effect. An interdimensional interface is temporarily closed. A magic item\'s physical properties are unchanged. Any creature, object, or spell is potentially subject to the dispel seed, even the spells of gods and the abilities of artifacts. A character automatically succeeds on the dispel check against any spell that he or she cast him or her self.',
-	Z: _List_Nil,
-	_: 'Instantaneous',
-	S: $elm$core$Maybe$Nothing,
-	bd: 11,
-	bj: _List_Nil,
-	q: 'Dispel',
-	ah: '300 ft.',
-	aj: $elm$core$Maybe$Nothing,
-	ak: 'Abjuration',
-	aq: false,
-	au: $elm$core$Maybe$Just('One creature, object, or spell'),
-	bw: _List_fromArray(
-		[
-			{Y: 1, aA: 'Above base +10', bd: 'dispel_bonus', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each +1 to dispel check'}
-		])
-};
-var $author$project$Types$Energy = 12;
-var $author$project$Types$ReflexSave = 1;
-var $author$project$Seeds$energy = {
-	U: $elm$core$Maybe$Just('20-ft.-radius hemisphere burst'),
-	a0: 19,
-	V: '1 minute',
-	ay: _List_fromArray(
-		[
-			{
-			a4: 'fire',
-			bd: 'energyType',
-			L: 'Energy Type',
-			af: _List_fromArray(
-				['acid', 'cold', 'electricity', 'fire', 'sonic'])
-		}
-		]),
-	W: _List_fromArray(
-		[0, 1]),
-	aA: 'This seed uses whichever one of five energy types the caster chooses: acid, cold, electricity, fire, or sonic. The caster can cast the energy forth as a bolt, imbue an object with the energy, or create a freestanding manifestation of the energy. If the spell developed using the energy seed releases a bolt, that bolt instantaneously deals 10d6 points of damage of the appropriate energy type, and all in the bolt\'s area must make a Reflex save for half damage. For each additional 1d6 points of damage dealt, increase the Spellcraft DC by +2. The bolt begins at the caster’s fingertips. To imbue another creature with the ability to use an energy bolt as a spell-like ability at its option or when a particular condition is met, increase the Spellcraft DC by +25. The caster can also cause a creature or object to emanate the specific energy type out to a radius of 10 feet for 20 hours. The emanated energy deals 2d6 points of energy damage per round against unprotected creatures (the target creature is susceptible if not separately warded or otherwise resistant to the energy). For each additional 1d6 points of damage emanated, increase the Spellcraft DC by +2. The caster may also create a wall, half-circle, circle, dome, or sphere of the desired energy that emanates the energy for up to 20 hours. One side of the wall, selected by the caster, sends forth waves of energy, dealing 2d4 points of energy damage to creatures within 10 feet and 1d4 points of energy damage to those past 10 feet but within 20 feet. The wall deals this damage when it appears and in each round that a creature enters or remains in the area. In addition, the wall deals 2d6+20 points of energy damage to any creature passing through it. The wall deals double damage to undead creatures. For each additional 1d4 points of damage, increase the Spellcraft DC by +2.\n\nThe caster can also use the energy seed to create a spell that carefully releases and balances the emanation of cold, electricity, and fire, creating specific weather effects for a period of 20 hours. Using the energy seed this way has a base Spellcraft DC of 25. The area extends to a two-mile-radius centered on the caster. Once the spell is cast, the weather takes 10 minutes to manifest. Ordinarily, a caster can\'t directly target a creature or object, though indirect effects are possible. This seed can create cold snaps, heat waves, thunderstorms, fogs, blizzards—even a tornado that moves randomly in the affected area. Creating targeted damaging effects requires an additional use of the energy seed.',
-	Z: _List_Nil,
-	_: 'Instantaneous',
-	S: $elm$core$Maybe$Nothing,
-	bd: 12,
-	bj: _List_fromArray(
-		[
-			{
-			a8: _List_fromArray(
-				[
-					{Y: 2, aA: 'Above base 10d6', bd: 'energy_bolt_damage', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each additional 1d6 damage'},
-					{
-					Y: 25,
-					aA: 'As a spell-like ability, at its option or on trigger',
-					bd: 'energy_bolt_imbue',
-					bh: 0,
-					a: $elm$core$Maybe$Just(1),
-					q: 'Imbue another creature with bolt ability'
-				}
-				]),
-			bd: 'energy_bolt',
-			q: 'Bolt'
-		},
-			{
-			a8: _List_fromArray(
-				[
-					{Y: 2, aA: 'Above base 2d6/round', bd: 'energy_em_damage', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each additional 1d6 damage per round'}
-				]),
-			bd: 'energy_emanation',
-			q: 'Emanation'
-		},
-			{
-			a8: _List_fromArray(
-				[
-					{Y: 4, aA: 'Above base 2d4 near / 1d4 far; passage damage scales with proximity damage', bd: 'energy_wall_damage', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each additional 1d4 damage (wall proximity)'}
-				]),
-			bd: 'energy_wall',
-			q: 'Wall / Dome / Sphere'
-		},
-			{a8: _List_Nil, bd: 'energy_weather', q: 'Weather Effects'}
-		]),
-	q: 'Energy',
-	ah: '300 ft.',
-	aj: $elm$core$Maybe$Just(
-		{S: 1, bb: false, ai: 1}),
-	ak: 'Evocation',
-	aq: true,
-	au: $elm$core$Maybe$Nothing,
-	bw: _List_Nil
-};
-var $author$project$Seeds$foresee = {
-	U: $elm$core$Maybe$Nothing,
-	a0: 17,
-	V: '1 minute',
-	ay: _List_Nil,
-	W: _List_fromArray(
-		[0, 1]),
-	aA: 'The caster can foretell the immediate future, or gain information about specific questions. He or she is 90% likely to receive a meaningful reading of the future of the next 30 minutes. If successful, the caster knows if a particular action will bring good results, bad results, or no result. For each additional 30 minutes into the future, multiply the Spellcraft DC by x2. For better results, the caster can pose up to ten specific questions (one per round while he or she concentrates) to unknown powers of other planes, but the base Spellcraft DC for such an attempt is 23. The answers return in a language the caster understands, but use only one-word replies: “yes,” “no,” “maybe,” “never,” “irrelevant,” or some other one-word answer. Unlike 0- to 9th-level spells of similar type, all questions answered are 90% likely to be answered truthfully. However, a specific spell using the foresee seed can only be cast once every five weeks. The foresee seed is also useful for epic spells requiring specific information before functioning, such as spells using the reveal and transport seeds. The foresee seed can also be used to gain one basic piece of information about a living target: level, class, alignment, or some special ability (or one of an object\'s magical abilities, if any). For each additional piece of information revealed, increase the Spellcraft DC by +2.',
-	Z: _List_Nil,
-	_: 'Instantaneous or concentration',
-	S: $elm$core$Maybe$Nothing,
-	bd: 13,
-	bj: _List_fromArray(
-		[
-			{
-			a8: _List_fromArray(
-				[
-					{Y: 0, aA: 'Multiplies this seed\'s DC by ×2 per interval (special: not additive)', bd: 'foresee_interval', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each additional 30-min interval'}
-				]),
-			bd: 'foresee_predict',
-			q: 'Predict the Future (30 min)'
-		},
-			{a8: _List_Nil, bd: 'foresee_questions', q: 'Ask Questions (10 questions)'},
-			{
-			a8: _List_fromArray(
-				[
-					{Y: 2, aA: 'Level, class, alignment, special ability, or magic item ability', bd: 'foresee_extra_info', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each additional piece of info about target'}
-				]),
-			bd: 'foresee_info',
-			q: 'Targeted Info'
-		}
-		]),
-	q: 'Foresee',
-	ah: 'Personal',
-	aj: $elm$core$Maybe$Nothing,
-	ak: 'Divination',
-	aq: false,
-	au: $elm$core$Maybe$Just('You'),
-	bw: _List_Nil
-};
-var $author$project$Types$Fortify = 14;
-var $author$project$Seeds$fortify = {
-	U: $elm$core$Maybe$Nothing,
-	a0: 17,
-	V: '1 minute',
-	ay: _List_Nil,
-	W: _List_fromArray(
-		[0, 1]),
-	aA: 'Spells using the fortify seed grant a +1 enhancement bonus to whichever one of the following the caster chooses:\n\nAny one ability score.\nAny one kind of saving throw.\nSpell resistance.\nNatural armor.\nThe fortify seed can also grant energy resistance 1 for one energy type or 1 temporary hit point. For each additional +1 bonus, point of energy resistance, or hit point, increase the Spellcraft DC by +2.\n\nThe fortify seed has a base Spellcraft DC of 23 if it grants a +1 bonus of a type other than enhancement. For each additional +1 bonus of a type other than enhancement, increase the Spellcraft DC by +6. If the caster applies a factor to make the duration permanent, the bonus must be an inherent bonus, and the maximum inherent bonus allowed is +5.\n\nThe fortify seed has a base Spellcraft DC of 27 if it grants a creature a +1 bonus to an ability score or other statistic it does not possess. For each additional +1 bonus, increase the Spellcraft DC by +4. If a spell with the fortify seed grants an inanimate object an ability score it would not normally possess (such as Intelligence), the spell must also incorporate the life seed.\n\nGranting Spell Resistance to a creature that doesn\'t already have it is a special case; the base Spellcraft DC of 27 grants Spell Resistance 25, and each additional point of Spell Resistance increases the Spellcraft DC by +4 (each -1 to Spell Resistance reduces the Spellcraft DC by -2).\n\nThe fortify seed can also grant damage reduction 1/magic. For each additional point of damage reduction, increase the Spellcraft DC by +2. To increase the damage reduction value to epic, increase the Spellcraft DC by +15.\n\nA special use of the fortify seed grants the target a permanent +1 year to its current age category. For each additional +1 year added to the creature\'s current age category, increase the Spellcraft DC by +2. Incremental adjustments to a creature\'s maximum age do not stack; they overlap. When a spell increases a creature\'s current age category, all higher age categories are also adjusted accordingly.',
-	Z: _List_Nil,
-	_: '20 hours',
-	S: $elm$core$Maybe$Nothing,
-	bd: 14,
-	bj: _List_fromArray(
-		[
-			{
-			a8: _List_fromArray(
-				[
-					{Y: 2, aA: 'Above base +1', bd: 'fortify_enhance_plus', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each additional +1 (or 1 energy resist / 1 temp hp)'}
-				]),
-			bd: 'fortify_enhance',
-			q: 'Enhancement Bonus'
-		},
-			{
-			a8: _List_fromArray(
-				[
-					{Y: 6, aA: '', bd: 'fortify_other_plus', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each additional +1 non-enhancement bonus'}
-				]),
-			bd: 'fortify_nonenhance',
-			q: 'Non-Enhancement Bonus'
-		},
-			{
-			a8: _List_fromArray(
-				[
-					{Y: 4, aA: '', bd: 'fortify_new_plus', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each additional +1'}
-				]),
-			bd: 'fortify_new',
-			q: 'Bonus to New Statistic (target doesn\'t have it)'
-		},
-			{
-			a8: _List_fromArray(
-				[
-					{Y: 4, aA: '', bd: 'fortify_sr_plus', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each +1 SR above 25'},
-					{Y: -2, aA: '', bd: 'fortify_sr_minus', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each –1 SR below 25'},
-					{
-					Y: 15,
-					aA: '+15 DC surcharge to make DR bypass epic',
-					bd: 'fortify_dr_epic',
-					bh: 0,
-					a: $elm$core$Maybe$Just(1),
-					q: 'Damage Reduction vs. epic'
-				}
-				]),
-			bd: 'fortify_sr',
-			q: 'Grant Spell Resistance 25'
-		},
-			{
-			a8: _List_fromArray(
-				[
-					{Y: 2, aA: 'Increments do not stack; they overlap', bd: 'fortify_age_year', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each +1 year to current age category'}
-				]),
-			bd: 'fortify_age',
-			q: 'Expand Age Category'
-		}
-		]),
-	q: 'Fortify',
-	ah: 'Touch',
-	aj: $elm$core$Maybe$Just(
-		{S: 0, bb: true, ai: 0}),
-	ak: 'Transmutation',
-	aq: true,
-	au: $elm$core$Maybe$Just('Creature touched'),
-	bw: _List_fromArray(
-		[
-			{Y: 2, aA: 'Any mode: adds DR/magic', bd: 'fortify_dr', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each +1 damage reduction'}
-		])
-};
-var $author$project$Types$DF = 3;
-var $author$project$Types$Heal = 15;
-var $author$project$Seeds$heal = {
-	U: $elm$core$Maybe$Nothing,
-	a0: 25,
-	V: '1 minute',
-	ay: _List_Nil,
-	W: _List_fromArray(
-		[0, 1, 3]),
-	aA: 'Spells developed with the heal seed channel positive energy into a creature to wipe away disease and injury. Such a spell completely cures all diseases, blindness, deafness, hit point damage, and temporary ability damage. To restore permanently drained ability score points, increase the Spellcraft DC by +6. The heal seed neutralizes poisons in the subject\'s system so that no additional damage or effects are suffered. It offsets feeblemindedness and cures mental disorders caused by spells or injury to the brain. It dispels all magical effects penalizing the character\'s abilities, including effects caused by spells, even epic spells developed with the afflict seed. Only a single application of the spell is needed to simultaneously achieve all these effects. This seed does not restore levels or Constitution points lost due to death.\n\nTo dispel all negative levels afflicting the target, increase the Spellcraft DC by +2. This reverses level drains by a force or creature. The drained levels are restored only if the creature lost the levels within the last 20 weeks. For each additional week since the levels were drained, increase the Spellcraft DC by +2.\n\nAgainst undead, the influx of positive energy causes the loss of all but 1d4 hit points if the undead fails a Fortitude saving throw.\n\nAn epic caster with 24 ranks in Knowledge (arcana), Knowledge (nature), or Knowledge (religion) can cast a spell developed with a special version of the heal seed that flushes negative energy into the subject, healing undead completely but causing the loss of all but 1d4 hit points in living creatures if they fail a Fortitude saving throw. Alternatively, a living target that fails its Fortitude saving throw could gain four negative levels for the next 8 hours. For each additional negative level bestowed, increase the Spellcraft DC by +4, and for each extra hour the negative levels persist, increase the Spellcraft DC by +2. If the subject has at least as many negative levels as Hit Dice, it dies. If the subject survives and the negative levels persist for 24 hours or longer, the subject must make another Fortitude saving throw, or the negative levels are converted to actual level loss.\n\n',
-	Z: _List_Nil,
-	_: 'Instantaneous',
-	S: $elm$core$Maybe$Nothing,
-	bd: 15,
-	bj: _List_fromArray(
-		[
-			{
-			a8: _List_fromArray(
-				[
-					{
-					Y: 6,
-					aA: '',
-					bd: 'heal_drain',
-					bh: 0,
-					a: $elm$core$Maybe$Just(1),
-					q: 'Restore drained ability scores'
-				},
-					{
-					Y: 2,
-					aA: '',
-					bd: 'heal_neg_levels',
-					bh: 0,
-					a: $elm$core$Maybe$Just(1),
-					q: 'Dispel all negative levels'
-				},
-					{Y: 2, aA: 'Above free 20-week window', bd: 'heal_extra_week', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each additional week to restore negative levels'}
-				]),
-			bd: 'heal_heal',
-			q: 'Heal'
-		},
-			{
-			a8: _List_fromArray(
-				[
-					{Y: 4, aA: '', bd: 'heal_neg_level_extra', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each additional negative level bestowed'},
-					{Y: 2, aA: '', bd: 'heal_neg_level_hour', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each extra hour negative levels persist'}
-				]),
-			bd: 'heal_harm',
-			q: 'Harm (requires 24 ranks Knowledge)'
-		}
-		]),
-	q: 'Heal',
-	ah: 'Touch',
-	aj: $elm$core$Maybe$Just(
-		{S: 0, bb: true, ai: 0}),
-	ak: 'Conjuration (Healing)',
-	aq: true,
-	au: $elm$core$Maybe$Just('Creature touched'),
-	bw: _List_Nil
-};
-var $author$project$Types$Life = 16;
-var $author$project$Seeds$life = {
-	U: $elm$core$Maybe$Nothing,
-	a0: 27,
-	V: '1 minute',
-	ay: _List_Nil,
-	W: _List_fromArray(
-		[0, 1, 3]),
-	aA: 'A spell developed with the life seed will restore life and complete vigor to any deceased creature. The condition of the remains is not a factor. So long as some small portion of the creature\'s body still exists, it can be returned to life, but the portion receiving the spell must have been part of the creature\'s body at the time of death. (The remains of a creature hit by a disintegrate spell count as a small portion of its body.) The creature can have been dead for no longer than two hundred years. For each additional ten years, increase the Spellcraft DC by +1.\n\nThe creature is immediately restored to full hit points, vigor, and health, with no loss of prepared spells. However, the subject loses one level (or 1 point of Constitution if the subject was 1st level). The life seed cannot revive someone who has died of old age.\n\nAn epic caster with 24 ranks in Knowledge (arcana), Knowledge (nature), or Knowledge (religion) can cast a spell developed with a special version of the life seed that gives actual life to normally inanimate objects. The caster can give inanimate plants and animals a soul, personality, and humanlike sentience. To succeed, the caster must make a Will save (DC 10 + the target\'s Hit Dice, or the Hit Dice a plant will have once it comes to life).\n\nThe newly living object, intelligent animal, or sentient plant is friendly toward the caster. An object or plant has characteristics as if it were an animated object, except that its Intelligence, Wisdom, and Charisma scores are all 3d6. Animated objects and plants gain the ability to move their limbs, projections, roots, carved legs and arms, or other appendages, and have senses similar to a human\'s. A newly intelligent animal gets 3d6 Intelligence, +1d3 Charisma, and +2 HD. Objects, animals, and plants speak one language that the caster knows, plus one additional language that he or she knows per point of Intelligence bonus (if any).\n\n',
-	Z: _List_Nil,
-	_: 'Instantaneous',
-	S: $elm$core$Maybe$Nothing,
-	bd: 16,
-	bj: _List_fromArray(
-		[
-			{
-			a8: _List_fromArray(
-				[
-					{Y: 1, aA: 'Target can have been dead longer', bd: 'life_extra_decade', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each additional 10 years beyond 200'}
-				]),
-			bd: 'life_resurrect',
-			q: 'Resurrection'
-		},
-			{a8: _List_Nil, bd: 'life_give', q: 'Give Life (to object/plant/animal)'}
-		]),
-	q: 'Life',
-	ah: 'Touch',
-	aj: $elm$core$Maybe$Nothing,
-	ak: 'Conjuration (Healing)',
-	aq: true,
-	au: $elm$core$Maybe$Just('Dead creature touched'),
-	bw: _List_Nil
-};
-var $author$project$Types$Reflect = 17;
-var $author$project$Seeds$reflect = {
-	U: $elm$core$Maybe$Nothing,
-	a0: 27,
-	V: '1 minute',
-	ay: _List_Nil,
-	W: _List_fromArray(
-		[0, 1]),
-	aA: 'Attacks targeted against the caster rebound on the original attacker. Each use of the reflect seed in an epic spell is effective against one type of attack only: spells (and spell-like effects), ranged attacks, or melee attacks. To reflect an area spell, where the caster is not the target but are caught in the vicinity, increase the Spellcraft DC by +20. A single successful use of reflect expends its protection. Spells developed with the reflect seed against spells and spell-like effects return all spell effects of up to 1st level. For each additional level of spells to be reflected, increase the Spellcraft DC by +20. Epic spells are treated as 10th-level spells for this purpose.\n\nThe desired effect is automatically reflected if the spell in question is 9th level or lower. An opposed caster level check is required when the reflect seed is used against another epic spell. If the enemy spellcaster gets his spell through by winning the caster level check, the epic spell using the reflect seed is not expended, just momentarily suppressed.\n\nIf the reflect seed is used against a melee attack or ranged attack, five such attacks are automatically reflected back on the original attacker. For each additional attack reflected, increase the Spellcraft DC by +4. The reflected attack rebounds on the attacker using the same attack roll. Once the allotted attacks are reflected, the spell using the reflect seed is expended.\n\n',
-	Z: _List_Nil,
-	_: 'Until expended (up to 12 hours)',
-	S: $elm$core$Maybe$Nothing,
-	bd: 17,
-	bj: _List_fromArray(
-		[
-			{
-			a8: _List_fromArray(
-				[
-					{
-					Y: 20,
-					aA: '',
-					bd: 'reflect_aoe',
-					bh: 0,
-					a: $elm$core$Maybe$Just(1),
-					q: 'Reflect AoE spell (not directly targeted)'
-				},
-					{Y: 20, aA: 'Base reflects up to 1st level; each +1 level costs +20 DC; epic spells count as 10th level', bd: 'reflect_spell_level', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each additional spell level reflected'}
-				]),
-			bd: 'reflect_spell',
-			q: 'Spell Reflection'
-		},
-			{
-			a8: _List_fromArray(
-				[
-					{Y: 4, aA: 'Base: 5 attacks', bd: 'reflect_ranged_extra', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each additional ranged attack reflected'}
-				]),
-			bd: 'reflect_ranged',
-			q: 'Ranged Attack Reflection'
-		},
-			{
-			a8: _List_fromArray(
-				[
-					{Y: 4, aA: 'Base: 5 attacks', bd: 'reflect_melee_extra', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each additional melee attack reflected'}
-				]),
-			bd: 'reflect_melee',
-			q: 'Melee Attack Reflection'
-		}
-		]),
-	q: 'Reflect',
-	ah: 'Personal',
-	aj: $elm$core$Maybe$Nothing,
-	ak: 'Abjuration',
-	aq: false,
-	au: $elm$core$Maybe$Just('You'),
-	bw: _List_Nil
-};
-var $author$project$Seeds$reveal = {
-	U: $elm$core$Maybe$Nothing,
-	a0: 19,
-	V: '1 minute',
-	ay: _List_Nil,
-	W: _List_fromArray(
-		[0, 1]),
-	aA: 'The caster of this seed can see some distant location or hear the sounds at some distant location almost as if he or she was there. To both hear and see, increase the Spellcraft DC by +2. Distance is not a factor, but the locale must be known—a place familiar to the caster or an obvious one. The spell creates an invisible sensor that can be dispelled. Lead sheeting or magical protection blocks the spell, and the caster senses that the spell is so blocked. If the caster prefers to create a mobile sensor (speed 30 feet) that he or she controls, increase the Spellcraft DC by +2. To use the reveal seed to reach one specific different plane of existence, increase the Spellcraft DC by +8. To allow magically enhanced senses to work through a spell built with the reveal seed, increase the Spellcraft DC by +4. To cast any spell from the sensor whose range is touch or greater, increase the Spellcraft DC by +6; however, the caster must maintain line of effect to the sensor at all times. If the line of effect is obstructed, the spell ends. To free the caster of the line of effect restriction for casting spells through the sensor, multiply the Spellcraft DC by ×10.\n\nThe reveal seed has a base Spellcraft DC of 25 if used to pierce illusions and see things as they really are. The caster can see through normal and magical darkness, notice secret doors hidden by magic, see the exact locations of creatures or objects under blur or displacement effects, see invisible creatures or objects normally, see through illusions, see onto the Ethereal Plane (but not into extradimensional spaces), and see the true form of polymorphed, changed, or transmuted things. The range of such sight is 120 feet.\n\nThe reveal seed can also be used to develop spells that will do any one of the following: duplicate the read magic spell, comprehend the written and verbal language of another, or speak in the written or verbal language of another. To both comprehend and speak a language, increase the Spellcraft DC by +4.\n\n',
-	Z: _List_Nil,
-	_: 'Concentration + 20 minutes',
-	S: $elm$core$Maybe$Just('See text'),
-	bd: 18,
-	bj: _List_fromArray(
-		[
-			{
-			a8: _List_fromArray(
-				[
-					{
-					Y: 2,
-					aA: '',
-					bd: 'reveal_hear',
-					bh: 0,
-					a: $elm$core$Maybe$Just(1),
-					q: 'Both see and hear through sensor'
-				},
-					{
-					Y: 2,
-					aA: '',
-					bd: 'reveal_mobile',
-					bh: 0,
-					a: $elm$core$Maybe$Just(1),
-					q: 'Mobile sensor (speed 30 ft.)'
-				},
-					{
-					Y: 8,
-					aA: '',
-					bd: 'reveal_plane',
-					bh: 0,
-					a: $elm$core$Maybe$Just(1),
-					q: 'Sensor on a different plane'
-				},
-					{
-					Y: 4,
-					aA: '',
-					bd: 'reveal_magic_senses',
-					bh: 0,
-					a: $elm$core$Maybe$Just(1),
-					q: 'Magically enhanced senses through sensor'
-				},
-					{
-					Y: 6,
-					aA: 'Must maintain line of effect to sensor',
-					bd: 'reveal_cast_through',
-					bh: 0,
-					a: $elm$core$Maybe$Just(1),
-					q: 'Cast touch-or-greater spells through sensor'
-				},
-					{
-					Y: 0,
-					aA: 'Multiplies DC by ×10',
-					bd: 'reveal_no_loe',
-					bh: 0,
-					a: $elm$core$Maybe$Just(1),
-					q: 'No line of effect required for spells through sensor'
-				}
-				]),
-			bd: 'reveal_sensor',
-			q: 'Sensor'
-		},
-			{a8: _List_Nil, bd: 'reveal_truesight', q: 'Pierce Illusions (True Sight, 120 ft.)'},
-			{
-			a8: _List_fromArray(
-				[
-					{
-					Y: 4,
-					aA: '',
-					bd: 'reveal_both_lang',
-					bh: 0,
-					a: $elm$core$Maybe$Just(1),
-					q: 'Both comprehend and speak a language'
-				}
-				]),
-			bd: 'reveal_language',
-			q: 'Languages'
-		}
-		]),
-	q: 'Reveal',
-	ah: 'See text',
-	aj: $elm$core$Maybe$Nothing,
-	ak: 'Divination',
-	aq: false,
-	au: $elm$core$Maybe$Nothing,
-	bw: _List_Nil
-};
-var $author$project$Types$Partial = 2;
-var $author$project$Types$Slay = 19;
-var $author$project$Seeds$slay = {
-	U: $elm$core$Maybe$Nothing,
-	a0: 25,
-	V: '1 minute',
-	ay: _List_Nil,
-	W: _List_fromArray(
-		[0, 1]),
-	aA: 'A spell developed using the slay seed snuffs out the life force of a living creature, killing it instantly. The slay seed kills a creature of up to 80 HD. The subject is entitled to a Fortitude saving throw to survive the attack. If the save is successful, it instead takes 3d6+20 points of damage. For each additional 80 HD affected (or each additional creature affected), increase the Spellcraft DC by +8. Alternatively, a caster can use the slay seed in an epic spell to suppress the life force of the target by bestowing 2d4 negative levels on the target (or half as many negative levels on a successful Fortitude save). For each additional 1d4 negative levels bestowed, increase the Spellcraft DC by +4. If the subject has at least as many negative levels as Hit Dice, it dies. If the subject survives and the negative levels persist for 24 hours or longer, the subject must make another Fortitude saving throw, or the negative levels are converted to actual level loss.',
-	Z: _List_fromArray(
-		['Death']),
-	_: 'Instantaneous',
-	S: $elm$core$Maybe$Nothing,
-	bd: 19,
-	bj: _List_fromArray(
-		[
-			{
-			a8: _List_fromArray(
-				[
-					{Y: 8, aA: 'Or each additional creature affected', bd: 'slay_hd', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each additional 80 HD affected'}
-				]),
-			bd: 'slay_kill',
-			q: 'Kill'
-		},
-			{
-			a8: _List_fromArray(
-				[
-					{Y: 4, aA: 'Base: 2d4 negative levels', bd: 'slay_neg_level', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each additional 1d4 negative levels'}
-				]),
-			bd: 'slay_enervate',
-			q: 'Enervate (negative levels)'
-		}
-		]),
-	q: 'Slay',
-	ah: '300 ft.',
-	aj: $elm$core$Maybe$Just(
-		{S: 2, bb: false, ai: 2}),
-	ak: 'Necromancy',
-	aq: true,
-	au: $elm$core$Maybe$Just('One living creature of up to 80 HD'),
-	bw: _List_Nil
-};
-var $author$project$Types$Summon = 20;
-var $author$project$Seeds$summon = {
-	U: $elm$core$Maybe$Nothing,
-	a0: 14,
-	V: '1 minute',
-	ay: _List_Nil,
-	W: _List_fromArray(
-		[0, 1]),
-	aA: 'This seed can summon an outsider. It appears where the caster designates and acts immediately, on his or her turn, if its spell resistance is overcome and it fails a Will saving throw. It attacks the caster\'s opponents to the best of its ability. If the caster can communicate with the outsider, he or she can direct it not to attack, to attack particular enemies, or to perform other actions. The spell conjures an outsider the caster selects of CR 2 or less. For each +1 CR of the summoned outsider, increase the Spellcraft DC by +2. For each additional outsider of the same Challenge Rating summoned, multiply the Spellcraft DC by x2. When a caster develops a spell with the summon seed that summons an air, chaotic, earth, evil, fire, good, lawful, or water creature, the completed spell is also of that type.\n\nIf the caster increases the Spellcraft DC by +10, he or she can summon a creature of CR 2 or less from another monster type or subtype. The summoned creature is assumed to have been plucked from some other plane (or somewhere on the same plane). The summoned creature attacks the caster\'s opponents to the best of its ability; or, if the caster can communicate with it, it will perform other actions. However, the summoning ends if the creature is asked to perform a task inimical to its nature. For each +1 CR of the summoned creature, increase the Spellcraft DC by +2.\n\nFinally, by increasing the Spellcraft DC by +60, the caster can summon a unique individual he or she specifies from anywhere in the multiverse. The caster must know the target\'s name and some facts about its life, defeat any magical protection against discovery or other protection possessed by the target, and overcome the target\'s spell resistance, and it must fail a Will saving throw. The target is under no special compulsion to serve the caster.',
-	Z: _List_Nil,
-	_: '20 rounds (D)',
-	S: $elm$core$Maybe$Just('One summoned creature'),
-	bd: 20,
-	bj: _List_fromArray(
-		[
-			{
-			a8: _List_fromArray(
-				[
-					{Y: 2, aA: '', bd: 'summon_cr', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each +1 CR above CR 1'},
-					{
-					Y: 10,
-					aA: '+10 DC flat surcharge',
-					bd: 'summon_nonoutsider',
-					bh: 0,
-					a: $elm$core$Maybe$Just(1),
-					q: 'Summon a non-outsider creature type'
-				}
-				]),
-			bd: 'summon_generic',
-			q: 'Summon Generic Creature'
-		},
-			{
-			a8: _List_fromArray(
-				[
-					{
-					Y: 60,
-					aA: '+60 DC flat surcharge',
-					bd: 'summon_unique_dc',
-					bh: 0,
-					a: $elm$core$Maybe$Just(1),
-					q: 'Summon specific named individual'
-				}
-				]),
-			bd: 'summon_unique',
-			q: 'Summon Unique Individual'
-		}
-		]),
-	q: 'Summon',
-	ah: '75 ft.',
-	aj: $elm$core$Maybe$Just(
-		{S: 0, bb: false, ai: 0}),
-	ak: 'Conjuration (Summoning)',
-	aq: true,
-	au: $elm$core$Maybe$Nothing,
-	bw: _List_Nil
-};
-var $author$project$Types$Transform = 21;
-var $author$project$Seeds$transform = {
-	U: $elm$core$Maybe$Nothing,
-	a0: 21,
-	V: '1 minute',
-	ay: _List_Nil,
-	W: _List_fromArray(
-		[0, 1]),
-	aA: 'Spells using the transform seed change the subject into another form of creature or object. The new form can range in size from Diminutive to one size larger than the subject\'s normal form. For each additional increment of size change, increase the Spellcraft DC by +6. If the caster wants to transform a nonmagical, inanimate object into a creature of his or her type or transform a creature into a nonmagical, inanimate object, increase the Spellcraft DC by +10. To change a creature of one type into another type increase the Spellcraft DC by +5.\n\nTransformations involving nonmagical, inanimate substances with hardness are more difficult; for each 2 points of hardness, increase the Spellcraft DC by +1.\n\nTo transform a creature into an incorporeal or gaseous form, increase the Spellcraft DC by +10. Conversely, to overcome the natural immunity of a gaseous or incorporeal creature to transformation, increase the Spellcraft DC by +10.\n\nThe transform seed can also change its target into someone specific. To transform an object or creature into the specific likeness of another individual (including memories and mental abilities), increase the Spellcraft DC by +25. If the transformed creature doesn\'t have the level or Hit Dice of its new likeness, it can only use the abilities of the creature at its own level or Hit Dice. If slain or destroyed, the transformed creature or object reverts to its original form. The subject\'s equipment, if any, remains untransformed or melds into the new form\'s body, at the caster\'s option. The transformed creature or object acquires the physical and natural abilities of the creature or object it has been changed into while retaining its own memories and mental ability scores. Mental abilities include personality, Intelligence, Wisdom, and Charisma scores, level and class, hit points (despite any change in its Constitution score), alignment, base attack bonus, base saves, extraordinary abilities, spells, and spell-like abilities, but not its supernatural abilities. Physical abilities include natural size and Strength, Dexterity, and Constitution scores. Natural abilities include armor, natural weapons, and similar gross physical qualities (presence or absence of wings, number of extremities, and so forth), and possibly hardness. Creatures transformed into inanimate objects do not gain the benefit of their untransformed physical abilities, and may well be blind, deaf, dumb, and unfeeling. Objects transformed into creatures gain that creature\'s average physical ability scores, but are considered to have mental ability scores of 0 (the fortify seed can add points to each mental ability, if desired). For each normal extraordinary ability or supernatural ability granted to the transformed creature, increase the Spellcraft DC by +10. The transformed subject can have no more Hit Dice than the caster has or than the subject has (whichever is greater). In any case, for each Hit Die the assumed form has above 15, increase the Spellcraft DC by +2.',
-	Z: _List_Nil,
-	_: '20 hours',
-	S: $elm$core$Maybe$Nothing,
-	bd: 21,
-	bj: _List_Nil,
-	q: 'Transform',
-	ah: '300 ft.',
-	aj: $elm$core$Maybe$Just(
-		{S: 0, bb: false, ai: 2}),
-	ak: 'Transmutation',
-	aq: true,
-	au: $elm$core$Maybe$Just('One creature'),
-	bw: _List_fromArray(
-		[
-			{
-			Y: 5,
-			aA: '',
-			bd: 'transform_type',
-			bh: 0,
-			a: $elm$core$Maybe$Just(1),
-			q: 'Change creature type'
-		},
-			{Y: 6, aA: 'Beyond one size larger than normal', bd: 'transform_size', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each additional size increment change'},
-			{
-			Y: 10,
-			aA: '',
-			bd: 'transform_inanimate',
-			bh: 0,
-			a: $elm$core$Maybe$Just(1),
-			q: 'Nonmagical inanimate ↔ creature'
-		},
-			{Y: 1, aA: '', bd: 'transform_hardness', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each 2 points of hardness of target object'},
-			{
-			Y: 10,
-			aA: '+10 each direction',
-			bd: 'transform_incorporeal',
-			bh: 1,
-			a: $elm$core$Maybe$Just(2),
-			q: 'Transform to/from incorporeal or gaseous form'
-		},
-			{
-			Y: 25,
-			aA: '',
-			bd: 'transform_specific',
-			bh: 0,
-			a: $elm$core$Maybe$Just(1),
-			q: 'Transform into specific individual (with memories)'
-		},
-			{Y: 10, aA: '', bd: 'transform_ability', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each extraordinary or supernatural ability granted'},
-			{Y: 2, aA: '', bd: 'transform_hd', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each HD of assumed form above 15'}
-		])
-};
-var $author$project$Types$Transport = 22;
-var $author$project$Seeds$transport = {
-	U: $elm$core$Maybe$Nothing,
-	a0: 27,
-	V: '1 minute',
-	ay: _List_Nil,
-	W: _List_fromArray(
-		[0, 1]),
-	aA: 'Spells using the transport seed instantly take the caster to a designated destination, regardless of distance. For interplanar travel, increase the Spellcraft DC by +4. For each additional 50 pounds in objects and willing creatures beyond the base 1,000 pounds, increase the Spellcraft DC by +2. The base use of the transport seed provides instantaneous travel through the Astral Plane. To shift the transportation medium to another medium increase the Spellcraft DC by +2. The caster does not need to make a saving throw, nor is spell resistance applicable to him or her. Only objects worn or carried (attended) by another person receive saving throws and spell resistance. For a spell intended to transport unwilling creatures, increase the Spellcraft DC by +4. The caster must have at least a reliable description of the place to which he or she is transporting. If the caster attempts to use the transport seed with insufficient or misleading information, the character disappears and simply reappear in his or her original location.\n\nAs a special use of the transport seed, a caster can develop a spell that temporarily transports him or her into a different time stream (leaving the caster in the same physical location); this increases the Spellcraft DC by +8. If the caster moves him or herself, or the subject, into a slower time stream for 5 rounds, time ceases to flow for the subject, and its condition becomes fixed—no force or effect can harm it until the duration expires. If the caster moves him or her self into a faster time stream, the caster speeds up so greatly that all other creatures seem frozen, though they are actually still moving at their normal speeds. The caster is free to act for 5 rounds of apparent time. Fire, cold, poison gas, and similar effects can still harm the caster. While the caster is in the fast time stream, other creatures are invulnerable to his or her attacks and spells; however, the caster can create spell effects and leave them to take effect when he or she reenters normal time. Because of the branching nature of time, epic spells used to transport a subject into a faster time stream cannot be made permanent, nor can the duration of 5 rounds be extended. More simply, the seed can haste or slow a subject for 20 rounds by transporting it to the appropriate time stream. This decreases the Spellcraft DC by -4.',
-	Z: _List_fromArray(
-		['Teleportation']),
-	_: 'Instantaneous',
-	S: $elm$core$Maybe$Nothing,
-	bd: 22,
-	bj: _List_fromArray(
-		[
-			{
-			a8: _List_fromArray(
-				[
-					{
-					Y: 4,
-					aA: '',
-					bd: 'transport_interplanar',
-					bh: 0,
-					a: $elm$core$Maybe$Just(1),
-					q: 'Interplanar travel'
-				},
-					{Y: 2, aA: '', bd: 'transport_weight', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each additional 50 lbs. beyond 1,000'},
-					{
-					Y: 2,
-					aA: '',
-					bd: 'transport_medium',
-					bh: 0,
-					a: $elm$core$Maybe$Just(1),
-					q: 'Use transport medium other than Astral Plane'
-				},
-					{
-					Y: 4,
-					aA: '',
-					bd: 'transport_unwilling',
-					bh: 0,
-					a: $elm$core$Maybe$Just(1),
-					q: 'Transport unwilling creatures'
-				}
-				]),
-			bd: 'transport_spatial',
-			q: 'Spatial (Teleport)'
-		},
-			{
-			a8: _List_fromArray(
-				[
-					{
-					Y: 8,
-					aA: '+8 DC to enter a different time stream (freeze or accelerate)',
-					bd: 'transport_temporal_dc',
-					bh: 0,
-					a: $elm$core$Maybe$Just(1),
-					q: 'Temporal transport surcharge'
-				}
-				]),
-			bd: 'transport_temporal',
-			q: 'Temporal (time stream)'
-		},
-			{
-			a8: _List_fromArray(
-				[
-					{
-					Y: -4,
-					aA: '–4 DC for haste/slow effect only',
-					bd: 'transport_lite_dc',
-					bh: 0,
-					a: $elm$core$Maybe$Just(1),
-					q: 'Temporal lite discount'
-				}
-				]),
-			bd: 'transport_temporal_lite',
-			q: 'Temporal Lite (haste/slow 20 rounds)'
-		}
-		]),
-	q: 'Transport',
-	ah: 'Touch',
-	aj: $elm$core$Maybe$Nothing,
-	ak: 'Conjuration',
-	aq: false,
-	au: $elm$core$Maybe$Just('You and touched willing creatures up to 1,000 lb.'),
-	bw: _List_Nil
-};
-var $author$project$Types$Ward = 23;
-var $author$project$Seeds$ward = {
-	U: $elm$core$Maybe$Just('10-ft.-radius emanation'),
-	a0: 14,
-	V: '1 minute',
-	ay: _List_fromArray(
-		[
-			{
-			a4: 'fire',
-			bd: 'wardEnergyType',
-			L: 'Energy Type (Energy Ward)',
-			af: _List_fromArray(
-				['acid', 'cold', 'electricity', 'fire', 'sonic'])
-		},
-			{
-			a4: 'undead',
-			bd: 'wardCreatureType',
-			L: 'Creature Type (Creature Ward)',
-			af: _List_fromArray(
-				['aberrations', 'animals', 'constructs', 'dragons', 'elementals', 'fey', 'giants', 'humanoids', 'magical beasts', 'monstrous humanoids', 'oozes', 'outsiders', 'plants', 'undead', 'vermin'])
-		}
-		]),
-	W: _List_fromArray(
-		[0, 1]),
-	aA: 'This seed can grant a creature protection from damage of a specified type. The caster can protect a creature from standard damage or from energy damage. The caster can protect a creature or area from magic. Alternatively, he or she can hedge out a type of creature from a specified area. A ward against standard damage protects a creature from whichever two the caster selects of the three damage types: bludgeoning, piercing, and slashing. For a ward against all three types, increase the Spellcraft DC by +4. Each round, the spell created with the ward seed absorbs the first 5 points of damage the creature would otherwise take, regardless of whether the source of the damage is natural or magical. For each additional point of protection, increase the Spellcraft DC by +2.\n\nA ward against energy grants a creature protection from whichever one the caster selects of the five energy types: acid, cold, electricity, fire, or sonic. Each round, the spell absorbs the first 5 points of damage the creature would otherwise take from the specified energy type, regardless of whether the source of damage is natural or magical. The spell protects the recipient\'s equipment as well. For each additional point of protection, increase the Spellcraft DC by +1.\n\nA ward against a specific type of creature prevents bodily contact from whichever one of several monster types the caster selects. This causes the natural weapon attacks of such creatures to fail and the creatures to recoil if such attacks require touching the warded creature. The protection ends if the warded creature makes an attack against or intentionally moves within 5 feet of the blocked creature. Spell resistance can allow a creature to overcome this protection and touch the warded creature.\n\nA ward against magic creates an immobile, faintly shimmering magical sphere (with radius 10 feet) that surrounds the caster and excludes all spell effects of up to 1st level. Alternatively, the caster can ward just the target and not create the radius effect. For each additional level of spells to be excluded, increase the Spellcraft DC by +20 (but see below). The area or effect of any such spells does not include the area of the ward, and such spells fail to affect any target within the ward. This includes spell-like abilities and spells or spell-like effects from magic items. However, any type of spell can be cast through or out of the ward. The caster can leave and return to the protected area without penalty (unless the spell specifically targets a creature and does not provide a radius effect). The ward could be brought down by a targeted dispel magic spell. Epic spells using the dispel seed may bring down a ward if the enemy spellcaster succeeds at a caster level check. The ward may also be brought down with a targeted epic spell using the destroy seed if the enemy spellcaster succeeds at a caster level check.\n\nInstead of creating an epic spell that uses the ward seed to nullify all spells of a given level and lower, the caster can create a ward that nullifies a specific spell (or specific set of spells). For each specific spell so nullified, increase the Spellcraft DC by +2 per spell level above 1st.',
-	Z: _List_Nil,
-	_: '200 minutes (D)',
-	S: $elm$core$Maybe$Nothing,
-	bd: 23,
-	bj: _List_fromArray(
-		[
-			{
-			a8: _List_fromArray(
-				[
-					{
-					Y: 4,
-					aA: 'Base covers two; +4 DC for all three',
-					bd: 'ward_all_three',
-					bh: 0,
-					a: $elm$core$Maybe$Just(1),
-					q: 'Ward all three damage types (B, P, and S)'
-				},
-					{Y: 2, aA: 'Above base 5', bd: 'ward_dmg_pts', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each additional point of damage absorbed per round'}
-				]),
-			bd: 'ward_damage',
-			q: 'Damage Ward (B/P/S)'
-		},
-			{
-			a8: _List_fromArray(
-				[
-					{Y: 1, aA: 'Above base 5', bd: 'ward_energy_pts', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each additional point of energy absorbed per round'}
-				]),
-			bd: 'ward_energy',
-			q: 'Energy Ward'
-		},
-			{a8: _List_Nil, bd: 'ward_creature', q: 'Creature Ward'},
-			{
-			a8: _List_fromArray(
-				[
-					{Y: 20, aA: 'Above 1st level; +20 DC per level', bd: 'ward_magic_level', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each additional spell level excluded'},
-					{Y: 2, aA: '+2 DC per spell level above 1st', bd: 'ward_specific_spell', bh: 1, a: $elm$core$Maybe$Nothing, q: 'Each specific spell nullified (per spell level above 1st)'}
-				]),
-			bd: 'ward_magic',
-			q: 'Magic Ward (spell level exclusion)'
-		}
-		]),
-	q: 'Ward',
-	ah: 'Touch',
-	aj: $elm$core$Maybe$Nothing,
-	ak: 'Abjuration',
-	aq: true,
-	au: $elm$core$Maybe$Just('Touched creature or object up to 2,000 lb.'),
-	bw: _List_Nil
-};
-var $author$project$Seeds$allSeeds = _List_fromArray(
-	[$author$project$Seeds$afflict, $author$project$Seeds$animate, $author$project$Seeds$animateDead, $author$project$Seeds$armor, $author$project$Seeds$banish, $author$project$Seeds$compel, $author$project$Seeds$conceal, $author$project$Seeds$conjure, $author$project$Seeds$contact, $author$project$Seeds$delude, $author$project$Seeds$destroy, $author$project$Seeds$dispel, $author$project$Seeds$energy, $author$project$Seeds$foresee, $author$project$Seeds$fortify, $author$project$Seeds$heal, $author$project$Seeds$life, $author$project$Seeds$reflect, $author$project$Seeds$reveal, $author$project$Seeds$slay, $author$project$Seeds$summon, $author$project$Seeds$transform, $author$project$Seeds$transport, $author$project$Seeds$ward]);
-var $elm$core$List$head = function (list) {
-	if (list.b) {
-		var x = list.a;
-		var xs = list.b;
-		return $elm$core$Maybe$Just(x);
-	} else {
-		return $elm$core$Maybe$Nothing;
-	}
-};
-var $author$project$Seeds$getSeed = function (id) {
-	return $elm$core$List$head(
-		A2(
-			$elm$core$List$filter,
-			function (s) {
-				return _Utils_eq(s.bd, id);
-			},
-			$author$project$Seeds$allSeeds));
-};
-var $elm$core$Basics$pow = _Basics_pow;
-var $elm$core$List$sum = function (numbers) {
-	return A3($elm$core$List$foldl, $elm$core$Basics$add, 0, numbers);
-};
-var $elm$core$Maybe$withDefault = F2(
-	function (_default, maybe) {
-		if (!maybe.$) {
-			var value = maybe.a;
-			return value;
-		} else {
-			return _default;
-		}
-	});
-var $author$project$Calc$effectiveSeedBaseDC = function (inst) {
-	var _v0 = $author$project$Seeds$getSeed(inst.v);
-	if (_v0.$ === 1) {
-		return 0;
-	} else {
-		var seed = _v0.a;
-		var baseDC = A2($elm$core$Maybe$withDefault, seed.a0, inst.a1);
-		if (inst.v === 13) {
-			var intervals = $elm$core$List$sum(
-				A2(
-					$elm$core$List$map,
-					function ($) {
-						return $.o;
-					},
-					A2(
-						$elm$core$List$filter,
-						function (asf) {
-							return asf.d === 'foresee_interval';
-						},
-						inst.T)));
-			return baseDC * A2($elm$core$Basics$pow, 2, intervals);
-		} else {
-			if (inst.v === 18) {
-				var noLoe = A2(
-					$elm$core$List$any,
-					function (asf) {
-						return (asf.d === 'reveal_no_loe') && (asf.o > 0);
-					},
-					inst.T);
-				return noLoe ? (baseDC * 10) : baseDC;
-			} else {
-				return baseDC;
-			}
-		}
-	}
-};
-var $elm$core$List$maybeCons = F3(
-	function (f, mx, xs) {
-		var _v0 = f(mx);
-		if (!_v0.$) {
-			var x = _v0.a;
-			return A2($elm$core$List$cons, x, xs);
-		} else {
-			return xs;
-		}
-	});
-var $elm$core$List$filterMap = F2(
-	function (f, xs) {
-		return A3(
-			$elm$core$List$foldr,
-			$elm$core$List$maybeCons(f),
-			_List_Nil,
-			xs);
-	});
 var $author$project$Types$AddExtraTarget = 10;
 var $author$project$Types$AreaToTarget = 20;
 var $author$project$Types$AreaToTouch = 21;
+var $author$project$Types$Augmenting = 0;
 var $author$project$Types$ChangeToBolt = 15;
 var $author$project$Types$ChangeToCone = 17;
 var $author$project$Types$ChangeToCylinder = 16;
 var $author$project$Types$ChangeToFourCubes = 18;
 var $author$project$Types$ChangeToRadius = 19;
 var $author$project$Types$Contingent = 3;
+var $author$project$Types$DcMultiplier = 2;
 var $author$project$Types$Dismissible = 8;
 var $author$project$Types$FieldCastingTime = 1;
 var $author$project$Types$FieldComponents = 0;
@@ -6651,48 +5253,53 @@ var $author$project$Types$IncreaseVsDispel = 25;
 var $author$project$Types$NoSomatic = 5;
 var $author$project$Types$NoVerbal = 4;
 var $author$project$Types$OneActionCastTime = 1;
+var $author$project$Types$PermanentDuration = 7;
+var $author$project$Types$PersonalToArea = 12;
 var $author$project$Types$QuickenedSpell = 2;
 var $author$project$Types$ReduceCastTime1Round = 0;
 var $author$project$Types$Stackable = 1;
+var $author$project$Types$StoneTablet = 26;
+var $author$project$Types$TargetToArea = 11;
 var $author$project$Types$TargetToTouch = 13;
 var $author$project$Types$Toggle = 0;
 var $author$project$Types$TouchToTarget = 14;
 var $author$project$Factors$augmentingFactors = _List_fromArray(
 	[
-		{aw: 0, Y: 2, bd: 0, bh: 1, bk: 1, q: 'Reduce casting time by 1 round', b: 'minimum 1 round', c: 1},
-		{aw: 0, Y: 20, bd: 1, bh: 0, bk: 1, q: '1-action casting time', b: 'Reduces to standard action', c: 1},
-		{aw: 0, Y: 28, bd: 2, bh: 0, bk: 1, q: 'Quickened spell', b: 'Cast as a free action; max 1/round', c: 1},
-		{aw: 0, Y: 25, bd: 3, bh: 0, bk: 1, q: 'Contingent on specific trigger', b: '', c: 7},
-		{aw: 0, Y: 2, bd: 4, bh: 0, bk: 1, q: 'No verbal component', b: '', c: 0},
-		{aw: 0, Y: 2, bd: 5, bh: 0, bk: 1, q: 'No somatic component', b: '', c: 0},
-		{aw: 0, Y: 2, bd: 6, bh: 1, bk: 1, q: 'Increase duration 100%', b: '', c: 4},
-		{aw: 0, Y: 0, bd: 7, bh: 0, bk: 5, q: 'Permanent duration', b: '×5 multiplier on total DC', c: 4},
-		{aw: 0, Y: 2, bd: 8, bh: 0, bk: 1, q: 'Dismissible by caster', b: 'Adds (D) tag if not already', c: 4},
-		{aw: 0, Y: 2, bd: 9, bh: 1, bk: 1, q: 'Increase range 100%', b: '', c: 2},
-		{aw: 0, Y: 10, bd: 10, bh: 1, bk: 1, q: 'Add extra target within 300 ft.', b: '+1 target per application', c: 3},
-		{aw: 0, Y: 10, bd: 11, bh: 0, bk: 1, q: 'Target → area', b: 'Changes targeting to area', c: 3},
-		{aw: 0, Y: 15, bd: 12, bh: 0, bk: 1, q: 'Personal → area', b: 'Changes personal to area', c: 3},
-		{aw: 0, Y: 4, bd: 13, bh: 0, bk: 1, q: 'Target → touch/ray (300 ft. range)', b: '', c: 3},
-		{aw: 0, Y: 4, bd: 14, bh: 0, bk: 1, q: 'Touch/ray → target', b: '', c: 3},
-		{aw: 0, Y: 2, bd: 15, bh: 0, bk: 1, q: 'Change area to bolt', b: '5 ft. x 300 ft. OR 10 ft. x 150 ft.', c: 3},
-		{aw: 0, Y: 2, bd: 16, bh: 0, bk: 1, q: 'Change area to cylinder', b: '10-ft. radius, 30 ft. high', c: 3},
-		{aw: 0, Y: 2, bd: 17, bh: 0, bk: 1, q: 'Change area to 40-ft. cone', b: '', c: 3},
-		{aw: 0, Y: 2, bd: 18, bh: 0, bk: 1, q: 'Change area to four 10-ft. cubes', b: '', c: 3},
-		{aw: 0, Y: 2, bd: 19, bh: 0, bk: 1, q: 'Change area to 20-ft. radius', b: '', c: 3},
-		{aw: 0, Y: 4, bd: 20, bh: 0, bk: 1, q: 'Area → target', b: '', c: 3},
-		{aw: 0, Y: 4, bd: 21, bh: 0, bk: 1, q: 'Area → touch/ray', b: 'Close range (25 ft. + 5 ft./2 levels)', c: 3},
-		{aw: 0, Y: 4, bd: 22, bh: 1, bk: 1, q: 'Increase area 100%', b: '', c: 3},
-		{aw: 0, Y: 2, bd: 23, bh: 1, bk: 1, q: 'Increase save DC by +1', b: '', c: 5},
-		{aw: 0, Y: 2, bd: 24, bh: 1, bk: 1, q: '+1 to caster level check vs. SR', b: '', c: 6},
-		{aw: 0, Y: 2, bd: 25, bh: 1, bk: 1, q: '+1 vs. dispel effects', b: '', c: 7},
-		{aw: 0, Y: 0, bd: 26, bh: 2, bk: 2, q: 'Recorded onto stone tablet', b: 'x2 multiplier on total DC', c: 7},
-		{aw: 0, Y: 10, bd: 27, bh: 1, bk: 1, q: 'Increase damage die +1 step', b: 'max d20', c: 7}
+		{aH: 0, af: 2, aS: 0, bt: 1, bw: 1, r: 'Reduce casting time by 1 round', b: 'Casting Time', c: 'minimum 1 round', d: 1},
+		{aH: 0, af: 20, aS: 1, bt: 0, bw: 1, r: '1-action casting time', b: 'Casting Time', c: 'Reduces to standard action', d: 1},
+		{aH: 0, af: 28, aS: 2, bt: 0, bw: 1, r: 'Quickened spell', b: 'Casting Time', c: 'Cast as a free action; max 1/round', d: 1},
+		{aH: 0, af: 25, aS: 3, bt: 0, bw: 1, r: 'Contingent on specific trigger', b: 'Casting Time', c: '', d: 7},
+		{aH: 0, af: 2, aS: 4, bt: 0, bw: 1, r: 'No verbal component', b: 'Components', c: '', d: 0},
+		{aH: 0, af: 2, aS: 5, bt: 0, bw: 1, r: 'No somatic component', b: 'Components', c: '', d: 0},
+		{aH: 0, af: 2, aS: 6, bt: 1, bw: 1, r: 'Increase duration 100%', b: 'Duration', c: '', d: 4},
+		{aH: 0, af: 0, aS: 7, bt: 2, bw: 5, r: 'Permanent duration', b: 'Duration', c: '', d: 4},
+		{aH: 0, af: 2, aS: 8, bt: 0, bw: 1, r: 'Dismissible by caster', b: 'Duration', c: 'Adds (D) tag if not already', d: 4},
+		{aH: 0, af: 2, aS: 9, bt: 1, bw: 1, r: 'Increase range 100%', b: 'Range', c: '', d: 2},
+		{aH: 0, af: 10, aS: 10, bt: 1, bw: 1, r: 'Add extra target within 300 ft.', b: 'Target', c: '+1 target per application', d: 3},
+		{aH: 0, af: 10, aS: 11, bt: 0, bw: 1, r: 'Target → area', b: 'Target', c: 'Changes targeting to area', d: 3},
+		{aH: 0, af: 15, aS: 12, bt: 0, bw: 1, r: 'Personal → area', b: 'Target', c: 'Changes personal to area', d: 3},
+		{aH: 0, af: 4, aS: 13, bt: 0, bw: 1, r: 'Target → touch/ray (300 ft. range)', b: 'Target', c: '', d: 3},
+		{aH: 0, af: 4, aS: 14, bt: 0, bw: 1, r: 'Touch/ray → target', b: 'Target', c: '', d: 3},
+		{aH: 0, af: 2, aS: 15, bt: 0, bw: 1, r: 'Change area to bolt', b: 'Area', c: '5 ft. x 300 ft. OR 10 ft. x 150 ft.', d: 3},
+		{aH: 0, af: 2, aS: 16, bt: 0, bw: 1, r: 'Change area to cylinder', b: 'Area', c: '10-ft. radius, 30 ft. high', d: 3},
+		{aH: 0, af: 2, aS: 17, bt: 0, bw: 1, r: 'Change area to 40-ft. cone', b: 'Area', c: '', d: 3},
+		{aH: 0, af: 2, aS: 18, bt: 0, bw: 1, r: 'Change area to four 10-ft. cubes', b: 'Area', c: '', d: 3},
+		{aH: 0, af: 2, aS: 19, bt: 0, bw: 1, r: 'Change area to 20-ft. radius', b: 'Area', c: '', d: 3},
+		{aH: 0, af: 4, aS: 20, bt: 0, bw: 1, r: 'Area → target', b: 'Area', c: '', d: 3},
+		{aH: 0, af: 4, aS: 21, bt: 0, bw: 1, r: 'Area → touch/ray', b: 'Area', c: 'Close range (25 ft. + 5 ft./2 levels)', d: 3},
+		{aH: 0, af: 4, aS: 22, bt: 1, bw: 1, r: 'Increase area 100%', b: 'Area', c: '', d: 3},
+		{aH: 0, af: 2, aS: 23, bt: 1, bw: 1, r: 'Increase save DC by +1', b: 'Saving Throw', c: '', d: 5},
+		{aH: 0, af: 2, aS: 24, bt: 1, bw: 1, r: '+1 to caster level check vs. SR', b: 'Spell Resistance', c: '', d: 6},
+		{aH: 0, af: 2, aS: 25, bt: 1, bw: 1, r: '+1 vs. dispel effects', b: 'Spell Resistance', c: '', d: 7},
+		{aH: 0, af: 0, aS: 26, bt: 2, bw: 2, r: 'Recorded onto stone tablet', b: 'Other', c: 'x2 multiplier on total DC', d: 7},
+		{aH: 0, af: 10, aS: 27, bt: 1, bw: 1, r: 'Increase damage die +1 step', b: 'Other', c: 'max d20', d: 7}
 	]);
 var $author$project$Types$Backlash = 28;
 var $author$project$Types$ChangeToPersonal = 32;
 var $author$project$Types$DecreaseDamageDie = 33;
 var $author$project$Types$IncreaseCastTime1Day = 31;
 var $author$project$Types$IncreaseCastTime1Min = 30;
+var $author$project$Types$Mitigating = 1;
 var $author$project$Types$RitualSlot1 = 34;
 var $author$project$Types$RitualSlot2 = 35;
 var $author$project$Types$RitualSlot3 = 36;
@@ -6704,52 +5311,1405 @@ var $author$project$Types$RitualSlot8 = 41;
 var $author$project$Types$RitualSlot9 = 42;
 var $author$project$Types$RitualSlotEpic = 43;
 var $author$project$Types$XPBurn = 29;
+var $elm$core$Basics$negate = function (n) {
+	return -n;
+};
 var $author$project$Factors$mitigatingFactors = _List_fromArray(
 	[
-		{aw: 1, Y: -1, bd: 28, bh: 1, bk: 1, q: 'Backlash (1d6 per die to caster)', b: 'Caster takes Xd6 on casting or per round (max = HD×2 dice)', c: 7},
-		{aw: 1, Y: -1, bd: 29, bh: 1, bk: 1, q: 'XP burn (per 100 XP)', b: 'Max 20,000 XP (-200 DC)', c: 7},
-		{aw: 1, Y: -2, bd: 30, bh: 1, bk: 1, q: 'Increase casting time +1 minute', b: 'Max 10 min total', c: 1},
-		{aw: 1, Y: -2, bd: 31, bh: 1, bk: 1, q: 'Increase casting time +1 day', b: 'After reaching 10 min; max 100 days', c: 1},
-		{aw: 1, Y: -2, bd: 32, bh: 0, bk: 1, q: 'Change target/touch/area → personal', b: '', c: 3},
-		{aw: 1, Y: -5, bd: 33, bh: 1, bk: 1, q: 'Decrease damage die -1 step', b: 'Min d4', c: 7},
-		{aw: 1, Y: -1, bd: 34, bh: 1, bk: 1, q: 'Ritual: 1st-level spell slot', b: '-1 DC per participant', c: 7},
-		{aw: 1, Y: -3, bd: 35, bh: 1, bk: 1, q: 'Ritual: 2nd-level spell slot', b: '-3 DC per participant', c: 7},
-		{aw: 1, Y: -5, bd: 36, bh: 1, bk: 1, q: 'Ritual: 3rd-level spell slot', b: '-5 DC per participant', c: 7},
-		{aw: 1, Y: -7, bd: 37, bh: 1, bk: 1, q: 'Ritual: 4th-level spell slot', b: '-7 DC per participant', c: 7},
-		{aw: 1, Y: -9, bd: 38, bh: 1, bk: 1, q: 'Ritual: 5th-level spell slot', b: '-9 DC per participant', c: 7},
-		{aw: 1, Y: -11, bd: 39, bh: 1, bk: 1, q: 'Ritual: 6th-level spell slot', b: '-11 DC per participant', c: 7},
-		{aw: 1, Y: -13, bd: 40, bh: 1, bk: 1, q: 'Ritual: 7th-level spell slot', b: '-13 DC per participant', c: 7},
-		{aw: 1, Y: -15, bd: 41, bh: 1, bk: 1, q: 'Ritual: 8th-level spell slot', b: '-15 DC per participant', c: 7},
-		{aw: 1, Y: -17, bd: 42, bh: 1, bk: 1, q: 'Ritual: 9th-level spell slot', b: '-17 DC per participant', c: 7},
-		{aw: 1, Y: -19, bd: 43, bh: 1, bk: 1, q: 'Ritual: Epic spell slot', b: '-19 DC per participant', c: 7}
+		{aH: 1, af: -1, aS: 28, bt: 1, bw: 1, r: 'Backlash (1d6 per die to caster)', b: 'Other', c: 'Caster takes Xd6 on casting or per round (max = HD×2 dice)', d: 7},
+		{aH: 1, af: -1, aS: 29, bt: 1, bw: 1, r: 'XP burn (per 100 XP)', b: 'Other', c: 'Max 20,000 XP (-200 DC)', d: 7},
+		{aH: 1, af: -2, aS: 30, bt: 1, bw: 1, r: 'Increase casting time +1 minute', b: 'Casting Time', c: 'Max 10 min total', d: 1},
+		{aH: 1, af: -2, aS: 31, bt: 1, bw: 1, r: 'Increase casting time +1 day', b: 'Casting Time', c: 'After reaching 10 min; max 100 days', d: 1},
+		{aH: 1, af: -2, aS: 32, bt: 0, bw: 1, r: 'Change target/touch/area → personal', b: 'Target', c: '', d: 3},
+		{aH: 1, af: -5, aS: 33, bt: 1, bw: 1, r: 'Decrease damage die -1 step', b: 'Other', c: 'Min d4', d: 7},
+		{aH: 1, af: -1, aS: 34, bt: 1, bw: 1, r: 'Ritual: 1st-level spell slot', b: 'Ritual', c: '-1 DC per participant', d: 7},
+		{aH: 1, af: -3, aS: 35, bt: 1, bw: 1, r: 'Ritual: 2nd-level spell slot', b: 'Ritual', c: '-3 DC per participant', d: 7},
+		{aH: 1, af: -5, aS: 36, bt: 1, bw: 1, r: 'Ritual: 3rd-level spell slot', b: 'Ritual', c: '-5 DC per participant', d: 7},
+		{aH: 1, af: -7, aS: 37, bt: 1, bw: 1, r: 'Ritual: 4th-level spell slot', b: 'Ritual', c: '-7 DC per participant', d: 7},
+		{aH: 1, af: -9, aS: 38, bt: 1, bw: 1, r: 'Ritual: 5th-level spell slot', b: 'Ritual', c: '-9 DC per participant', d: 7},
+		{aH: 1, af: -11, aS: 39, bt: 1, bw: 1, r: 'Ritual: 6th-level spell slot', b: 'Ritual', c: '-11 DC per participant', d: 7},
+		{aH: 1, af: -13, aS: 40, bt: 1, bw: 1, r: 'Ritual: 7th-level spell slot', b: 'Ritual', c: '-13 DC per participant', d: 7},
+		{aH: 1, af: -15, aS: 41, bt: 1, bw: 1, r: 'Ritual: 8th-level spell slot', b: 'Ritual', c: '-15 DC per participant', d: 7},
+		{aH: 1, af: -17, aS: 42, bt: 1, bw: 1, r: 'Ritual: 9th-level spell slot', b: 'Ritual', c: '-17 DC per participant', d: 7},
+		{aH: 1, af: -19, aS: 43, bt: 1, bw: 1, r: 'Ritual: Epic spell slot', b: 'Ritual', c: '-19 DC per participant', d: 7}
 	]);
 var $author$project$Factors$allFactors = _Utils_ap($author$project$Factors$augmentingFactors, $author$project$Factors$mitigatingFactors);
-var $author$project$Factors$getFactor = function (id) {
-	return $elm$core$List$head(
-		A2(
-			$elm$core$List$filter,
-			function (f) {
-				return _Utils_eq(f.bd, id);
-			},
-			$author$project$Factors$allFactors));
-};
-var $elm$core$Basics$neq = _Utils_notEqual;
-var $elm$core$List$append = F2(
-	function (xs, ys) {
-		if (!ys.b) {
-			return xs;
+var $elm$core$List$filter = F2(
+	function (isGood, list) {
+		return A3(
+			$elm$core$List$foldr,
+			F2(
+				function (x, xs) {
+					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
+				}),
+			_List_Nil,
+			list);
+	});
+var $elm$core$List$maybeCons = F3(
+	function (f, mx, xs) {
+		var _v0 = f(mx);
+		if (!_v0.$) {
+			var x = _v0.a;
+			return A2($elm$core$List$cons, x, xs);
 		} else {
-			return A3($elm$core$List$foldr, $elm$core$List$cons, ys, xs);
+			return xs;
 		}
 	});
-var $elm$core$List$concat = function (lists) {
-	return A3($elm$core$List$foldr, $elm$core$List$append, _List_Nil, lists);
-};
-var $elm$core$List$concatMap = F2(
-	function (f, list) {
-		return $elm$core$List$concat(
-			A2($elm$core$List$map, f, list));
+var $elm$core$List$filterMap = F2(
+	function (f, xs) {
+		return A3(
+			$elm$core$List$foldr,
+			$elm$core$List$maybeCons(f),
+			_List_Nil,
+			xs);
 	});
+var $elm$core$List$head = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return $elm$core$Maybe$Just(x);
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $elm$core$Maybe$map2 = F3(
+	function (func, ma, mb) {
+		if (ma.$ === 1) {
+			return $elm$core$Maybe$Nothing;
+		} else {
+			var a = ma.a;
+			if (mb.$ === 1) {
+				return $elm$core$Maybe$Nothing;
+			} else {
+				var b = mb.a;
+				return $elm$core$Maybe$Just(
+					A2(func, a, b));
+			}
+		}
+	});
+var $author$project$UrlState$splitOnEquals = function (pair) {
+	var _v0 = A2($elm$core$String$split, '=', pair);
+	if ((_v0.b && _v0.b.b) && (!_v0.b.b.b)) {
+		var k = _v0.a;
+		var _v1 = _v0.b;
+		var v = _v1.a;
+		return $elm$core$Maybe$Just(
+			_Utils_Tuple2(k, v));
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $author$project$UrlState$decodeAppliedFactors = function (s) {
+	return $elm$core$String$isEmpty(s) ? _List_Nil : A2(
+		$elm$core$List$filterMap,
+		function (pair) {
+			return A2(
+				$elm$core$Maybe$andThen,
+				function (_v0) {
+					var name = _v0.a;
+					var qtyStr = _v0.b;
+					return A3(
+						$elm$core$Maybe$map2,
+						F2(
+							function (f, qty) {
+								return {e: f.aS, p: qty};
+							}),
+						$elm$core$List$head(
+							A2(
+								$elm$core$List$filter,
+								function (f) {
+									return _Utils_eq(f.r, name);
+								},
+								$author$project$Factors$allFactors)),
+						$elm$core$String$toInt(qtyStr));
+				},
+				$author$project$UrlState$splitOnEquals(pair));
+		},
+		A2($elm$core$String$split, ',', s));
+};
+var $elm$core$Maybe$map3 = F4(
+	function (func, ma, mb, mc) {
+		if (ma.$ === 1) {
+			return $elm$core$Maybe$Nothing;
+		} else {
+			var a = ma.a;
+			if (mb.$ === 1) {
+				return $elm$core$Maybe$Nothing;
+			} else {
+				var b = mb.a;
+				if (mc.$ === 1) {
+					return $elm$core$Maybe$Nothing;
+				} else {
+					var c = mc.a;
+					return $elm$core$Maybe$Just(
+						A3(func, a, b, c));
+				}
+			}
+		}
+	});
+var $author$project$Types$Half = 1;
+var $author$project$Types$Negates = 0;
+var $author$project$Types$Partial = 2;
+var $author$project$Types$SeeText = 3;
+var $author$project$UrlState$saveEffectFromString = function (s) {
+	switch (s) {
+		case 'Negates':
+			return $elm$core$Maybe$Just(0);
+		case 'Half':
+			return $elm$core$Maybe$Just(1);
+		case 'Partial':
+			return $elm$core$Maybe$Just(2);
+		case 'SeeText':
+			return $elm$core$Maybe$Just(3);
+		default:
+			return $elm$core$Maybe$Nothing;
+	}
+};
+var $author$project$Types$FortSave = 2;
+var $author$project$Types$ReflexSave = 1;
+var $author$project$Types$WillSave = 0;
+var $author$project$UrlState$saveTypeFromString = function (s) {
+	switch (s) {
+		case 'Will':
+			return $elm$core$Maybe$Just(0);
+		case 'Reflex':
+			return $elm$core$Maybe$Just(1);
+		case 'Fort':
+			return $elm$core$Maybe$Just(2);
+		default:
+			return $elm$core$Maybe$Nothing;
+	}
+};
+var $author$project$UrlState$decodeSavingThrow = function (s) {
+	var _v0 = A2($elm$core$String$split, '|', s);
+	if (((_v0.b && _v0.b.b) && _v0.b.b.b) && (!_v0.b.b.b.b)) {
+		var typeStr = _v0.a;
+		var _v1 = _v0.b;
+		var effectStr = _v1.a;
+		var _v2 = _v1.b;
+		var harmlessStr = _v2.a;
+		return A4(
+			$elm$core$Maybe$map3,
+			F3(
+				function (t, e, h) {
+					return {Y: e, bo: h, ar: t};
+				}),
+			$author$project$UrlState$saveTypeFromString(typeStr),
+			$author$project$UrlState$saveEffectFromString(effectStr),
+			$elm$core$Maybe$Just(harmlessStr === '1'));
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $author$project$Types$Afflict = 0;
+var $author$project$Types$S = 1;
+var $author$project$Types$SeedStackable = 1;
+var $author$project$Types$V = 0;
+var $author$project$Seeds$afflict = {
+	ac: $elm$core$Maybe$Nothing,
+	bd: 14,
+	ad: '1 minute',
+	aJ: _List_Nil,
+	ae: _List_fromArray(
+		[0, 1]),
+	aM: 'Afflicts the target with a –2 morale penalty on attack rolls, checks, and saving throws. For each additional –1 penalty assessed on either the target\'s attack rolls, checks, or saving throws, increase the Spellcraft DC by +2. A character may also develop a spell with this seed that afflicts the target with a –1 penalty on caster level checks, a –1 penalty to an ability score, a –1 penalty to Spell Resistance, or a –1 penalty to some other aspect of the target. For each additional –1 penalty assessed in one of the above categories, increase the Spellcraft DC by +4. This seed can afflict a character\'s ability scores to the point where they reach 0, except for Constitution where 1 is the minimum. If a factor is applied to increase the duration of this seed, ability score penalties instead become temporary ability damage. If a factor is applied to make the duration permanent, any ability score penalties become permanent ability drain. Finally, by increasing the Spellcraft DC by +2, one of the target\'s senses can be afflicted: sight, smell, hearing, taste, touch, or a special sense the target possesses. If the target fails its saving throw, the sense selected doesn\'t function for the spell\'s duration, with all attendant penalties that apply for losing the specified sense.',
+	ag: _List_fromArray(
+		['Fear', 'Mind-Affecting']),
+	ah: '20 minutes',
+	Y: $elm$core$Maybe$Nothing,
+	aS: 0,
+	bv: _List_Nil,
+	r: 'Afflict',
+	ap: '300 ft.',
+	as: $elm$core$Maybe$Just(
+		{Y: 0, bo: false, ar: 0}),
+	at: 'Enchantment (Compulsion)',
+	aA: true,
+	aE: $elm$core$Maybe$Just('One living creature'),
+	bI: _List_fromArray(
+		[
+			{af: 2, aM: 'Each additional –1 morale penalty beyond base –2', aS: 'afflict_rolls', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Additional –1 to rolls/checks/saves'},
+			{af: 4, aM: 'Each –1 penalty to Strength score', aS: 'afflict_ability_str', bt: 1, a: $elm$core$Maybe$Nothing, r: '–1 to Strength'},
+			{af: 4, aM: 'Each –1 penalty to Dexterity score', aS: 'afflict_ability_dex', bt: 1, a: $elm$core$Maybe$Nothing, r: '–1 to Dexterity'},
+			{af: 4, aM: 'Each –1 penalty to Constitution score', aS: 'afflict_ability_con', bt: 1, a: $elm$core$Maybe$Nothing, r: '–1 to Constitution'},
+			{af: 4, aM: 'Each –1 penalty to Intelligence score', aS: 'afflict_ability_int', bt: 1, a: $elm$core$Maybe$Nothing, r: '–1 to Intelligence'},
+			{af: 4, aM: 'Each –1 penalty to Wisdom score', aS: 'afflict_ability_wis', bt: 1, a: $elm$core$Maybe$Nothing, r: '–1 to Wisdom'},
+			{af: 4, aM: 'Each –1 penalty to Charisma score', aS: 'afflict_ability_cha', bt: 1, a: $elm$core$Maybe$Nothing, r: '–1 to Charisma'},
+			{af: 4, aM: 'Each –1 penalty to caster level checks', aS: 'afflict_cl', bt: 1, a: $elm$core$Maybe$Nothing, r: '–1 to caster level checks'},
+			{af: 4, aM: 'Each –1 penalty to spell resistance', aS: 'afflict_sr', bt: 1, a: $elm$core$Maybe$Nothing, r: '–1 to spell resistance'},
+			{af: 4, aM: 'Each –1 penalty to some other aspect of the target', aS: 'afflict_other', bt: 1, a: $elm$core$Maybe$Nothing, r: '–1 to other aspect'},
+			{af: 2, aM: 'One sense (sight, smell, hearing, taste, touch, or special) ceases to function for duration', aS: 'afflict_sense', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Afflict a sense'}
+		])
+};
+var $author$project$Types$Animate = 1;
+var $author$project$Types$SeedToggle = 0;
+var $author$project$Seeds$animate = {
+	ac: $elm$core$Maybe$Nothing,
+	bd: 25,
+	ad: '1 minute',
+	aJ: _List_Nil,
+	ae: _List_fromArray(
+		[0, 1]),
+	aM: 'This seed can imbue inanimate objects with mobility and a semblance of life (not actual life). The animated object attacks whomever or whatever the caster initially designates. The animated object can be of any nonmagical material. The caster can also animate part of a larger mass of raw matter, such as a volume of water in the ocean, part of a stony wall, or the earth itself, as long as the volume of material does not exceed 20 cubic feet. For each additional 10 cubic feet of matter animated, increase the Spellcraft DC by +1, up to 1,000 cubic feet. For each additional 100 cubic feet of matter animated after the first 1,000 cubic feet, increase the Spellcraft DC by +1. For each additional Hit Die granted to an animated object of a given size, increase the Spellcraft DC by +2. To animate attended objects (objects carried or worn by another creature), increase the Spellcraft DC by +10.',
+	ag: _List_Nil,
+	ah: '20 rounds',
+	Y: $elm$core$Maybe$Nothing,
+	aS: 1,
+	bv: _List_Nil,
+	r: 'Animate',
+	ap: '300 ft.',
+	as: $elm$core$Maybe$Nothing,
+	at: 'Transmutation',
+	aA: false,
+	aE: $elm$core$Maybe$Just('Object or 20 cu. ft. of matter'),
+	bI: _List_fromArray(
+		[
+			{
+			af: 1,
+			aM: 'Increases animated volume beyond base 20 cu. ft., up to 1,000 cu. ft.',
+			aS: 'animate_vol_1k',
+			bt: 1,
+			a: $elm$core$Maybe$Just(98),
+			r: 'Each additional 10 cu. ft. (up to 1,000)'
+		},
+			{af: 1, aM: 'Increases animated volume beyond 1,000 cu. ft.', aS: 'animate_vol_over1k', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each additional 100 cu. ft. (beyond 1,000)'},
+			{af: 2, aM: 'Each additional HD granted to the animated object', aS: 'animate_hd', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Additional Hit Die for animated object'},
+			{
+			af: 10,
+			aM: 'Objects carried or worn by another creature',
+			aS: 'animate_attended',
+			bt: 0,
+			a: $elm$core$Maybe$Just(1),
+			r: 'Animate attended objects'
+		}
+		])
+};
+var $author$project$Types$AnimateDead = 2;
+var $author$project$Seeds$undeadTypeDcModifiers = _List_fromArray(
+	[
+		_Utils_Tuple2('Skeleton', -12),
+		_Utils_Tuple2('Zombie', -12),
+		_Utils_Tuple2('Ghoul', -10),
+		_Utils_Tuple2('Shadow', -8),
+		_Utils_Tuple2('Ghast', -6),
+		_Utils_Tuple2('Wight', -4),
+		_Utils_Tuple2('Wraith', -2),
+		_Utils_Tuple2('Mummy', 0),
+		_Utils_Tuple2('Spectre', 2),
+		_Utils_Tuple2('Mohrg', 4),
+		_Utils_Tuple2('Vampire', 6),
+		_Utils_Tuple2('Ghost', 8)
+	]);
+var $author$project$Seeds$animateDead = {
+	ac: $elm$core$Maybe$Nothing,
+	bd: 23,
+	ad: '1 minute',
+	aJ: _List_fromArray(
+		[
+			{
+			aL: $author$project$Seeds$undeadTypeDcModifiers,
+			bh: 'Mummy',
+			aS: 'adead_undead_type',
+			Q: 'Undead Type',
+			aa: A2($elm$core$List$map, $elm$core$Tuple$first, $author$project$Seeds$undeadTypeDcModifiers)
+		}
+		]),
+	ae: _List_fromArray(
+		[0, 1]),
+	aM: 'The caster can turn the bones or bodies of dead creatures into undead that follow his or her spoken commands. The undead can follow the caster, or they can remain in an area and attack any creature (or a specific type of creature) entering the place. The undead remain animated until they are destroyed. (A destroyed undead can\'t be animated again.) Intelligent undead can follow more sophisticated commands. The animate dead seed allows a character to create 20 HD of undead. For each additional 1 HD of undead created, increase the Spellcraft DC by +1. The undead created remain under the caster\'s control indefinitely. A caster can naturally control 1 HD per caster level of undead creatures he or she has personally created, regardless of the method used. If the caster exceeds this number, newly created creatures fall under his or her control, and excess undead from previous castings become uncontrolled (the caster chooses which creatures are released). If the caster is a cleric, any undead he or she commands through his or her ability to command or rebuke undead do not count toward the limit. For each additional 2 HD of undead to be controlled, increase the Spellcraft DC by +1. Only undead in excess of 20 HD created with this seed can be controlled using this DC adjustment. To both create and control more than 20 HD of undead, increase the Spellcraft DC by +3 per additional 2 HD of undead.\n\nType of Undead: All types of undead can be created with the animate dead seed, although creating more powerful undead increases the Spellcraft DC of the epic spell, according to the table below. The GM must set the Spellcraft DC for undead not included on the table, using similar undead as a basis for comparison.',
+	ag: _List_fromArray(
+		['Evil']),
+	ah: 'Instantaneous',
+	Y: $elm$core$Maybe$Nothing,
+	aS: 2,
+	bv: _List_Nil,
+	r: 'Animate Dead',
+	ap: 'Touch',
+	as: $elm$core$Maybe$Nothing,
+	at: 'Necromancy',
+	aA: false,
+	aE: $elm$core$Maybe$Just('One or more corpses touched'),
+	bI: _List_fromArray(
+		[
+			{af: 1, aM: 'Above base 20 HD', aS: 'adead_extra_hd_create', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each additional 1 HD of undead created'},
+			{af: 1, aM: 'Control undead beyond free limit (above 20 HD created)', aS: 'adead_extra_hd_control', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each additional 2 HD to control'}
+		])
+};
+var $author$project$Types$Armor = 3;
+var $author$project$Seeds$armor = {
+	ac: $elm$core$Maybe$Nothing,
+	bd: 14,
+	ad: '1 minute',
+	aJ: _List_Nil,
+	ae: _List_fromArray(
+		[0, 1]),
+	aM: 'This seed grants a creature additional armor, providing a +4 bonus to Armor Class. The bonus is either an armor bonus or a natural armor bonus, whichever the caster selects. Unlike mundane armor, the armor seed provides an intangible protection that entails no armor check penalty, arcane spell failure chance, or speed reduction. Incorporeal creatures can\'t bypass the armor seed the way they can ignore normal armor. For each additional point of Armor Class bonus, increase the Spellcraft DC by +2. The caster can also grant a creature a +1 bonus to Armor Class using a different bonus type, such as deflection, divine, or insight. For each additional point of bonus to Armor Class of one of these types, increase the Spellcraft DC by +10.',
+	ag: _List_fromArray(
+		['Force']),
+	ah: '24 hours (D)',
+	Y: $elm$core$Maybe$Nothing,
+	aS: 3,
+	bv: _List_Nil,
+	r: 'Armor',
+	ap: 'Touch',
+	as: $elm$core$Maybe$Just(
+		{Y: 0, bo: true, ar: 0}),
+	at: 'Conjuration (Creation)',
+	aA: true,
+	aE: $elm$core$Maybe$Just('Creature touched'),
+	bI: _List_fromArray(
+		[
+			{af: 2, aM: 'Above base +4', aS: 'armor_ac_bonus', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each additional +1 armor/natural armor bonus'},
+			{af: 10, aM: 'Bonus type other than armor/natural armor, per +1', aS: 'armor_other_type', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each +1 bonus of other type (deflection, divine, insight…)'}
+		])
+};
+var $author$project$Types$Banish = 4;
+var $author$project$Seeds$banish = {
+	ac: $elm$core$Maybe$Nothing,
+	bd: 27,
+	ad: '1 minute',
+	aJ: _List_Nil,
+	ae: _List_fromArray(
+		[0, 1]),
+	aM: 'This seed forces extraplanar creatures out of the caster\'s home plane. The caster can banish up to 14 HD of extraplanar creatures. For each additional 2 HD of extraplanar creatures banished, increase the Spellcraft DC by +1. To specify a type or subtype of creature other than outsider to be banished, increase the Spellcraft DC by +20.',
+	ag: _List_Nil,
+	ah: 'Instantaneous',
+	Y: $elm$core$Maybe$Nothing,
+	aS: 4,
+	bv: _List_Nil,
+	r: 'Banish',
+	ap: '75 ft.',
+	as: $elm$core$Maybe$Just(
+		{Y: 0, bo: false, ar: 0}),
+	at: 'Abjuration',
+	aA: true,
+	aE: $elm$core$Maybe$Just('One or more extraplanar creatures, no two more than 30 ft. apart'),
+	bI: _List_fromArray(
+		[
+			{af: 1, aM: 'Above base 14 HD', aS: 'banish_hd', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each additional 2 HD banished'},
+			{
+			af: 20,
+			aM: 'Banish a creature type other than outsider',
+			aS: 'banish_type',
+			bt: 0,
+			a: $elm$core$Maybe$Just(1),
+			r: 'Specify non-outsider creature type/subtype'
+		}
+		])
+};
+var $author$project$Types$Compel = 5;
+var $author$project$Types$M = 2;
+var $author$project$Seeds$compel = {
+	ac: $elm$core$Maybe$Nothing,
+	bd: 19,
+	ad: '1 minute',
+	aJ: _List_Nil,
+	ae: _List_fromArray(
+		[0, 2]),
+	aM: 'This seed compels a target to follow a course of activity. At the basic level of effect, a spell using the compel seed must be worded in such a manner as to make the activity sound reasonable. Asking the creature to do an obviously harmful act automatically negates the effect (unless the Spellcraft DC has been increased to avoid this limitation; see below). To compel a creature to follow an outright unreasonable course of action, increase the Spellcraft DC by +10. The compelled course of activity can continue for the entire duration. If the compelled activity can be completed in a shorter time, the spell ends when the subject finishes what he or she was asked to do. The caster can instead specify conditions that will trigger a special activity during the duration. If the condition is not met before the spell using this seed expires, the activity is not performed.',
+	ag: _List_fromArray(
+		['Mind-Affecting']),
+	ah: '20 hours or until completed',
+	Y: $elm$core$Maybe$Nothing,
+	aS: 5,
+	bv: _List_Nil,
+	r: 'Compel',
+	ap: '75 ft.',
+	as: $elm$core$Maybe$Just(
+		{Y: 0, bo: false, ar: 0}),
+	at: 'Enchantment (Compulsion)',
+	aA: true,
+	aE: $elm$core$Maybe$Just('One living creature'),
+	bI: _List_fromArray(
+		[
+			{
+			af: 10,
+			aM: 'Removes the \'sounds reasonable\' restriction',
+			aS: 'compel_unreasonable',
+			bt: 0,
+			a: $elm$core$Maybe$Just(1),
+			r: 'Compel outright unreasonable / self-harmful action'
+		}
+		])
+};
+var $author$project$Types$Conceal = 6;
+var $author$project$Seeds$conceal = {
+	ac: $elm$core$Maybe$Nothing,
+	bd: 17,
+	ad: '1 minute',
+	aJ: _List_Nil,
+	ae: _List_fromArray(
+		[0, 1]),
+	aM: 'This seed can conceal a creature or object touched from sight, even from darkvision. If the subject is a creature carrying gear, the gear vanishes too, rendering the creature invisible. A spell using the conceal seed ends if the subject attacks any creature. Actions directed at unattended objects do not break the spell, and causing harm indirectly is not an attack. To create invisibility that lasts regardless of the actions of the subject, increase the Spellcraft DC by +4. Alternatively, this seed can conceal the exact location of the subject so that it appears to be about 2 feet away from its true location; this increases the Spellcraft DC by +2. The subject benefits from a 50% miss chance as if it had total concealment. However, unlike actual total concealment, this displacement effect does not prevent enemies from targeting him or her normally. The conceal seed can also be used to block divination spells, spell-like effects, and epic spells developed using the reveal seed; this increases the Spellcraft DC by +6. In all cases where divination magic of any level, including epic level, is employed against the subject of a spell using the conceal seed for this purpose, an opposed caster level check determines which spell works.',
+	ag: _List_Nil,
+	ah: '200 minutes or until expended (D)',
+	Y: $elm$core$Maybe$Nothing,
+	aS: 6,
+	bv: _List_fromArray(
+		[
+			{
+			bl: _List_fromArray(
+				[
+					{
+					af: 4,
+					aM: 'Normally ends if subject attacks; this removes that restriction',
+					aS: 'conceal_persist',
+					bt: 0,
+					a: $elm$core$Maybe$Just(1),
+					r: 'Persistent invisibility (regardless of actions)'
+				}
+				]),
+			aS: 'conceal_invisibility',
+			r: 'Invisibility'
+		},
+			{bl: _List_Nil, aS: 'conceal_displacement', r: 'Displacement'}
+		]),
+	r: 'Conceal',
+	ap: 'Personal or touch',
+	as: $elm$core$Maybe$Nothing,
+	at: 'Illusion (Glamer)',
+	aA: false,
+	aE: $elm$core$Maybe$Just('You or a creature or object of up to 2,000 lb.'),
+	bI: _List_fromArray(
+		[
+			{
+			af: 6,
+			aM: 'Opposed caster level check determines which spell works',
+			aS: 'conceal_block_divination',
+			bt: 0,
+			a: $elm$core$Maybe$Just(1),
+			r: 'Block divination / reveal-seed spells'
+		}
+		])
+};
+var $author$project$Types$Conjure = 7;
+var $author$project$Seeds$conjure = {
+	ac: $elm$core$Maybe$Nothing,
+	bd: 21,
+	ad: '1 minute',
+	aJ: _List_Nil,
+	ae: _List_fromArray(
+		[0, 1]),
+	aM: 'This seed creates a nonmagical, unattended object of nonliving matter of up to 20 cubic feet in volume. The caster must succeed at an appropriate skill check to make a complex item. The seed can create matter ranging in hardness and rarity from vegetable matter all the way up to mithral and even adamantine. Simple objects have a natural duration of 24 hours. For each additional cubic foot of matter created, increase the Spellcraft DC by +2. Attempting to use any created object as a material component or a resource during epic spell development causes the spell to fail and the object to disappear.\n\nThe Conjure seed can be used in conjunction with the life and fortify seeds for an epic spell that creates an entirely new creature, if made permanent. To give a creature spell-like abilities, apply other epic seeds to the epic spell that replicate the desired ability. To give the creature a supernatural or extraordinary ability rather than a spell-like ability, double the cost of the relevant seed. Remember that two doublings equals a tripling, and so forth. To give a creature Hit Dice, use the fortify seed. Each 5 hit points granted to the creature gives it an additional 1 HD. Once successfully created, the new creature will breed true.',
+	ag: _List_Nil,
+	ah: '8 hours (simple objects last 24 hours)',
+	Y: $elm$core$Maybe$Just('Unattended, nonmagical object of nonliving matter up to 20 cu. ft.'),
+	aS: 7,
+	bv: _List_fromArray(
+		[
+			{
+			bl: _List_fromArray(
+				[
+					{af: 2, aM: 'Above base 20 cu. ft.', aS: 'conjure_vol', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each additional cu. ft. of matter'}
+				]),
+			aS: 'conjure_object',
+			r: 'Simple Object Creation'
+		},
+			{bl: _List_Nil, aS: 'conjure_creature', r: 'Creature Creation (with Life + Fortify)'}
+		]),
+	r: 'Conjure',
+	ap: '0 ft.',
+	as: $elm$core$Maybe$Nothing,
+	at: 'Conjuration (Creation)',
+	aA: false,
+	aE: $elm$core$Maybe$Nothing,
+	bI: _List_Nil
+};
+var $author$project$Types$Contact = 8;
+var $author$project$Seeds$contact = {
+	ac: $elm$core$Maybe$Nothing,
+	bd: 23,
+	ad: '1 minute',
+	aJ: _List_Nil,
+	ae: _List_fromArray(
+		[0, 1]),
+	aM: 'This seed forges a telepathic bond with a particular creature with which the caster is familiar (or one that the caster can currently see directly or through magical means) and can converse back and forth. The subject recognizes the caster if it knows him or her. It can answer in like manner immediately, though it does not have to. The caster can forge a communal bond among more than two creatures. For each additional creature contacted, increase the Spellcraft DC by +1. The bond can be established only among willing subjects, which therefore receive no saving throw or Spell Resistance. For telepathic communication through the bond regardless of language, increase the Spellcraft DC by +4. No special influence is established as a result of the bond, only the power to communicate at a distance.\n\nAt the base Spellcraft DC of 20, a caster can also use the contact seed to imbue an object (or creature) with a message he or she prepares that appears as written text for the spell\'s duration or is spoken aloud in a language the caster knows. The spoken message can be of any length, but the length of written text is limited to what can be contained (as text of a readable size) on the surface of the target. The message is delivered when specific conditions are fulfilled according to the caster\'s desire when the spell is cast.',
+	ag: _List_Nil,
+	ah: '200 minutes',
+	Y: $elm$core$Maybe$Nothing,
+	aS: 8,
+	bv: _List_fromArray(
+		[
+			{
+			bl: _List_fromArray(
+				[
+					{af: 1, aM: 'Bond only among willing subjects (no save or SR)', aS: 'contact_extra_creature', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each additional creature in bond'},
+					{
+					af: 4,
+					aM: '',
+					aS: 'contact_language',
+					bt: 0,
+					a: $elm$core$Maybe$Just(1),
+					r: 'Telepathic communication regardless of language'
+				}
+				]),
+			aS: 'contact_bond',
+			r: 'Telepathic Bond'
+		},
+			{bl: _List_Nil, aS: 'contact_messenger', r: 'Messenger'}
+		]),
+	r: 'Contact',
+	ap: 'See text',
+	as: $elm$core$Maybe$Nothing,
+	at: 'Divination',
+	aA: false,
+	aE: $elm$core$Maybe$Just('One creature'),
+	bI: _List_Nil
+};
+var $author$project$Types$Delude = 9;
+var $author$project$Seeds$delude = {
+	ac: $elm$core$Maybe$Nothing,
+	bd: 14,
+	ad: '1 minute',
+	aJ: _List_Nil,
+	ae: _List_fromArray(
+		[0, 1]),
+	aM: 'A spell developed with the delude seed creates the visual illusion of an object, creature, or force, as visualized by the caster. The caster can move the image within the limits of the size of the effect by concentrating (the image is otherwise stationary). The image disappears when struck by an opponent unless the caster causes the illusion to react appropriately. For an illusion that includes audible, olfactory, tactile, taste, and thermal aspects, increase the Spellcraft DC by +2 per extra aspect. Even realistic tactile and thermal illusions can\'t deal damage, however. For each additional image to be created, increase the Spellcraft DC by +1. For an illusion that follows a script determined by the caster, increase the Spellcraft DC by +9. The figment follows the script without the caster having to concentrate on it. The illusion can include intelligible speech if desired. For an illusion that makes any area appear to be something other than it is, increase the Spellcraft DC by +4. Additional components, such as sounds, can be added as noted above. Concealing creatures requires additional spell development using this or other seeds.',
+	ag: _List_Nil,
+	ah: 'Concentration + 20 hours',
+	Y: $elm$core$Maybe$Just('Visual figment up to twenty 30-ft. cubes (S)'),
+	aS: 9,
+	bv: _List_Nil,
+	r: 'Delude',
+	ap: '12,000 ft.',
+	as: $elm$core$Maybe$Just(
+		{Y: 0, bo: false, ar: 0}),
+	at: 'Illusion (Figment)',
+	aA: false,
+	aE: $elm$core$Maybe$Nothing,
+	bI: _List_fromArray(
+		[
+			{
+			af: 2,
+			aM: 'Audible, olfactory, tactile, taste, or thermal (cannot deal damage)',
+			aS: 'delude_sense',
+			bt: 1,
+			a: $elm$core$Maybe$Just(5),
+			r: 'Each additional sensory aspect'
+		},
+			{af: 1, aM: '', aS: 'delude_extra_image', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each additional image'},
+			{
+			af: 9,
+			aM: 'Can include intelligible speech',
+			aS: 'delude_script',
+			bt: 0,
+			a: $elm$core$Maybe$Just(1),
+			r: 'Illusion follows a script (no concentration)'
+		},
+			{
+			af: 4,
+			aM: '',
+			aS: 'delude_area',
+			bt: 0,
+			a: $elm$core$Maybe$Just(1),
+			r: 'Make an area appear to be something other than it is'
+		}
+		])
+};
+var $author$project$Types$Destroy = 10;
+var $author$project$Seeds$destroy = {
+	ac: $elm$core$Maybe$Nothing,
+	bd: 29,
+	ad: '1 minute',
+	aJ: _List_Nil,
+	ae: _List_fromArray(
+		[0, 1]),
+	aM: 'This seed deals 20d6 points of damage to the target. The damage is of no particular type or energy. For each additional 1d6 points of damage dealt, increase the Spellcraft DC by +2. If the target is reduced to -10 hit points or less (or a construct, object, or undead is reduced to 0 hit points), it is utterly destroyed as if disintegrated, leaving behind only a trace of fine dust. Up to a 10-foot cube of nonliving matter is affected, so a spell using the destroy seed destroys only part of any very large object or structure targeted. The destroy seed affects even magical matter, energy fields, and force effects that are normally only affected by the disintegrate spell. Such effects are automatically destroyed. Epic spells using the ward seed may also be destroyed, though the caster must succeed at an opposed caster level check against the other spellcaster to bring down a ward spell.',
+	ag: _List_Nil,
+	ah: 'Instantaneous',
+	Y: $elm$core$Maybe$Nothing,
+	aS: 10,
+	bv: _List_Nil,
+	r: 'Destroy',
+	ap: '12,000 ft.',
+	as: $elm$core$Maybe$Just(
+		{Y: 1, bo: false, ar: 2}),
+	at: 'Transmutation',
+	aA: true,
+	aE: $elm$core$Maybe$Just('One creature, or up to a 10-ft. cube of nonliving matter'),
+	bI: _List_fromArray(
+		[
+			{af: 2, aM: 'Above base 20d6', aS: 'destroy_damage', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each additional 1d6 damage'}
+		])
+};
+var $author$project$Types$Dispel = 11;
+var $author$project$Seeds$dispel = {
+	ac: $elm$core$Maybe$Nothing,
+	bd: 19,
+	ad: '1 minute',
+	aJ: _List_Nil,
+	ae: _List_fromArray(
+		[0, 1]),
+	aM: 'This seed can end ongoing spells that have been cast on a creature or object, temporarily suppress the magical abilities of a magic item, or end ongoing spells (or at least their effects) within an area. A dispelled spell ends as if its duration had expired. The dispel seed can defeat all spells, even those not normally subject to dispel magic. The dispel seed can dispel (but not counter) the ongoing effects of supernatural abilities as well as spells, and it affects spell-like effects just as it affects spells. One creature, object, or spell is the target of the dispel seed. The caster makes a dispel check against the spell or against each ongoing spell currently in effect on the object or creature. A dispel check is 1d20 + 10 against a DC of 11 + the target spell\'s caster level. For each additional +1 on the dispel check, increase the Spellcraft DC by +1. If targeting an object or creature that is the effect of an ongoing spell, make a dispel check to end the spell that affects the object or creature. If the object targeted is a magic item, make a dispel check against the item\'s caster level. If succeessful, all the item\'s magical properties are suppressed for 1d4 rounds, after which the item recovers on its own. A suppressed item becomes nonmagical for the duration of the effect. An interdimensional interface is temporarily closed. A magic item\'s physical properties are unchanged. Any creature, object, or spell is potentially subject to the dispel seed, even the spells of gods and the abilities of artifacts. A character automatically succeeds on the dispel check against any spell that he or she cast him or her self.',
+	ag: _List_Nil,
+	ah: 'Instantaneous',
+	Y: $elm$core$Maybe$Nothing,
+	aS: 11,
+	bv: _List_Nil,
+	r: 'Dispel',
+	ap: '300 ft.',
+	as: $elm$core$Maybe$Nothing,
+	at: 'Abjuration',
+	aA: false,
+	aE: $elm$core$Maybe$Just('One creature, object, or spell'),
+	bI: _List_fromArray(
+		[
+			{af: 1, aM: 'Above base +10', aS: 'dispel_bonus', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each +1 to dispel check'}
+		])
+};
+var $author$project$Types$Energy = 12;
+var $author$project$Seeds$energy = {
+	ac: $elm$core$Maybe$Just('20-ft.-radius hemisphere burst'),
+	bd: 19,
+	ad: '1 minute',
+	aJ: _List_fromArray(
+		[
+			{
+			aL: _List_Nil,
+			bh: 'fire',
+			aS: 'energyType',
+			Q: 'Energy Type',
+			aa: _List_fromArray(
+				['acid', 'cold', 'electricity', 'fire', 'sonic'])
+		}
+		]),
+	ae: _List_fromArray(
+		[0, 1]),
+	aM: 'This seed uses whichever one of five energy types the caster chooses: acid, cold, electricity, fire, or sonic. The caster can cast the energy forth as a bolt, imbue an object with the energy, or create a freestanding manifestation of the energy. If the spell developed using the energy seed releases a bolt, that bolt instantaneously deals 10d6 points of damage of the appropriate energy type, and all in the bolt\'s area must make a Reflex save for half damage. For each additional 1d6 points of damage dealt, increase the Spellcraft DC by +2. The bolt begins at the caster’s fingertips. To imbue another creature with the ability to use an energy bolt as a spell-like ability at its option or when a particular condition is met, increase the Spellcraft DC by +25. The caster can also cause a creature or object to emanate the specific energy type out to a radius of 10 feet for 20 hours. The emanated energy deals 2d6 points of energy damage per round against unprotected creatures (the target creature is susceptible if not separately warded or otherwise resistant to the energy). For each additional 1d6 points of damage emanated, increase the Spellcraft DC by +2. The caster may also create a wall, half-circle, circle, dome, or sphere of the desired energy that emanates the energy for up to 20 hours. One side of the wall, selected by the caster, sends forth waves of energy, dealing 2d4 points of energy damage to creatures within 10 feet and 1d4 points of energy damage to those past 10 feet but within 20 feet. The wall deals this damage when it appears and in each round that a creature enters or remains in the area. In addition, the wall deals 2d6+20 points of energy damage to any creature passing through it. The wall deals double damage to undead creatures. For each additional 1d4 points of damage, increase the Spellcraft DC by +2.\n\nThe caster can also use the energy seed to create a spell that carefully releases and balances the emanation of cold, electricity, and fire, creating specific weather effects for a period of 20 hours. Using the energy seed this way has a base Spellcraft DC of 25. The area extends to a two-mile-radius centered on the caster. Once the spell is cast, the weather takes 10 minutes to manifest. Ordinarily, a caster can\'t directly target a creature or object, though indirect effects are possible. This seed can create cold snaps, heat waves, thunderstorms, fogs, blizzards—even a tornado that moves randomly in the affected area. Creating targeted damaging effects requires an additional use of the energy seed.',
+	ag: _List_Nil,
+	ah: 'Instantaneous',
+	Y: $elm$core$Maybe$Nothing,
+	aS: 12,
+	bv: _List_fromArray(
+		[
+			{
+			bl: _List_fromArray(
+				[
+					{af: 2, aM: 'Above base 10d6', aS: 'energy_bolt_damage', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each additional 1d6 damage'},
+					{
+					af: 25,
+					aM: 'As a spell-like ability, at its option or on trigger',
+					aS: 'energy_bolt_imbue',
+					bt: 0,
+					a: $elm$core$Maybe$Just(1),
+					r: 'Imbue another creature with bolt ability'
+				}
+				]),
+			aS: 'energy_bolt',
+			r: 'Bolt'
+		},
+			{
+			bl: _List_fromArray(
+				[
+					{af: 2, aM: 'Above base 2d6/round', aS: 'energy_em_damage', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each additional 1d6 damage per round'}
+				]),
+			aS: 'energy_emanation',
+			r: 'Emanation'
+		},
+			{
+			bl: _List_fromArray(
+				[
+					{af: 4, aM: 'Above base 2d4 near / 1d4 far; passage damage scales with proximity damage', aS: 'energy_wall_damage', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each additional 1d4 damage (wall proximity)'}
+				]),
+			aS: 'energy_wall',
+			r: 'Wall / Dome / Sphere'
+		},
+			{bl: _List_Nil, aS: 'energy_weather', r: 'Weather Effects'}
+		]),
+	r: 'Energy',
+	ap: '300 ft.',
+	as: $elm$core$Maybe$Just(
+		{Y: 1, bo: false, ar: 1}),
+	at: 'Evocation',
+	aA: true,
+	aE: $elm$core$Maybe$Nothing,
+	bI: _List_Nil
+};
+var $author$project$Types$Foresee = 13;
+var $author$project$Seeds$foresee = {
+	ac: $elm$core$Maybe$Nothing,
+	bd: 17,
+	ad: '1 minute',
+	aJ: _List_Nil,
+	ae: _List_fromArray(
+		[0, 1]),
+	aM: 'The caster can foretell the immediate future, or gain information about specific questions. He or she is 90% likely to receive a meaningful reading of the future of the next 30 minutes. If successful, the caster knows if a particular action will bring good results, bad results, or no result. For each additional 30 minutes into the future, multiply the Spellcraft DC by x2. For better results, the caster can pose up to ten specific questions (one per round while he or she concentrates) to unknown powers of other planes, but the base Spellcraft DC for such an attempt is 23. The answers return in a language the caster understands, but use only one-word replies: “yes,” “no,” “maybe,” “never,” “irrelevant,” or some other one-word answer. Unlike 0- to 9th-level spells of similar type, all questions answered are 90% likely to be answered truthfully. However, a specific spell using the foresee seed can only be cast once every five weeks. The foresee seed is also useful for epic spells requiring specific information before functioning, such as spells using the reveal and transport seeds. The foresee seed can also be used to gain one basic piece of information about a living target: level, class, alignment, or some special ability (or one of an object\'s magical abilities, if any). For each additional piece of information revealed, increase the Spellcraft DC by +2.',
+	ag: _List_Nil,
+	ah: 'Instantaneous or concentration',
+	Y: $elm$core$Maybe$Nothing,
+	aS: 13,
+	bv: _List_fromArray(
+		[
+			{
+			bl: _List_fromArray(
+				[
+					{af: 0, aM: 'Multiplies this seed\'s DC by ×2 per interval (special: not additive)', aS: 'foresee_interval', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each additional 30-min interval'}
+				]),
+			aS: 'foresee_predict',
+			r: 'Predict the Future (30 min)'
+		},
+			{bl: _List_Nil, aS: 'foresee_questions', r: 'Ask Questions (10 questions)'},
+			{
+			bl: _List_fromArray(
+				[
+					{af: 2, aM: 'Level, class, alignment, special ability, or magic item ability', aS: 'foresee_extra_info', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each additional piece of info about target'}
+				]),
+			aS: 'foresee_info',
+			r: 'Targeted Info'
+		}
+		]),
+	r: 'Foresee',
+	ap: 'Personal',
+	as: $elm$core$Maybe$Nothing,
+	at: 'Divination',
+	aA: false,
+	aE: $elm$core$Maybe$Just('You'),
+	bI: _List_Nil
+};
+var $author$project$Types$Fortify = 14;
+var $author$project$Seeds$fortify = {
+	ac: $elm$core$Maybe$Nothing,
+	bd: 17,
+	ad: '1 minute',
+	aJ: _List_Nil,
+	ae: _List_fromArray(
+		[0, 1]),
+	aM: 'Spells using the fortify seed grant a +1 enhancement bonus to whichever one of the following the caster chooses:\n\nAny one ability score.\nAny one kind of saving throw.\nSpell resistance.\nNatural armor.\nThe fortify seed can also grant energy resistance 1 for one energy type or 1 temporary hit point. For each additional +1 bonus, point of energy resistance, or hit point, increase the Spellcraft DC by +2.\n\nThe fortify seed has a base Spellcraft DC of 23 if it grants a +1 bonus of a type other than enhancement. For each additional +1 bonus of a type other than enhancement, increase the Spellcraft DC by +6. If the caster applies a factor to make the duration permanent, the bonus must be an inherent bonus, and the maximum inherent bonus allowed is +5.\n\nThe fortify seed has a base Spellcraft DC of 27 if it grants a creature a +1 bonus to an ability score or other statistic it does not possess. For each additional +1 bonus, increase the Spellcraft DC by +4. If a spell with the fortify seed grants an inanimate object an ability score it would not normally possess (such as Intelligence), the spell must also incorporate the life seed.\n\nGranting Spell Resistance to a creature that doesn\'t already have it is a special case; the base Spellcraft DC of 27 grants Spell Resistance 25, and each additional point of Spell Resistance increases the Spellcraft DC by +4 (each -1 to Spell Resistance reduces the Spellcraft DC by -2).\n\nThe fortify seed can also grant damage reduction 1/magic. For each additional point of damage reduction, increase the Spellcraft DC by +2. To increase the damage reduction value to epic, increase the Spellcraft DC by +15.\n\nA special use of the fortify seed grants the target a permanent +1 year to its current age category. For each additional +1 year added to the creature\'s current age category, increase the Spellcraft DC by +2. Incremental adjustments to a creature\'s maximum age do not stack; they overlap. When a spell increases a creature\'s current age category, all higher age categories are also adjusted accordingly.',
+	ag: _List_Nil,
+	ah: '20 hours',
+	Y: $elm$core$Maybe$Nothing,
+	aS: 14,
+	bv: _List_fromArray(
+		[
+			{
+			bl: _List_fromArray(
+				[
+					{af: 2, aM: 'Above base +1', aS: 'fortify_enhance_plus', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each additional +1 (or 1 energy resist / 1 temp hp)'}
+				]),
+			aS: 'fortify_enhance',
+			r: 'Enhancement Bonus'
+		},
+			{
+			bl: _List_fromArray(
+				[
+					{af: 6, aM: '', aS: 'fortify_other_plus', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each additional +1 non-enhancement bonus'}
+				]),
+			aS: 'fortify_nonenhance',
+			r: 'Non-Enhancement Bonus'
+		},
+			{
+			bl: _List_fromArray(
+				[
+					{af: 4, aM: '', aS: 'fortify_new_plus', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each additional +1'}
+				]),
+			aS: 'fortify_new',
+			r: 'Bonus to New Statistic (target doesn\'t have it)'
+		},
+			{
+			bl: _List_fromArray(
+				[
+					{af: 4, aM: '', aS: 'fortify_sr_plus', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each +1 SR above 25'},
+					{af: -2, aM: '', aS: 'fortify_sr_minus', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each –1 SR below 25'},
+					{
+					af: 15,
+					aM: '+15 DC surcharge to make DR bypass epic',
+					aS: 'fortify_dr_epic',
+					bt: 0,
+					a: $elm$core$Maybe$Just(1),
+					r: 'Damage Reduction vs. epic'
+				}
+				]),
+			aS: 'fortify_sr',
+			r: 'Grant Spell Resistance 25'
+		},
+			{
+			bl: _List_fromArray(
+				[
+					{af: 2, aM: 'Increments do not stack; they overlap', aS: 'fortify_age_year', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each +1 year to current age category'}
+				]),
+			aS: 'fortify_age',
+			r: 'Expand Age Category'
+		}
+		]),
+	r: 'Fortify',
+	ap: 'Touch',
+	as: $elm$core$Maybe$Just(
+		{Y: 0, bo: true, ar: 0}),
+	at: 'Transmutation',
+	aA: true,
+	aE: $elm$core$Maybe$Just('Creature touched'),
+	bI: _List_fromArray(
+		[
+			{af: 2, aM: 'Any mode: adds DR/magic', aS: 'fortify_dr', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each +1 damage reduction'}
+		])
+};
+var $author$project$Types$DF = 3;
+var $author$project$Types$Heal = 15;
+var $author$project$Seeds$heal = {
+	ac: $elm$core$Maybe$Nothing,
+	bd: 25,
+	ad: '1 minute',
+	aJ: _List_Nil,
+	ae: _List_fromArray(
+		[0, 1, 3]),
+	aM: 'Spells developed with the heal seed channel positive energy into a creature to wipe away disease and injury. Such a spell completely cures all diseases, blindness, deafness, hit point damage, and temporary ability damage. To restore permanently drained ability score points, increase the Spellcraft DC by +6. The heal seed neutralizes poisons in the subject\'s system so that no additional damage or effects are suffered. It offsets feeblemindedness and cures mental disorders caused by spells or injury to the brain. It dispels all magical effects penalizing the character\'s abilities, including effects caused by spells, even epic spells developed with the afflict seed. Only a single application of the spell is needed to simultaneously achieve all these effects. This seed does not restore levels or Constitution points lost due to death.\n\nTo dispel all negative levels afflicting the target, increase the Spellcraft DC by +2. This reverses level drains by a force or creature. The drained levels are restored only if the creature lost the levels within the last 20 weeks. For each additional week since the levels were drained, increase the Spellcraft DC by +2.\n\nAgainst undead, the influx of positive energy causes the loss of all but 1d4 hit points if the undead fails a Fortitude saving throw.\n\nAn epic caster with 24 ranks in Knowledge (arcana), Knowledge (nature), or Knowledge (religion) can cast a spell developed with a special version of the heal seed that flushes negative energy into the subject, healing undead completely but causing the loss of all but 1d4 hit points in living creatures if they fail a Fortitude saving throw. Alternatively, a living target that fails its Fortitude saving throw could gain four negative levels for the next 8 hours. For each additional negative level bestowed, increase the Spellcraft DC by +4, and for each extra hour the negative levels persist, increase the Spellcraft DC by +2. If the subject has at least as many negative levels as Hit Dice, it dies. If the subject survives and the negative levels persist for 24 hours or longer, the subject must make another Fortitude saving throw, or the negative levels are converted to actual level loss.\n\n',
+	ag: _List_Nil,
+	ah: 'Instantaneous',
+	Y: $elm$core$Maybe$Nothing,
+	aS: 15,
+	bv: _List_fromArray(
+		[
+			{
+			bl: _List_fromArray(
+				[
+					{
+					af: 6,
+					aM: '',
+					aS: 'heal_drain',
+					bt: 0,
+					a: $elm$core$Maybe$Just(1),
+					r: 'Restore drained ability scores'
+				},
+					{
+					af: 2,
+					aM: '',
+					aS: 'heal_neg_levels',
+					bt: 0,
+					a: $elm$core$Maybe$Just(1),
+					r: 'Dispel all negative levels'
+				},
+					{af: 2, aM: 'Above free 20-week window', aS: 'heal_extra_week', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each additional week to restore negative levels'}
+				]),
+			aS: 'heal_heal',
+			r: 'Heal'
+		},
+			{
+			bl: _List_fromArray(
+				[
+					{af: 4, aM: '', aS: 'heal_neg_level_extra', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each additional negative level bestowed'},
+					{af: 2, aM: '', aS: 'heal_neg_level_hour', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each extra hour negative levels persist'}
+				]),
+			aS: 'heal_harm',
+			r: 'Harm (requires 24 ranks Knowledge)'
+		}
+		]),
+	r: 'Heal',
+	ap: 'Touch',
+	as: $elm$core$Maybe$Just(
+		{Y: 0, bo: true, ar: 0}),
+	at: 'Conjuration (Healing)',
+	aA: true,
+	aE: $elm$core$Maybe$Just('Creature touched'),
+	bI: _List_Nil
+};
+var $author$project$Types$Life = 16;
+var $author$project$Seeds$life = {
+	ac: $elm$core$Maybe$Nothing,
+	bd: 27,
+	ad: '1 minute',
+	aJ: _List_Nil,
+	ae: _List_fromArray(
+		[0, 1, 3]),
+	aM: 'A spell developed with the life seed will restore life and complete vigor to any deceased creature. The condition of the remains is not a factor. So long as some small portion of the creature\'s body still exists, it can be returned to life, but the portion receiving the spell must have been part of the creature\'s body at the time of death. (The remains of a creature hit by a disintegrate spell count as a small portion of its body.) The creature can have been dead for no longer than two hundred years. For each additional ten years, increase the Spellcraft DC by +1.\n\nThe creature is immediately restored to full hit points, vigor, and health, with no loss of prepared spells. However, the subject loses one level (or 1 point of Constitution if the subject was 1st level). The life seed cannot revive someone who has died of old age.\n\nAn epic caster with 24 ranks in Knowledge (arcana), Knowledge (nature), or Knowledge (religion) can cast a spell developed with a special version of the life seed that gives actual life to normally inanimate objects. The caster can give inanimate plants and animals a soul, personality, and humanlike sentience. To succeed, the caster must make a Will save (DC 10 + the target\'s Hit Dice, or the Hit Dice a plant will have once it comes to life).\n\nThe newly living object, intelligent animal, or sentient plant is friendly toward the caster. An object or plant has characteristics as if it were an animated object, except that its Intelligence, Wisdom, and Charisma scores are all 3d6. Animated objects and plants gain the ability to move their limbs, projections, roots, carved legs and arms, or other appendages, and have senses similar to a human\'s. A newly intelligent animal gets 3d6 Intelligence, +1d3 Charisma, and +2 HD. Objects, animals, and plants speak one language that the caster knows, plus one additional language that he or she knows per point of Intelligence bonus (if any).\n\n',
+	ag: _List_Nil,
+	ah: 'Instantaneous',
+	Y: $elm$core$Maybe$Nothing,
+	aS: 16,
+	bv: _List_fromArray(
+		[
+			{
+			bl: _List_fromArray(
+				[
+					{af: 1, aM: 'Target can have been dead longer', aS: 'life_extra_decade', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each additional 10 years beyond 200'}
+				]),
+			aS: 'life_resurrect',
+			r: 'Resurrection'
+		},
+			{bl: _List_Nil, aS: 'life_give', r: 'Give Life (to object/plant/animal)'}
+		]),
+	r: 'Life',
+	ap: 'Touch',
+	as: $elm$core$Maybe$Nothing,
+	at: 'Conjuration (Healing)',
+	aA: true,
+	aE: $elm$core$Maybe$Just('Dead creature touched'),
+	bI: _List_Nil
+};
+var $author$project$Types$Reflect = 17;
+var $author$project$Seeds$reflect = {
+	ac: $elm$core$Maybe$Nothing,
+	bd: 27,
+	ad: '1 minute',
+	aJ: _List_Nil,
+	ae: _List_fromArray(
+		[0, 1]),
+	aM: 'Attacks targeted against the caster rebound on the original attacker. Each use of the reflect seed in an epic spell is effective against one type of attack only: spells (and spell-like effects), ranged attacks, or melee attacks. To reflect an area spell, where the caster is not the target but are caught in the vicinity, increase the Spellcraft DC by +20. A single successful use of reflect expends its protection. Spells developed with the reflect seed against spells and spell-like effects return all spell effects of up to 1st level. For each additional level of spells to be reflected, increase the Spellcraft DC by +20. Epic spells are treated as 10th-level spells for this purpose.\n\nThe desired effect is automatically reflected if the spell in question is 9th level or lower. An opposed caster level check is required when the reflect seed is used against another epic spell. If the enemy spellcaster gets his spell through by winning the caster level check, the epic spell using the reflect seed is not expended, just momentarily suppressed.\n\nIf the reflect seed is used against a melee attack or ranged attack, five such attacks are automatically reflected back on the original attacker. For each additional attack reflected, increase the Spellcraft DC by +4. The reflected attack rebounds on the attacker using the same attack roll. Once the allotted attacks are reflected, the spell using the reflect seed is expended.\n\n',
+	ag: _List_Nil,
+	ah: 'Until expended (up to 12 hours)',
+	Y: $elm$core$Maybe$Nothing,
+	aS: 17,
+	bv: _List_fromArray(
+		[
+			{
+			bl: _List_fromArray(
+				[
+					{
+					af: 20,
+					aM: '',
+					aS: 'reflect_aoe',
+					bt: 0,
+					a: $elm$core$Maybe$Just(1),
+					r: 'Reflect AoE spell (not directly targeted)'
+				},
+					{af: 20, aM: 'Base reflects up to 1st level; each +1 level costs +20 DC; epic spells count as 10th level', aS: 'reflect_spell_level', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each additional spell level reflected'}
+				]),
+			aS: 'reflect_spell',
+			r: 'Spell Reflection'
+		},
+			{
+			bl: _List_fromArray(
+				[
+					{af: 4, aM: 'Base: 5 attacks', aS: 'reflect_ranged_extra', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each additional ranged attack reflected'}
+				]),
+			aS: 'reflect_ranged',
+			r: 'Ranged Attack Reflection'
+		},
+			{
+			bl: _List_fromArray(
+				[
+					{af: 4, aM: 'Base: 5 attacks', aS: 'reflect_melee_extra', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each additional melee attack reflected'}
+				]),
+			aS: 'reflect_melee',
+			r: 'Melee Attack Reflection'
+		}
+		]),
+	r: 'Reflect',
+	ap: 'Personal',
+	as: $elm$core$Maybe$Nothing,
+	at: 'Abjuration',
+	aA: false,
+	aE: $elm$core$Maybe$Just('You'),
+	bI: _List_Nil
+};
+var $author$project$Types$Reveal = 18;
+var $author$project$Seeds$reveal = {
+	ac: $elm$core$Maybe$Nothing,
+	bd: 19,
+	ad: '1 minute',
+	aJ: _List_Nil,
+	ae: _List_fromArray(
+		[0, 1]),
+	aM: 'The caster of this seed can see some distant location or hear the sounds at some distant location almost as if he or she was there. To both hear and see, increase the Spellcraft DC by +2. Distance is not a factor, but the locale must be known—a place familiar to the caster or an obvious one. The spell creates an invisible sensor that can be dispelled. Lead sheeting or magical protection blocks the spell, and the caster senses that the spell is so blocked. If the caster prefers to create a mobile sensor (speed 30 feet) that he or she controls, increase the Spellcraft DC by +2. To use the reveal seed to reach one specific different plane of existence, increase the Spellcraft DC by +8. To allow magically enhanced senses to work through a spell built with the reveal seed, increase the Spellcraft DC by +4. To cast any spell from the sensor whose range is touch or greater, increase the Spellcraft DC by +6; however, the caster must maintain line of effect to the sensor at all times. If the line of effect is obstructed, the spell ends. To free the caster of the line of effect restriction for casting spells through the sensor, multiply the Spellcraft DC by ×10.\n\nThe reveal seed has a base Spellcraft DC of 25 if used to pierce illusions and see things as they really are. The caster can see through normal and magical darkness, notice secret doors hidden by magic, see the exact locations of creatures or objects under blur or displacement effects, see invisible creatures or objects normally, see through illusions, see onto the Ethereal Plane (but not into extradimensional spaces), and see the true form of polymorphed, changed, or transmuted things. The range of such sight is 120 feet.\n\nThe reveal seed can also be used to develop spells that will do any one of the following: duplicate the read magic spell, comprehend the written and verbal language of another, or speak in the written or verbal language of another. To both comprehend and speak a language, increase the Spellcraft DC by +4.\n\n',
+	ag: _List_Nil,
+	ah: 'Concentration + 20 minutes',
+	Y: $elm$core$Maybe$Just('See text'),
+	aS: 18,
+	bv: _List_fromArray(
+		[
+			{
+			bl: _List_fromArray(
+				[
+					{
+					af: 2,
+					aM: '',
+					aS: 'reveal_hear',
+					bt: 0,
+					a: $elm$core$Maybe$Just(1),
+					r: 'Both see and hear through sensor'
+				},
+					{
+					af: 2,
+					aM: '',
+					aS: 'reveal_mobile',
+					bt: 0,
+					a: $elm$core$Maybe$Just(1),
+					r: 'Mobile sensor (speed 30 ft.)'
+				},
+					{
+					af: 8,
+					aM: '',
+					aS: 'reveal_plane',
+					bt: 0,
+					a: $elm$core$Maybe$Just(1),
+					r: 'Sensor on a different plane'
+				},
+					{
+					af: 4,
+					aM: '',
+					aS: 'reveal_magic_senses',
+					bt: 0,
+					a: $elm$core$Maybe$Just(1),
+					r: 'Magically enhanced senses through sensor'
+				},
+					{
+					af: 6,
+					aM: 'Must maintain line of effect to sensor',
+					aS: 'reveal_cast_through',
+					bt: 0,
+					a: $elm$core$Maybe$Just(1),
+					r: 'Cast touch-or-greater spells through sensor'
+				},
+					{
+					af: 0,
+					aM: 'Multiplies DC by ×10',
+					aS: 'reveal_no_loe',
+					bt: 0,
+					a: $elm$core$Maybe$Just(1),
+					r: 'No line of effect required for spells through sensor'
+				}
+				]),
+			aS: 'reveal_sensor',
+			r: 'Sensor'
+		},
+			{bl: _List_Nil, aS: 'reveal_truesight', r: 'Pierce Illusions (True Sight, 120 ft.)'},
+			{
+			bl: _List_fromArray(
+				[
+					{
+					af: 4,
+					aM: '',
+					aS: 'reveal_both_lang',
+					bt: 0,
+					a: $elm$core$Maybe$Just(1),
+					r: 'Both comprehend and speak a language'
+				}
+				]),
+			aS: 'reveal_language',
+			r: 'Languages'
+		}
+		]),
+	r: 'Reveal',
+	ap: 'See text',
+	as: $elm$core$Maybe$Nothing,
+	at: 'Divination',
+	aA: false,
+	aE: $elm$core$Maybe$Nothing,
+	bI: _List_Nil
+};
+var $author$project$Types$Slay = 19;
+var $author$project$Seeds$slay = {
+	ac: $elm$core$Maybe$Nothing,
+	bd: 25,
+	ad: '1 minute',
+	aJ: _List_Nil,
+	ae: _List_fromArray(
+		[0, 1]),
+	aM: 'A spell developed using the slay seed snuffs out the life force of a living creature, killing it instantly. The slay seed kills a creature of up to 80 HD. The subject is entitled to a Fortitude saving throw to survive the attack. If the save is successful, it instead takes 3d6+20 points of damage. For each additional 80 HD affected (or each additional creature affected), increase the Spellcraft DC by +8. Alternatively, a caster can use the slay seed in an epic spell to suppress the life force of the target by bestowing 2d4 negative levels on the target (or half as many negative levels on a successful Fortitude save). For each additional 1d4 negative levels bestowed, increase the Spellcraft DC by +4. If the subject has at least as many negative levels as Hit Dice, it dies. If the subject survives and the negative levels persist for 24 hours or longer, the subject must make another Fortitude saving throw, or the negative levels are converted to actual level loss.',
+	ag: _List_fromArray(
+		['Death']),
+	ah: 'Instantaneous',
+	Y: $elm$core$Maybe$Nothing,
+	aS: 19,
+	bv: _List_fromArray(
+		[
+			{
+			bl: _List_fromArray(
+				[
+					{af: 8, aM: 'Or each additional creature affected', aS: 'slay_hd', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each additional 80 HD affected'}
+				]),
+			aS: 'slay_kill',
+			r: 'Kill'
+		},
+			{
+			bl: _List_fromArray(
+				[
+					{af: 4, aM: 'Base: 2d4 negative levels', aS: 'slay_neg_level', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each additional 1d4 negative levels'}
+				]),
+			aS: 'slay_enervate',
+			r: 'Enervate (negative levels)'
+		}
+		]),
+	r: 'Slay',
+	ap: '300 ft.',
+	as: $elm$core$Maybe$Just(
+		{Y: 2, bo: false, ar: 2}),
+	at: 'Necromancy',
+	aA: true,
+	aE: $elm$core$Maybe$Just('One living creature of up to 80 HD'),
+	bI: _List_Nil
+};
+var $author$project$Types$Summon = 20;
+var $author$project$Seeds$summon = {
+	ac: $elm$core$Maybe$Nothing,
+	bd: 14,
+	ad: '1 minute',
+	aJ: _List_Nil,
+	ae: _List_fromArray(
+		[0, 1]),
+	aM: 'This seed can summon an outsider. It appears where the caster designates and acts immediately, on his or her turn, if its spell resistance is overcome and it fails a Will saving throw. It attacks the caster\'s opponents to the best of its ability. If the caster can communicate with the outsider, he or she can direct it not to attack, to attack particular enemies, or to perform other actions. The spell conjures an outsider the caster selects of CR 2 or less. For each +1 CR of the summoned outsider, increase the Spellcraft DC by +2. For each additional outsider of the same Challenge Rating summoned, multiply the Spellcraft DC by x2. When a caster develops a spell with the summon seed that summons an air, chaotic, earth, evil, fire, good, lawful, or water creature, the completed spell is also of that type.\n\nIf the caster increases the Spellcraft DC by +10, he or she can summon a creature of CR 2 or less from another monster type or subtype. The summoned creature is assumed to have been plucked from some other plane (or somewhere on the same plane). The summoned creature attacks the caster\'s opponents to the best of its ability; or, if the caster can communicate with it, it will perform other actions. However, the summoning ends if the creature is asked to perform a task inimical to its nature. For each +1 CR of the summoned creature, increase the Spellcraft DC by +2.\n\nFinally, by increasing the Spellcraft DC by +60, the caster can summon a unique individual he or she specifies from anywhere in the multiverse. The caster must know the target\'s name and some facts about its life, defeat any magical protection against discovery or other protection possessed by the target, and overcome the target\'s spell resistance, and it must fail a Will saving throw. The target is under no special compulsion to serve the caster.',
+	ag: _List_Nil,
+	ah: '20 rounds (D)',
+	Y: $elm$core$Maybe$Just('One summoned creature'),
+	aS: 20,
+	bv: _List_fromArray(
+		[
+			{
+			bl: _List_fromArray(
+				[
+					{af: 2, aM: '', aS: 'summon_cr', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each +1 CR above CR 1'},
+					{
+					af: 10,
+					aM: '+10 DC flat surcharge',
+					aS: 'summon_nonoutsider',
+					bt: 0,
+					a: $elm$core$Maybe$Just(1),
+					r: 'Summon a non-outsider creature type'
+				}
+				]),
+			aS: 'summon_generic',
+			r: 'Summon Generic Creature'
+		},
+			{
+			bl: _List_fromArray(
+				[
+					{
+					af: 60,
+					aM: '+60 DC flat surcharge',
+					aS: 'summon_unique_dc',
+					bt: 0,
+					a: $elm$core$Maybe$Just(1),
+					r: 'Summon specific named individual'
+				}
+				]),
+			aS: 'summon_unique',
+			r: 'Summon Unique Individual'
+		}
+		]),
+	r: 'Summon',
+	ap: '75 ft.',
+	as: $elm$core$Maybe$Just(
+		{Y: 0, bo: false, ar: 0}),
+	at: 'Conjuration (Summoning)',
+	aA: true,
+	aE: $elm$core$Maybe$Nothing,
+	bI: _List_Nil
+};
+var $author$project$Types$Transform = 21;
+var $author$project$Seeds$transform = {
+	ac: $elm$core$Maybe$Nothing,
+	bd: 21,
+	ad: '1 minute',
+	aJ: _List_Nil,
+	ae: _List_fromArray(
+		[0, 1]),
+	aM: 'Spells using the transform seed change the subject into another form of creature or object. The new form can range in size from Diminutive to one size larger than the subject\'s normal form. For each additional increment of size change, increase the Spellcraft DC by +6. If the caster wants to transform a nonmagical, inanimate object into a creature of his or her type or transform a creature into a nonmagical, inanimate object, increase the Spellcraft DC by +10. To change a creature of one type into another type increase the Spellcraft DC by +5.\n\nTransformations involving nonmagical, inanimate substances with hardness are more difficult; for each 2 points of hardness, increase the Spellcraft DC by +1.\n\nTo transform a creature into an incorporeal or gaseous form, increase the Spellcraft DC by +10. Conversely, to overcome the natural immunity of a gaseous or incorporeal creature to transformation, increase the Spellcraft DC by +10.\n\nThe transform seed can also change its target into someone specific. To transform an object or creature into the specific likeness of another individual (including memories and mental abilities), increase the Spellcraft DC by +25. If the transformed creature doesn\'t have the level or Hit Dice of its new likeness, it can only use the abilities of the creature at its own level or Hit Dice. If slain or destroyed, the transformed creature or object reverts to its original form. The subject\'s equipment, if any, remains untransformed or melds into the new form\'s body, at the caster\'s option. The transformed creature or object acquires the physical and natural abilities of the creature or object it has been changed into while retaining its own memories and mental ability scores. Mental abilities include personality, Intelligence, Wisdom, and Charisma scores, level and class, hit points (despite any change in its Constitution score), alignment, base attack bonus, base saves, extraordinary abilities, spells, and spell-like abilities, but not its supernatural abilities. Physical abilities include natural size and Strength, Dexterity, and Constitution scores. Natural abilities include armor, natural weapons, and similar gross physical qualities (presence or absence of wings, number of extremities, and so forth), and possibly hardness. Creatures transformed into inanimate objects do not gain the benefit of their untransformed physical abilities, and may well be blind, deaf, dumb, and unfeeling. Objects transformed into creatures gain that creature\'s average physical ability scores, but are considered to have mental ability scores of 0 (the fortify seed can add points to each mental ability, if desired). For each normal extraordinary ability or supernatural ability granted to the transformed creature, increase the Spellcraft DC by +10. The transformed subject can have no more Hit Dice than the caster has or than the subject has (whichever is greater). In any case, for each Hit Die the assumed form has above 15, increase the Spellcraft DC by +2.',
+	ag: _List_Nil,
+	ah: '20 hours',
+	Y: $elm$core$Maybe$Nothing,
+	aS: 21,
+	bv: _List_Nil,
+	r: 'Transform',
+	ap: '300 ft.',
+	as: $elm$core$Maybe$Just(
+		{Y: 0, bo: false, ar: 2}),
+	at: 'Transmutation',
+	aA: true,
+	aE: $elm$core$Maybe$Just('One creature'),
+	bI: _List_fromArray(
+		[
+			{
+			af: 5,
+			aM: '',
+			aS: 'transform_type',
+			bt: 0,
+			a: $elm$core$Maybe$Just(1),
+			r: 'Change creature type'
+		},
+			{af: 6, aM: 'Beyond one size larger than normal', aS: 'transform_size', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each additional size increment change'},
+			{
+			af: 10,
+			aM: '',
+			aS: 'transform_inanimate',
+			bt: 0,
+			a: $elm$core$Maybe$Just(1),
+			r: 'Nonmagical inanimate ↔ creature'
+		},
+			{af: 1, aM: '', aS: 'transform_hardness', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each 2 points of hardness of target object'},
+			{
+			af: 10,
+			aM: '+10 each direction',
+			aS: 'transform_incorporeal',
+			bt: 1,
+			a: $elm$core$Maybe$Just(2),
+			r: 'Transform to/from incorporeal or gaseous form'
+		},
+			{
+			af: 25,
+			aM: '',
+			aS: 'transform_specific',
+			bt: 0,
+			a: $elm$core$Maybe$Just(1),
+			r: 'Transform into specific individual (with memories)'
+		},
+			{af: 10, aM: '', aS: 'transform_ability', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each extraordinary or supernatural ability granted'},
+			{af: 2, aM: '', aS: 'transform_hd', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each HD of assumed form above 15'}
+		])
+};
+var $author$project$Types$Transport = 22;
+var $author$project$Seeds$transport = {
+	ac: $elm$core$Maybe$Nothing,
+	bd: 27,
+	ad: '1 minute',
+	aJ: _List_Nil,
+	ae: _List_fromArray(
+		[0, 1]),
+	aM: 'Spells using the transport seed instantly take the caster to a designated destination, regardless of distance. For interplanar travel, increase the Spellcraft DC by +4. For each additional 50 pounds in objects and willing creatures beyond the base 1,000 pounds, increase the Spellcraft DC by +2. The base use of the transport seed provides instantaneous travel through the Astral Plane. To shift the transportation medium to another medium increase the Spellcraft DC by +2. The caster does not need to make a saving throw, nor is spell resistance applicable to him or her. Only objects worn or carried (attended) by another person receive saving throws and spell resistance. For a spell intended to transport unwilling creatures, increase the Spellcraft DC by +4. The caster must have at least a reliable description of the place to which he or she is transporting. If the caster attempts to use the transport seed with insufficient or misleading information, the character disappears and simply reappear in his or her original location.\n\nAs a special use of the transport seed, a caster can develop a spell that temporarily transports him or her into a different time stream (leaving the caster in the same physical location); this increases the Spellcraft DC by +8. If the caster moves him or herself, or the subject, into a slower time stream for 5 rounds, time ceases to flow for the subject, and its condition becomes fixed—no force or effect can harm it until the duration expires. If the caster moves him or her self into a faster time stream, the caster speeds up so greatly that all other creatures seem frozen, though they are actually still moving at their normal speeds. The caster is free to act for 5 rounds of apparent time. Fire, cold, poison gas, and similar effects can still harm the caster. While the caster is in the fast time stream, other creatures are invulnerable to his or her attacks and spells; however, the caster can create spell effects and leave them to take effect when he or she reenters normal time. Because of the branching nature of time, epic spells used to transport a subject into a faster time stream cannot be made permanent, nor can the duration of 5 rounds be extended. More simply, the seed can haste or slow a subject for 20 rounds by transporting it to the appropriate time stream. This decreases the Spellcraft DC by -4.',
+	ag: _List_fromArray(
+		['Teleportation']),
+	ah: 'Instantaneous',
+	Y: $elm$core$Maybe$Nothing,
+	aS: 22,
+	bv: _List_fromArray(
+		[
+			{
+			bl: _List_fromArray(
+				[
+					{
+					af: 4,
+					aM: '',
+					aS: 'transport_interplanar',
+					bt: 0,
+					a: $elm$core$Maybe$Just(1),
+					r: 'Interplanar travel'
+				},
+					{af: 2, aM: '', aS: 'transport_weight', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each additional 50 lbs. beyond 1,000'},
+					{
+					af: 2,
+					aM: '',
+					aS: 'transport_medium',
+					bt: 0,
+					a: $elm$core$Maybe$Just(1),
+					r: 'Use transport medium other than Astral Plane'
+				},
+					{
+					af: 4,
+					aM: '',
+					aS: 'transport_unwilling',
+					bt: 0,
+					a: $elm$core$Maybe$Just(1),
+					r: 'Transport unwilling creatures'
+				}
+				]),
+			aS: 'transport_spatial',
+			r: 'Spatial (Teleport)'
+		},
+			{
+			bl: _List_fromArray(
+				[
+					{
+					af: 8,
+					aM: '+8 DC to enter a different time stream (freeze or accelerate)',
+					aS: 'transport_temporal_dc',
+					bt: 0,
+					a: $elm$core$Maybe$Just(1),
+					r: 'Temporal transport surcharge'
+				}
+				]),
+			aS: 'transport_temporal',
+			r: 'Temporal (time stream)'
+		},
+			{
+			bl: _List_fromArray(
+				[
+					{
+					af: -4,
+					aM: '–4 DC for haste/slow effect only',
+					aS: 'transport_lite_dc',
+					bt: 0,
+					a: $elm$core$Maybe$Just(1),
+					r: 'Temporal lite discount'
+				}
+				]),
+			aS: 'transport_temporal_lite',
+			r: 'Temporal Lite (haste/slow 20 rounds)'
+		}
+		]),
+	r: 'Transport',
+	ap: 'Touch',
+	as: $elm$core$Maybe$Nothing,
+	at: 'Conjuration',
+	aA: false,
+	aE: $elm$core$Maybe$Just('You and touched willing creatures up to 1,000 lb.'),
+	bI: _List_Nil
+};
+var $author$project$Types$Ward = 23;
+var $author$project$Seeds$ward = {
+	ac: $elm$core$Maybe$Just('10-ft.-radius emanation'),
+	bd: 14,
+	ad: '1 minute',
+	aJ: _List_fromArray(
+		[
+			{
+			aL: _List_Nil,
+			bh: 'fire',
+			aS: 'wardEnergyType',
+			Q: 'Energy Type (Energy Ward)',
+			aa: _List_fromArray(
+				['acid', 'cold', 'electricity', 'fire', 'sonic'])
+		},
+			{
+			aL: _List_Nil,
+			bh: 'undead',
+			aS: 'wardCreatureType',
+			Q: 'Creature Type (Creature Ward)',
+			aa: _List_fromArray(
+				['aberrations', 'animals', 'constructs', 'dragons', 'elementals', 'fey', 'giants', 'humanoids', 'magical beasts', 'monstrous humanoids', 'oozes', 'outsiders', 'plants', 'undead', 'vermin'])
+		}
+		]),
+	ae: _List_fromArray(
+		[0, 1]),
+	aM: 'This seed can grant a creature protection from damage of a specified type. The caster can protect a creature from standard damage or from energy damage. The caster can protect a creature or area from magic. Alternatively, he or she can hedge out a type of creature from a specified area. A ward against standard damage protects a creature from whichever two the caster selects of the three damage types: bludgeoning, piercing, and slashing. For a ward against all three types, increase the Spellcraft DC by +4. Each round, the spell created with the ward seed absorbs the first 5 points of damage the creature would otherwise take, regardless of whether the source of the damage is natural or magical. For each additional point of protection, increase the Spellcraft DC by +2.\n\nA ward against energy grants a creature protection from whichever one the caster selects of the five energy types: acid, cold, electricity, fire, or sonic. Each round, the spell absorbs the first 5 points of damage the creature would otherwise take from the specified energy type, regardless of whether the source of damage is natural or magical. The spell protects the recipient\'s equipment as well. For each additional point of protection, increase the Spellcraft DC by +1.\n\nA ward against a specific type of creature prevents bodily contact from whichever one of several monster types the caster selects. This causes the natural weapon attacks of such creatures to fail and the creatures to recoil if such attacks require touching the warded creature. The protection ends if the warded creature makes an attack against or intentionally moves within 5 feet of the blocked creature. Spell resistance can allow a creature to overcome this protection and touch the warded creature.\n\nA ward against magic creates an immobile, faintly shimmering magical sphere (with radius 10 feet) that surrounds the caster and excludes all spell effects of up to 1st level. Alternatively, the caster can ward just the target and not create the radius effect. For each additional level of spells to be excluded, increase the Spellcraft DC by +20 (but see below). The area or effect of any such spells does not include the area of the ward, and such spells fail to affect any target within the ward. This includes spell-like abilities and spells or spell-like effects from magic items. However, any type of spell can be cast through or out of the ward. The caster can leave and return to the protected area without penalty (unless the spell specifically targets a creature and does not provide a radius effect). The ward could be brought down by a targeted dispel magic spell. Epic spells using the dispel seed may bring down a ward if the enemy spellcaster succeeds at a caster level check. The ward may also be brought down with a targeted epic spell using the destroy seed if the enemy spellcaster succeeds at a caster level check.\n\nInstead of creating an epic spell that uses the ward seed to nullify all spells of a given level and lower, the caster can create a ward that nullifies a specific spell (or specific set of spells). For each specific spell so nullified, increase the Spellcraft DC by +2 per spell level above 1st.',
+	ag: _List_Nil,
+	ah: '200 minutes (D)',
+	Y: $elm$core$Maybe$Nothing,
+	aS: 23,
+	bv: _List_fromArray(
+		[
+			{
+			bl: _List_fromArray(
+				[
+					{
+					af: 4,
+					aM: 'Base covers two; +4 DC for all three',
+					aS: 'ward_all_three',
+					bt: 0,
+					a: $elm$core$Maybe$Just(1),
+					r: 'Ward all three damage types (B, P, and S)'
+				},
+					{af: 2, aM: 'Above base 5', aS: 'ward_dmg_pts', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each additional point of damage absorbed per round'}
+				]),
+			aS: 'ward_damage',
+			r: 'Damage Ward (B/P/S)'
+		},
+			{
+			bl: _List_fromArray(
+				[
+					{af: 1, aM: 'Above base 5', aS: 'ward_energy_pts', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each additional point of energy absorbed per round'}
+				]),
+			aS: 'ward_energy',
+			r: 'Energy Ward'
+		},
+			{bl: _List_Nil, aS: 'ward_creature', r: 'Creature Ward'},
+			{
+			bl: _List_fromArray(
+				[
+					{af: 20, aM: 'Above 1st level; +20 DC per level', aS: 'ward_magic_level', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each additional spell level excluded'},
+					{af: 2, aM: '+2 DC per spell level above 1st', aS: 'ward_specific_spell', bt: 1, a: $elm$core$Maybe$Nothing, r: 'Each specific spell nullified (per spell level above 1st)'}
+				]),
+			aS: 'ward_magic',
+			r: 'Magic Ward (spell level exclusion)'
+		}
+		]),
+	r: 'Ward',
+	ap: 'Touch',
+	as: $elm$core$Maybe$Nothing,
+	at: 'Abjuration',
+	aA: true,
+	aE: $elm$core$Maybe$Just('Touched creature or object up to 2,000 lb.'),
+	bI: _List_Nil
+};
+var $author$project$Seeds$allSeeds = _List_fromArray(
+	[$author$project$Seeds$afflict, $author$project$Seeds$animate, $author$project$Seeds$animateDead, $author$project$Seeds$armor, $author$project$Seeds$banish, $author$project$Seeds$compel, $author$project$Seeds$conceal, $author$project$Seeds$conjure, $author$project$Seeds$contact, $author$project$Seeds$delude, $author$project$Seeds$destroy, $author$project$Seeds$dispel, $author$project$Seeds$energy, $author$project$Seeds$foresee, $author$project$Seeds$fortify, $author$project$Seeds$heal, $author$project$Seeds$life, $author$project$Seeds$reflect, $author$project$Seeds$reveal, $author$project$Seeds$slay, $author$project$Seeds$summon, $author$project$Seeds$transform, $author$project$Seeds$transport, $author$project$Seeds$ward]);
 var $elm$core$Maybe$map = F2(
 	function (f, maybe) {
 		if (!maybe.$) {
@@ -6760,264 +6720,28 @@ var $elm$core$Maybe$map = F2(
 			return $elm$core$Maybe$Nothing;
 		}
 	});
-var $elm$core$List$member = F2(
-	function (x, xs) {
-		return A2(
-			$elm$core$List$any,
-			function (a) {
-				return _Utils_eq(a, x);
-			},
-			xs);
-	});
-var $author$project$Calc$seedInstanceFactorDC = function (inst) {
-	var _v0 = $author$project$Seeds$getSeed(inst.v);
-	if (_v0.$ === 1) {
-		return 0;
-	} else {
-		var seed = _v0.a;
-		var skipIds = _List_fromArray(
-			['foresee_interval', 'reveal_no_loe']);
-		var availableFactors = _Utils_ap(
-			seed.bw,
-			A2(
-				$elm$core$List$concatMap,
-				function ($) {
-					return $.a8;
-				},
-				seed.bj));
-		return $elm$core$List$sum(
-			A2(
-				$elm$core$List$filterMap,
-				function (asf) {
-					return A2($elm$core$List$member, asf.d, skipIds) ? $elm$core$Maybe$Nothing : A2(
-						$elm$core$Maybe$map,
-						function (sf) {
-							return sf.Y * asf.o;
-						},
-						$elm$core$List$head(
-							A2(
-								$elm$core$List$filter,
-								function (sf) {
-									return _Utils_eq(sf.bd, asf.d);
-								},
-								availableFactors)));
-				},
-				inst.T));
-	}
-};
-var $author$project$Calc$calculateBreakdown = F2(
-	function (instances, rawFactors) {
-		var seedsTotal = $elm$core$List$sum(
-			A2($elm$core$List$map, $author$project$Calc$effectiveSeedBaseDC, instances));
-		var seedFactorsTotal = $elm$core$List$sum(
-			A2($elm$core$List$map, $author$project$Calc$seedInstanceFactorDC, instances));
-		var globalFactors = rawFactors;
-		var mitigatingTotal = $elm$core$List$sum(
-			A2(
-				$elm$core$List$filterMap,
-				function (af) {
-					return A2(
-						$elm$core$Maybe$andThen,
-						function (f) {
-							return (f.aw === 1) ? $elm$core$Maybe$Just(f.Y * af.o) : $elm$core$Maybe$Nothing;
-						},
-						$author$project$Factors$getFactor(af.d));
-				},
-				globalFactors));
-		var permanentMult = A2(
-			$elm$core$List$any,
-			function (af) {
-				return af.d === 7;
-			},
-			globalFactors) ? 5 : 1;
-		var stoneTabletMult = A2(
-			$elm$core$List$any,
-			function (af) {
-				return af.d === 26;
-			},
-			globalFactors) ? 2 : 1;
-		var augmentingTotal = $elm$core$List$sum(
-			A2(
-				$elm$core$List$filterMap,
-				function (af) {
-					return A2(
-						$elm$core$Maybe$andThen,
-						function (f) {
-							return ((!f.aw) && (f.bh !== 2)) ? $elm$core$Maybe$Just(f.Y * af.o) : $elm$core$Maybe$Nothing;
-						},
-						$author$project$Factors$getFactor(af.d));
-				},
-				globalFactors));
-		var subtotal = (seedsTotal + seedFactorsTotal) + augmentingTotal;
-		var finalDC = A2($elm$core$Basics$max, 1, ((subtotal * permanentMult) * stoneTabletMult) + mitigatingTotal);
-		return {a$: augmentingTotal, a9: finalDC, bi: mitigatingTotal, bo: permanentMult, bq: seedFactorsTotal, br: seedsTotal, bs: stoneTabletMult};
-	});
-var $elm$core$String$concat = function (strings) {
-	return A2($elm$core$String$join, '', strings);
-};
-var $author$project$Calc$devCosts = function (finalDC) {
-	var gold = 9000 * finalDC;
-	var timeDays = $elm$core$Basics$ceiling(gold / 50000);
-	var xp = (gold / 25) | 0;
-	return {ba: gold, bu: timeDays, bA: xp};
-};
-var $elm$core$Basics$modBy = _Basics_modBy;
-var $elm$core$String$cons = _String_cons;
-var $elm$core$String$fromChar = function (_char) {
-	return A2($elm$core$String$cons, _char, '');
-};
-var $elm$core$Bitwise$and = _Bitwise_and;
-var $elm$core$Bitwise$shiftRightBy = _Bitwise_shiftRightBy;
-var $elm$core$String$repeatHelp = F3(
-	function (n, chunk, result) {
-		return (n <= 0) ? result : A3(
-			$elm$core$String$repeatHelp,
-			n >> 1,
-			_Utils_ap(chunk, chunk),
-			(!(n & 1)) ? result : _Utils_ap(result, chunk));
-	});
-var $elm$core$String$repeat = F2(
-	function (n, chunk) {
-		return A3($elm$core$String$repeatHelp, n, chunk, '');
-	});
-var $elm$core$String$padLeft = F3(
-	function (n, _char, string) {
-		return _Utils_ap(
-			A2(
-				$elm$core$String$repeat,
-				n - $elm$core$String$length(string),
-				$elm$core$String$fromChar(_char)),
-			string);
-	});
-var $author$project$Export$formatNum = function (n) {
-	var str = $elm$core$String$fromInt(n);
-	var len = $elm$core$String$length(str);
-	return (len <= 3) ? str : ($author$project$Export$formatNum((n / 1000) | 0) + (',' + A3(
-		$elm$core$String$padLeft,
-		3,
-		'0',
-		$elm$core$String$fromInt(
-			A2($elm$core$Basics$modBy, 1000, n)))));
-};
-var $elm$core$Basics$ge = _Utils_ge;
-var $author$project$Export$showSign = function (n) {
-	return (n >= 0) ? ('+' + $elm$core$String$fromInt(n)) : $elm$core$String$fromInt(n);
-};
-var $author$project$Export$factorLine = function (af) {
-	return A2(
-		$elm$core$Maybe$map,
-		function (f) {
-			return _Utils_ap(
-				f.q,
-				_Utils_ap(
-					(af.o > 1) ? (' ×' + $elm$core$String$fromInt(af.o)) : '',
-					(f.bh === 2) ? (' (×' + ($elm$core$String$fromInt(f.bk) + ')')) : (' (' + ($author$project$Export$showSign(f.Y * af.o) + ')'))));
-		},
-		$author$project$Factors$getFactor(af.d));
-};
-var $author$project$Export$globalFactorLines = F2(
-	function (category, globalFactors) {
-		return A2(
-			$elm$core$List$filterMap,
-			$author$project$Export$factorLine,
-			A2(
-				$elm$core$List$filter,
-				function (af) {
-					return A2(
-						$elm$core$Maybe$withDefault,
-						false,
-						A2(
-							$elm$core$Maybe$map,
-							function (f) {
-								return _Utils_eq(f.aw, category);
-							},
-							$author$project$Factors$getFactor(af.d)));
-				},
-				globalFactors));
-	});
-var $elm$core$List$isEmpty = function (xs) {
-	if (!xs.b) {
-		return true;
-	} else {
-		return false;
-	}
-};
-var $author$project$Export$resolvePrimaryInstanceId = F2(
-	function (instances, maybePrimaryId) {
-		if (!maybePrimaryId.$) {
-			var pid = maybePrimaryId.a;
+var $author$project$UrlState$decodeAppliedSeedFactors = function (s) {
+	return $elm$core$String$isEmpty(s) ? _List_Nil : A2(
+		$elm$core$List$filterMap,
+		function (pair) {
 			return A2(
-				$elm$core$List$any,
-				function (i) {
-					return _Utils_eq(i.bg, pid);
-				},
-				instances) ? $elm$core$Maybe$Just(pid) : A2(
-				$elm$core$Maybe$map,
-				function ($) {
-					return $.bg;
-				},
-				$elm$core$List$head(instances));
-		} else {
-			return A2(
-				$elm$core$Maybe$map,
-				function ($) {
-					return $.bg;
-				},
-				$elm$core$List$head(instances));
-		}
-	});
-var $author$project$Export$primarySeedId = F2(
-	function (instances, maybePrimaryId) {
-		return A2(
-			$elm$core$Maybe$map,
-			function ($) {
-				return $.v;
-			},
-			A2(
 				$elm$core$Maybe$andThen,
-				function (pid) {
-					return $elm$core$List$head(
-						A2(
-							$elm$core$List$filter,
-							function (i) {
-								return _Utils_eq(i.bg, pid);
-							},
-							instances));
+				function (_v0) {
+					var factorId = _v0.a;
+					var qtyStr = _v0.b;
+					return A2(
+						$elm$core$Maybe$map,
+						function (qty) {
+							return {e: factorId, p: qty};
+						},
+						$elm$core$String$toInt(qtyStr));
 				},
-				A2($author$project$Export$resolvePrimaryInstanceId, instances, maybePrimaryId)));
-	});
-var $elm$core$Basics$compare = _Utils_compare;
-var $elm$core$Dict$get = F2(
-	function (targetKey, dict) {
-		get:
-		while (true) {
-			if (dict.$ === -2) {
-				return $elm$core$Maybe$Nothing;
-			} else {
-				var key = dict.b;
-				var value = dict.c;
-				var left = dict.d;
-				var right = dict.e;
-				var _v1 = A2($elm$core$Basics$compare, targetKey, key);
-				switch (_v1) {
-					case 0:
-						var $temp$targetKey = targetKey,
-							$temp$dict = left;
-						targetKey = $temp$targetKey;
-						dict = $temp$dict;
-						continue get;
-					case 1:
-						return $elm$core$Maybe$Just(value);
-					default:
-						var $temp$targetKey = targetKey,
-							$temp$dict = right;
-						targetKey = $temp$targetKey;
-						dict = $temp$dict;
-						continue get;
-				}
-			}
-		}
-	});
+				$author$project$UrlState$splitOnEquals(pair));
+		},
+		A2($elm$core$String$split, ',', s));
+};
+var $elm$core$Dict$RBEmpty_elm_builtin = {$: -2};
+var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
 var $elm$core$Dict$Black = 1;
 var $elm$core$Dict$RBNode_elm_builtin = F5(
 	function (a, b, c, d, e) {
@@ -7078,6 +6802,7 @@ var $elm$core$Dict$balance = F5(
 			}
 		}
 	});
+var $elm$core$Basics$compare = _Utils_compare;
 var $elm$core$Dict$insertHelp = F3(
 	function (key, value, dict) {
 		if (dict.$ === -2) {
@@ -7126,16 +6851,861 @@ var $elm$core$Dict$insert = F3(
 			return x;
 		}
 	});
+var $elm$core$Dict$fromList = function (assocs) {
+	return A3(
+		$elm$core$List$foldl,
+		F2(
+			function (_v0, dict) {
+				var key = _v0.a;
+				var value = _v0.b;
+				return A3($elm$core$Dict$insert, key, value, dict);
+			}),
+		$elm$core$Dict$empty,
+		assocs);
+};
+var $author$project$UrlState$decodeChoices = function (s) {
+	return $elm$core$String$isEmpty(s) ? $elm$core$Dict$empty : $elm$core$Dict$fromList(
+		A2(
+			$elm$core$List$filterMap,
+			$author$project$UrlState$splitOnEquals,
+			A2($elm$core$String$split, ',', s)));
+};
+var $author$project$UrlState$decodeSeedInstance = function (raw) {
+	var _v0 = A2($elm$core$String$split, ':', raw);
+	if ((((_v0.b && _v0.b.b) && _v0.b.b.b) && _v0.b.b.b.b) && (!_v0.b.b.b.b.b)) {
+		var seedNameStr = _v0.a;
+		var _v1 = _v0.b;
+		var baseDCStr = _v1.a;
+		var _v2 = _v1.b;
+		var choicesStr = _v2.a;
+		var _v3 = _v2.b;
+		var factorsStr = _v3.a;
+		return A2(
+			$elm$core$Maybe$map,
+			function (seed) {
+				return {
+					ab: $author$project$UrlState$decodeAppliedSeedFactors(factorsStr),
+					be: $elm$core$String$toInt(baseDCStr),
+					aJ: $author$project$UrlState$decodeChoices(choicesStr),
+					bs: 0,
+					x: seed.aS
+				};
+			},
+			$elm$core$List$head(
+				A2(
+					$elm$core$List$filter,
+					function (s) {
+						return _Utils_eq(s.r, seedNameStr);
+					},
+					$author$project$Seeds$allSeeds)));
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $author$project$UrlState$decodeSeedInstances = function (raw) {
+	return A2(
+		$elm$core$List$indexedMap,
+		F2(
+			function (idx, inst) {
+				return _Utils_update(
+					inst,
+					{bs: idx});
+			}),
+		A2(
+			$elm$core$List$filterMap,
+			$author$project$UrlState$decodeSeedInstance,
+			A2($elm$core$String$split, ';', raw)));
+};
+var $elm$core$List$drop = F2(
+	function (n, list) {
+		drop:
+		while (true) {
+			if (n <= 0) {
+				return list;
+			} else {
+				if (!list.b) {
+					return list;
+				} else {
+					var x = list.a;
+					var xs = list.b;
+					var $temp$n = n - 1,
+						$temp$list = xs;
+					n = $temp$n;
+					list = $temp$list;
+					continue drop;
+				}
+			}
+		}
+	});
+var $elm$core$Dict$get = F2(
+	function (targetKey, dict) {
+		get:
+		while (true) {
+			if (dict.$ === -2) {
+				return $elm$core$Maybe$Nothing;
+			} else {
+				var key = dict.b;
+				var value = dict.c;
+				var left = dict.d;
+				var right = dict.e;
+				var _v1 = A2($elm$core$Basics$compare, targetKey, key);
+				switch (_v1) {
+					case 0:
+						var $temp$targetKey = targetKey,
+							$temp$dict = left;
+						targetKey = $temp$targetKey;
+						dict = $temp$dict;
+						continue get;
+					case 1:
+						return $elm$core$Maybe$Just(value);
+					default:
+						var $temp$targetKey = targetKey,
+							$temp$dict = right;
+						targetKey = $temp$targetKey;
+						dict = $temp$dict;
+						continue get;
+				}
+			}
+		}
+	});
+var $elm$core$String$foldr = _String_foldr;
+var $elm$core$String$toList = function (string) {
+	return A3($elm$core$String$foldr, $elm$core$List$cons, _List_Nil, string);
+};
+var $author$project$UrlState$panelFlagAt = F2(
+	function (i, s) {
+		return A2(
+			$elm$core$Maybe$map,
+			function (c) {
+				return c === '1';
+			},
+			$elm$core$List$head(
+				A2(
+					$elm$core$List$drop,
+					i,
+					$elm$core$String$toList(s))));
+	});
+var $author$project$UrlState$panelFlagAt0 = $author$project$UrlState$panelFlagAt(0);
+var $author$project$UrlState$panelFlagAt1 = $author$project$UrlState$panelFlagAt(1);
+var $author$project$UrlState$panelFlagAt2 = $author$project$UrlState$panelFlagAt(2);
+var $author$project$UrlState$dropLeadingQuestionMark = function (s) {
+	return A2($elm$core$String$startsWith, '?', s) ? A2($elm$core$String$dropLeft, 1, s) : s;
+};
+var $elm$core$Tuple$pair = F2(
+	function (a, b) {
+		return _Utils_Tuple2(a, b);
+	});
+var $elm$url$Url$percentDecode = _Url_percentDecode;
+var $author$project$UrlState$parsePair = function (pair) {
+	var _v0 = A2($elm$core$String$split, '=', pair);
+	if ((_v0.b && _v0.b.b) && (!_v0.b.b.b)) {
+		var k = _v0.a;
+		var _v1 = _v0.b;
+		var v = _v1.a;
+		return A3(
+			$elm$core$Maybe$map2,
+			$elm$core$Tuple$pair,
+			$elm$url$Url$percentDecode(k),
+			$elm$url$Url$percentDecode(v));
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $author$project$UrlState$parseParams = function (search) {
+	return $elm$core$Dict$fromList(
+		A2(
+			$elm$core$List$filterMap,
+			$author$project$UrlState$parsePair,
+			A2(
+				$elm$core$String$split,
+				'&',
+				$author$project$UrlState$dropLeadingQuestionMark(search))));
+};
+var $elm$core$Maybe$withDefault = F2(
+	function (_default, maybe) {
+		if (!maybe.$) {
+			var value = maybe.a;
+			return value;
+		} else {
+			return _default;
+		}
+	});
+var $author$project$UrlState$applyQuery = F2(
+	function (search, model) {
+		var query = $author$project$UrlState$parseParams(search);
+		var decodedInstances = A2(
+			$elm$core$Maybe$withDefault,
+			model.k,
+			A2(
+				$elm$core$Maybe$map,
+				$author$project$UrlState$decodeSeedInstances,
+				A2($elm$core$Dict$get, 'seeds', query)));
+		var primaryFromIndex = A2(
+			$elm$core$Maybe$map,
+			function ($) {
+				return $.bs;
+			},
+			A2(
+				$elm$core$Maybe$andThen,
+				function (idx) {
+					return $elm$core$List$head(
+						A2($elm$core$List$drop, idx, decodedInstances));
+				},
+				A2(
+					$elm$core$Maybe$andThen,
+					$elm$core$String$toInt,
+					A2($elm$core$Dict$get, 'primary', query))));
+		return _Utils_update(
+			model,
+			{
+				l: A2(
+					$elm$core$Maybe$withDefault,
+					model.l,
+					A2(
+						$elm$core$Maybe$map,
+						$author$project$UrlState$decodeAppliedFactors,
+						A2($elm$core$Dict$get, 'factors', query))),
+				aj: A2(
+					$elm$core$Maybe$withDefault,
+					model.aj,
+					A2(
+						$elm$core$Maybe$andThen,
+						$author$project$UrlState$panelFlagAt1,
+						A2($elm$core$Dict$get, 'panels', query))),
+				S: $elm$core$List$length(decodedInstances),
+				I: A2(
+					$elm$core$Maybe$withDefault,
+					model.I,
+					A2(
+						$elm$core$Maybe$map,
+						$elm$core$Maybe$Just,
+						A2($elm$core$Dict$get, 'p2a', query))),
+				u: primaryFromIndex,
+				k: decodedInstances,
+				av: A2(
+					$elm$core$Maybe$withDefault,
+					model.av,
+					A2(
+						$elm$core$Maybe$andThen,
+						$author$project$UrlState$panelFlagAt0,
+						A2($elm$core$Dict$get, 'panels', query))),
+				aw: A2(
+					$elm$core$Maybe$withDefault,
+					model.aw,
+					A2(
+						$elm$core$Maybe$map,
+						$author$project$UrlState$decodeSavingThrow,
+						A2($elm$core$Dict$get, 'save', query))),
+				ax: A2(
+					$elm$core$Maybe$withDefault,
+					model.ax,
+					A2(
+						$elm$core$Maybe$map,
+						$elm$core$Maybe$Just,
+						A2($elm$core$Dict$get, 'school', query))),
+				az: A2(
+					$elm$core$Maybe$withDefault,
+					model.az,
+					A2($elm$core$Dict$get, 'name', query)),
+				aD: A2(
+					$elm$core$Maybe$withDefault,
+					model.aD,
+					A2(
+						$elm$core$Maybe$andThen,
+						$author$project$UrlState$panelFlagAt2,
+						A2($elm$core$Dict$get, 'panels', query))),
+				K: A2(
+					$elm$core$Maybe$withDefault,
+					model.K,
+					A2(
+						$elm$core$Maybe$map,
+						$elm$core$Maybe$Just,
+						A2($elm$core$Dict$get, 't2a', query)))
+			});
+	});
+var $author$project$Types$PlainTextExport = 1;
+var $author$project$Types$SeedsTab = 0;
+var $author$project$Main$defaultModel = {aF: 0, l: _List_Nil, v: '', X: $elm$core$Maybe$Nothing, ai: 1, aj: true, Z: false, _: $elm$core$Maybe$Nothing, N: '', O: false, P: false, S: 0, an: $elm$core$Maybe$Nothing, I: $elm$core$Maybe$Nothing, u: $elm$core$Maybe$Nothing, aq: false, k: _List_Nil, av: true, aw: $elm$core$Maybe$Nothing, ax: $elm$core$Maybe$Nothing, az: '', aD: true, K: $elm$core$Maybe$Nothing};
+var $author$project$UrlState$boolFlag = function (b) {
+	return b ? '1' : '0';
+};
+var $elm$core$Basics$composeL = F3(
+	function (g, f, x) {
+		return g(
+			f(x));
+	});
+var $author$project$Factors$getFactor = function (id) {
+	return $elm$core$List$head(
+		A2(
+			$elm$core$List$filter,
+			function (f) {
+				return _Utils_eq(f.aS, id);
+			},
+			$author$project$Factors$allFactors));
+};
+var $author$project$UrlState$encodeAppliedFactors = function (factors) {
+	return A2(
+		$elm$core$String$join,
+		',',
+		A2(
+			$elm$core$List$filterMap,
+			function (af) {
+				return A2(
+					$elm$core$Maybe$map,
+					function (f) {
+						return f.r + ('=' + $elm$core$String$fromInt(af.p));
+					},
+					$author$project$Factors$getFactor(af.e));
+			},
+			factors));
+};
+var $author$project$UrlState$saveEffectToString = function (e) {
+	switch (e) {
+		case 0:
+			return 'Negates';
+		case 1:
+			return 'Half';
+		case 2:
+			return 'Partial';
+		default:
+			return 'SeeText';
+	}
+};
+var $author$project$UrlState$saveTypeToString = function (st) {
+	switch (st) {
+		case 0:
+			return 'Will';
+		case 1:
+			return 'Reflex';
+		default:
+			return 'Fort';
+	}
+};
+var $author$project$UrlState$encodeSavingThrow = function (st) {
+	return $author$project$UrlState$saveTypeToString(st.ar) + ('|' + ($author$project$UrlState$saveEffectToString(st.Y) + ('|' + $author$project$UrlState$boolFlag(st.bo))));
+};
+var $author$project$Seeds$getSeed = function (id) {
+	return $elm$core$List$head(
+		A2(
+			$elm$core$List$filter,
+			function (s) {
+				return _Utils_eq(s.aS, id);
+			},
+			$author$project$Seeds$allSeeds));
+};
+var $author$project$UrlState$encodeSeedInstance = function (inst) {
+	return A2(
+		$elm$core$Maybe$map,
+		function (seed) {
+			return seed.r + (':' + (A2(
+				$elm$core$Maybe$withDefault,
+				'',
+				A2($elm$core$Maybe$map, $elm$core$String$fromInt, inst.be)) + (':' + (A2(
+				$elm$core$String$join,
+				',',
+				A2(
+					$elm$core$List$map,
+					function (_v0) {
+						var k = _v0.a;
+						var v = _v0.b;
+						return k + ('=' + v);
+					},
+					$elm$core$Dict$toList(inst.aJ))) + (':' + A2(
+				$elm$core$String$join,
+				',',
+				A2(
+					$elm$core$List$map,
+					function (af) {
+						return af.e + ('=' + $elm$core$String$fromInt(af.p));
+					},
+					inst.ab)))))));
+		},
+		$author$project$Seeds$getSeed(inst.x));
+};
+var $author$project$UrlState$encodeSeedInstances = function (instances) {
+	return A2(
+		$elm$core$String$join,
+		';',
+		A2($elm$core$List$filterMap, $author$project$UrlState$encodeSeedInstance, instances));
+};
+var $author$project$UrlState$indexOfInstance = F2(
+	function (pid, instances) {
+		return A2(
+			$elm$core$Maybe$map,
+			$elm$core$Tuple$first,
+			$elm$core$List$head(
+				A2(
+					$elm$core$List$filter,
+					function (_v0) {
+						var inst = _v0.b;
+						return _Utils_eq(inst.bs, pid);
+					},
+					A2($elm$core$List$indexedMap, $elm$core$Tuple$pair, instances))));
+	});
+var $elm$core$List$isEmpty = function (xs) {
+	if (!xs.b) {
+		return true;
+	} else {
+		return false;
+	}
+};
+var $elm$url$Url$Builder$QueryParameter = F2(
+	function (a, b) {
+		return {$: 0, a: a, b: b};
+	});
+var $elm$url$Url$percentEncode = _Url_percentEncode;
+var $elm$url$Url$Builder$string = F2(
+	function (key, value) {
+		return A2(
+			$elm$url$Url$Builder$QueryParameter,
+			$elm$url$Url$percentEncode(key),
+			$elm$url$Url$percentEncode(value));
+	});
+var $author$project$UrlState$params = function (model) {
+	return _List_fromArray(
+		[
+			$elm$core$String$isEmpty(model.az) ? $elm$core$Maybe$Nothing : $elm$core$Maybe$Just(
+			A2($elm$url$Url$Builder$string, 'name', model.az)),
+			A2(
+			$elm$core$Maybe$map,
+			$elm$url$Url$Builder$string('school'),
+			model.ax),
+			A2(
+			$elm$core$Maybe$map,
+			A2(
+				$elm$core$Basics$composeL,
+				$elm$url$Url$Builder$string('save'),
+				$author$project$UrlState$encodeSavingThrow),
+			model.aw),
+			A2(
+			$elm$core$Maybe$map,
+			$elm$url$Url$Builder$string('t2a'),
+			model.K),
+			A2(
+			$elm$core$Maybe$map,
+			$elm$url$Url$Builder$string('p2a'),
+			model.I),
+			function () {
+			var panelsStr = _Utils_ap(
+				$author$project$UrlState$boolFlag(model.av),
+				_Utils_ap(
+					$author$project$UrlState$boolFlag(model.aj),
+					$author$project$UrlState$boolFlag(model.aD)));
+			return (panelsStr === '111') ? $elm$core$Maybe$Nothing : $elm$core$Maybe$Just(
+				A2($elm$url$Url$Builder$string, 'panels', panelsStr));
+		}(),
+			A2(
+			$elm$core$Maybe$map,
+			function (idx) {
+				return A2(
+					$elm$url$Url$Builder$string,
+					'primary',
+					$elm$core$String$fromInt(idx));
+			},
+			A2(
+				$elm$core$Maybe$andThen,
+				function (pid) {
+					return A2($author$project$UrlState$indexOfInstance, pid, model.k);
+				},
+				model.u)),
+			$elm$core$List$isEmpty(model.k) ? $elm$core$Maybe$Nothing : $elm$core$Maybe$Just(
+			A2(
+				$elm$url$Url$Builder$string,
+				'seeds',
+				$author$project$UrlState$encodeSeedInstances(model.k))),
+			$elm$core$List$isEmpty(model.l) ? $elm$core$Maybe$Nothing : $elm$core$Maybe$Just(
+			A2(
+				$elm$url$Url$Builder$string,
+				'factors',
+				$author$project$UrlState$encodeAppliedFactors(model.l)))
+		]);
+};
+var $elm$url$Url$Builder$toQueryPair = function (_v0) {
+	var key = _v0.a;
+	var value = _v0.b;
+	return key + ('=' + value);
+};
+var $elm$url$Url$Builder$toQuery = function (parameters) {
+	if (!parameters.b) {
+		return '';
+	} else {
+		return '?' + A2(
+			$elm$core$String$join,
+			'&',
+			A2($elm$core$List$map, $elm$url$Url$Builder$toQueryPair, parameters));
+	}
+};
+var $author$project$UrlState$encode = function (model) {
+	return $elm$url$Url$Builder$toQuery(
+		A2(
+			$elm$core$List$filterMap,
+			$elm$core$Basics$identity,
+			$author$project$UrlState$params(model)));
+};
+var $elm$json$Json$Encode$string = _Json_wrap;
+var $author$project$Main$pushUrl = _Platform_outgoingPort('pushUrl', $elm$json$Json$Encode$string);
+var $author$project$Main$init = function (flags) {
+	var decoded = A2($author$project$UrlState$applyQuery, flags.au, $author$project$Main$defaultModel);
+	var model = _Utils_update(
+		decoded,
+		{v: flags.v, P: flags.P});
+	return _Utils_Tuple2(
+		model,
+		$author$project$Main$pushUrl(
+			$author$project$UrlState$encode(model)));
+};
+var $elm$json$Json$Decode$string = _Json_decodeString;
+var $elm$core$Platform$Cmd$batch = _Platform_batch;
+var $author$project$Types$ShareCopyTarget = 1;
+var $author$project$Types$SummaryCopyTarget = 0;
+var $elm$core$List$any = F2(
+	function (isOkay, list) {
+		any:
+		while (true) {
+			if (!list.b) {
+				return false;
+			} else {
+				var x = list.a;
+				var xs = list.b;
+				if (isOkay(x)) {
+					return true;
+				} else {
+					var $temp$isOkay = isOkay,
+						$temp$list = xs;
+					isOkay = $temp$isOkay;
+					list = $temp$list;
+					continue any;
+				}
+			}
+		}
+	});
+var $author$project$Main$copyToClipboard = _Platform_outgoingPort('copyToClipboard', $elm$json$Json$Encode$string);
+var $elm$core$String$trim = _String_trim;
+var $author$project$UrlState$extractQuery = function (input) {
+	var trimmed = $elm$core$String$trim(input);
+	var _v0 = A2($elm$core$String$indexes, '?', trimmed);
+	if (_v0.b) {
+		var idx = _v0.a;
+		return A2($elm$core$String$dropLeft, idx, trimmed);
+	} else {
+		return trimmed;
+	}
+};
+var $elm$core$Basics$pow = _Basics_pow;
+var $elm$core$List$sum = function (numbers) {
+	return A3($elm$core$List$foldl, $elm$core$Basics$add, 0, numbers);
+};
+var $author$project$Calc$effectiveSeedBaseDC = function (inst) {
+	var _v0 = $author$project$Seeds$getSeed(inst.x);
+	if (_v0.$ === 1) {
+		return 0;
+	} else {
+		var seed = _v0.a;
+		var baseDC = A2($elm$core$Maybe$withDefault, seed.bd, inst.be);
+		if (inst.x === 13) {
+			var intervals = $elm$core$List$sum(
+				A2(
+					$elm$core$List$map,
+					function ($) {
+						return $.p;
+					},
+					A2(
+						$elm$core$List$filter,
+						function (asf) {
+							return asf.e === 'foresee_interval';
+						},
+						inst.ab)));
+			return baseDC * A2($elm$core$Basics$pow, 2, intervals);
+		} else {
+			if (inst.x === 18) {
+				var noLoe = A2(
+					$elm$core$List$any,
+					function (asf) {
+						return (asf.e === 'reveal_no_loe') && (asf.p > 0);
+					},
+					inst.ab);
+				return noLoe ? (baseDC * 10) : baseDC;
+			} else {
+				return baseDC;
+			}
+		}
+	}
+};
+var $elm$core$Basics$neq = _Utils_notEqual;
+var $elm$core$List$append = F2(
+	function (xs, ys) {
+		if (!ys.b) {
+			return xs;
+		} else {
+			return A3($elm$core$List$foldr, $elm$core$List$cons, ys, xs);
+		}
+	});
+var $elm$core$List$concat = function (lists) {
+	return A3($elm$core$List$foldr, $elm$core$List$append, _List_Nil, lists);
+};
+var $elm$core$List$concatMap = F2(
+	function (f, list) {
+		return $elm$core$List$concat(
+			A2($elm$core$List$map, f, list));
+	});
+var $elm$core$List$member = F2(
+	function (x, xs) {
+		return A2(
+			$elm$core$List$any,
+			function (a) {
+				return _Utils_eq(a, x);
+			},
+			xs);
+	});
 var $elm$core$Tuple$second = function (_v0) {
 	var y = _v0.b;
 	return y;
+};
+var $author$project$Calc$seedInstanceFactorDC = function (inst) {
+	var _v0 = $author$project$Seeds$getSeed(inst.x);
+	if (_v0.$ === 1) {
+		return 0;
+	} else {
+		var seed = _v0.a;
+		var skipIds = _List_fromArray(
+			['foresee_interval', 'reveal_no_loe']);
+		var choiceTotal = $elm$core$List$sum(
+			A2(
+				$elm$core$List$filterMap,
+				function (choice) {
+					if ($elm$core$List$isEmpty(choice.aL)) {
+						return $elm$core$Maybe$Nothing;
+					} else {
+						var selected = A2(
+							$elm$core$Maybe$withDefault,
+							choice.bh,
+							A2($elm$core$Dict$get, choice.aS, inst.aJ));
+						return A2(
+							$elm$core$Maybe$map,
+							$elm$core$Tuple$second,
+							$elm$core$List$head(
+								A2(
+									$elm$core$List$filter,
+									function (_v1) {
+										var opt = _v1.a;
+										return _Utils_eq(opt, selected);
+									},
+									choice.aL)));
+					}
+				},
+				seed.aJ));
+		var availableFactors = _Utils_ap(
+			seed.bI,
+			A2(
+				$elm$core$List$concatMap,
+				function ($) {
+					return $.bl;
+				},
+				seed.bv));
+		var factorTotal = $elm$core$List$sum(
+			A2(
+				$elm$core$List$filterMap,
+				function (asf) {
+					return A2($elm$core$List$member, asf.e, skipIds) ? $elm$core$Maybe$Nothing : A2(
+						$elm$core$Maybe$map,
+						function (sf) {
+							return sf.af * asf.p;
+						},
+						$elm$core$List$head(
+							A2(
+								$elm$core$List$filter,
+								function (sf) {
+									return _Utils_eq(sf.aS, asf.e);
+								},
+								availableFactors)));
+				},
+				inst.ab));
+		return factorTotal + choiceTotal;
+	}
+};
+var $author$project$Calc$calculateBreakdown = F2(
+	function (instances, rawFactors) {
+		var seedsTotal = $elm$core$List$sum(
+			A2($elm$core$List$map, $author$project$Calc$effectiveSeedBaseDC, instances));
+		var seedFactorsTotal = $elm$core$List$sum(
+			A2($elm$core$List$map, $author$project$Calc$seedInstanceFactorDC, instances));
+		var globalFactors = rawFactors;
+		var mitigatingTotal = $elm$core$List$sum(
+			A2(
+				$elm$core$List$filterMap,
+				function (af) {
+					return A2(
+						$elm$core$Maybe$andThen,
+						function (f) {
+							return (f.aH === 1) ? $elm$core$Maybe$Just(f.af * af.p) : $elm$core$Maybe$Nothing;
+						},
+						$author$project$Factors$getFactor(af.e));
+				},
+				globalFactors));
+		var permanentMult = A2(
+			$elm$core$List$any,
+			function (af) {
+				return af.e === 7;
+			},
+			globalFactors) ? 5 : 1;
+		var stoneTabletMult = A2(
+			$elm$core$List$any,
+			function (af) {
+				return af.e === 26;
+			},
+			globalFactors) ? 2 : 1;
+		var augmentingTotal = $elm$core$List$sum(
+			A2(
+				$elm$core$List$filterMap,
+				function (af) {
+					return A2(
+						$elm$core$Maybe$andThen,
+						function (f) {
+							return ((!f.aH) && (f.bt !== 2)) ? $elm$core$Maybe$Just(f.af * af.p) : $elm$core$Maybe$Nothing;
+						},
+						$author$project$Factors$getFactor(af.e));
+				},
+				globalFactors));
+		var subtotal = (seedsTotal + seedFactorsTotal) + augmentingTotal;
+		var finalDC = A2($elm$core$Basics$max, 1, ((subtotal * permanentMult) * stoneTabletMult) + mitigatingTotal);
+		return {bc: augmentingTotal, bm: finalDC, bu: mitigatingTotal, bA: permanentMult, bC: seedFactorsTotal, bD: seedsTotal, bE: stoneTabletMult};
+	});
+var $elm$core$String$concat = function (strings) {
+	return A2($elm$core$String$join, '', strings);
+};
+var $author$project$Calc$devCosts = function (finalDC) {
+	var gold = 9000 * finalDC;
+	var timeDays = $elm$core$Basics$ceiling(gold / 50000);
+	var xp = (gold / 25) | 0;
+	return {bn: gold, bG: timeDays, bM: xp};
+};
+var $elm$core$Basics$modBy = _Basics_modBy;
+var $elm$core$String$cons = _String_cons;
+var $elm$core$String$fromChar = function (_char) {
+	return A2($elm$core$String$cons, _char, '');
+};
+var $elm$core$Bitwise$and = _Bitwise_and;
+var $elm$core$Bitwise$shiftRightBy = _Bitwise_shiftRightBy;
+var $elm$core$String$repeatHelp = F3(
+	function (n, chunk, result) {
+		return (n <= 0) ? result : A3(
+			$elm$core$String$repeatHelp,
+			n >> 1,
+			_Utils_ap(chunk, chunk),
+			(!(n & 1)) ? result : _Utils_ap(result, chunk));
+	});
+var $elm$core$String$repeat = F2(
+	function (n, chunk) {
+		return A3($elm$core$String$repeatHelp, n, chunk, '');
+	});
+var $elm$core$String$padLeft = F3(
+	function (n, _char, string) {
+		return _Utils_ap(
+			A2(
+				$elm$core$String$repeat,
+				n - $elm$core$String$length(string),
+				$elm$core$String$fromChar(_char)),
+			string);
+	});
+var $author$project$Export$formatNum = function (n) {
+	var str = $elm$core$String$fromInt(n);
+	var len = $elm$core$String$length(str);
+	return (len <= 3) ? str : ($author$project$Export$formatNum((n / 1000) | 0) + (',' + A3(
+		$elm$core$String$padLeft,
+		3,
+		'0',
+		$elm$core$String$fromInt(
+			A2($elm$core$Basics$modBy, 1000, n)))));
+};
+var $elm$core$Basics$ge = _Utils_ge;
+var $author$project$Export$showSign = function (n) {
+	return (n >= 0) ? ('+' + $elm$core$String$fromInt(n)) : $elm$core$String$fromInt(n);
+};
+var $author$project$Export$factorLine = function (af) {
+	return A2(
+		$elm$core$Maybe$map,
+		function (f) {
+			return _Utils_ap(
+				f.r,
+				_Utils_ap(
+					(af.p > 1) ? (' ×' + $elm$core$String$fromInt(af.p)) : '',
+					(f.bt === 2) ? (' (×' + ($elm$core$String$fromInt(f.bw) + ')')) : (' (' + ($author$project$Export$showSign(f.af * af.p) + ')'))));
+		},
+		$author$project$Factors$getFactor(af.e));
+};
+var $author$project$Export$globalFactorLines = F2(
+	function (category, globalFactors) {
+		return A2(
+			$elm$core$List$filterMap,
+			$author$project$Export$factorLine,
+			A2(
+				$elm$core$List$filter,
+				function (af) {
+					return A2(
+						$elm$core$Maybe$withDefault,
+						false,
+						A2(
+							$elm$core$Maybe$map,
+							function (f) {
+								return _Utils_eq(f.aH, category);
+							},
+							$author$project$Factors$getFactor(af.e)));
+				},
+				globalFactors));
+	});
+var $author$project$Export$resolvePrimaryInstanceId = F2(
+	function (instances, maybePrimaryId) {
+		if (!maybePrimaryId.$) {
+			var pid = maybePrimaryId.a;
+			return A2(
+				$elm$core$List$any,
+				function (i) {
+					return _Utils_eq(i.bs, pid);
+				},
+				instances) ? $elm$core$Maybe$Just(pid) : A2(
+				$elm$core$Maybe$map,
+				function ($) {
+					return $.bs;
+				},
+				$elm$core$List$head(instances));
+		} else {
+			return A2(
+				$elm$core$Maybe$map,
+				function ($) {
+					return $.bs;
+				},
+				$elm$core$List$head(instances));
+		}
+	});
+var $author$project$Export$primarySeedId = F2(
+	function (instances, maybePrimaryId) {
+		return A2(
+			$elm$core$Maybe$map,
+			function ($) {
+				return $.x;
+			},
+			A2(
+				$elm$core$Maybe$andThen,
+				function (pid) {
+					return $elm$core$List$head(
+						A2(
+							$elm$core$List$filter,
+							function (i) {
+								return _Utils_eq(i.bs, pid);
+							},
+							instances));
+				},
+				A2($author$project$Export$resolvePrimaryInstanceId, instances, maybePrimaryId)));
+	});
+var $author$project$Seeds$isSpecialSeedFactor = function (id) {
+	return (id === 'foresee_interval') || (id === 'reveal_no_loe');
 };
 var $elm$core$List$sortBy = _List_sortBy;
 var $author$project$Export$seedFactorBlocks = function (instances) {
 	return A2(
 		$elm$core$List$sortBy,
 		function ($) {
-			return $.L;
+			return $.Q;
 		},
 		A3(
 			$elm$core$List$foldl,
@@ -7143,7 +7713,7 @@ var $author$project$Export$seedFactorBlocks = function (instances) {
 				function (inst, _v0) {
 					var seenCounts = _v0.a;
 					var acc = _v0.b;
-					var _v1 = $author$project$Seeds$getSeed(inst.v);
+					var _v1 = $author$project$Seeds$getSeed(inst.x);
 					if (_v1.$ === 1) {
 						return _Utils_Tuple2(seenCounts, acc);
 					} else {
@@ -7151,12 +7721,12 @@ var $author$project$Export$seedFactorBlocks = function (instances) {
 						var priorCount = A2(
 							$elm$core$Maybe$withDefault,
 							0,
-							A2($elm$core$Dict$get, seed.q, seenCounts));
+							A2($elm$core$Dict$get, seed.r, seenCounts));
 						var overrideLines = function () {
-							var _v2 = inst.a1;
-							if (!_v2.$) {
-								var dc = _v2.a;
-								return (!_Utils_eq(dc, seed.a0)) ? _List_fromArray(
+							var _v4 = inst.be;
+							if (!_v4.$) {
+								var dc = _v4.a;
+								return (!_Utils_eq(dc, seed.bd)) ? _List_fromArray(
 									[
 										'Base DC override: ' + $elm$core$String$fromInt(dc)
 									]) : _List_Nil;
@@ -7164,24 +7734,42 @@ var $author$project$Export$seedFactorBlocks = function (instances) {
 								return _List_Nil;
 							}
 						}();
-						var label = (!priorCount) ? seed.q : (seed.q + (' (' + ($elm$core$String$fromInt(priorCount + 1) + ')')));
+						var label = (!priorCount) ? seed.r : (seed.r + (' (' + ($elm$core$String$fromInt(priorCount + 1) + ')')));
 						var choiceLines = A2(
 							$elm$core$List$map,
 							function (c) {
-								return c.L + (': ' + A2(
+								var selected = A2(
 									$elm$core$Maybe$withDefault,
-									c.a4,
-									A2($elm$core$Dict$get, c.bd, inst.ay)));
+									c.bh,
+									A2($elm$core$Dict$get, c.aS, inst.aJ));
+								var dcSuffix = A2(
+									$elm$core$Maybe$withDefault,
+									'',
+									A2(
+										$elm$core$Maybe$map,
+										function (_v3) {
+											var dc = _v3.b;
+											return ' (' + ($author$project$Export$showSign(dc) + ' DC)');
+										},
+										$elm$core$List$head(
+											A2(
+												$elm$core$List$filter,
+												function (_v2) {
+													var opt = _v2.a;
+													return _Utils_eq(opt, selected);
+												},
+												c.aL))));
+								return c.Q + (': ' + (selected + dcSuffix));
 							},
-							seed.ay);
+							seed.aJ);
 						var availableFactors = _Utils_ap(
-							seed.bw,
+							seed.bI,
 							A2(
 								$elm$core$List$concatMap,
 								function ($) {
-									return $.a8;
+									return $.bl;
 								},
-								seed.bj));
+								seed.bv));
 						var factorLines = A2(
 							$elm$core$List$filterMap,
 							function (asf) {
@@ -7189,37 +7777,37 @@ var $author$project$Export$seedFactorBlocks = function (instances) {
 									$elm$core$Maybe$map,
 									function (sf) {
 										return _Utils_ap(
-											sf.q,
+											sf.r,
 											_Utils_ap(
-												(asf.o > 1) ? (' ×' + $elm$core$String$fromInt(asf.o)) : '',
-												(!sf.Y) ? ' (special)' : (' (' + ($author$project$Export$showSign(sf.Y * asf.o) + ')'))));
+												(asf.p > 1) ? (' ×' + $elm$core$String$fromInt(asf.p)) : '',
+												$author$project$Seeds$isSpecialSeedFactor(sf.aS) ? ' (special)' : (' (' + ($author$project$Export$showSign(sf.af * asf.p) + ')'))));
 									},
 									$elm$core$List$head(
 										A2(
 											$elm$core$List$filter,
 											function (sf) {
-												return _Utils_eq(sf.bd, asf.d);
+												return _Utils_eq(sf.aS, asf.e);
 											},
 											availableFactors)));
 							},
 							A2(
 								$elm$core$List$filter,
 								function (asf) {
-									return asf.o > 0;
+									return asf.p > 0;
 								},
-								inst.T));
+								inst.ab));
 						var lines = _Utils_ap(
 							choiceLines,
 							_Utils_ap(overrideLines, factorLines));
 						return $elm$core$List$isEmpty(lines) ? _Utils_Tuple2(
-							A3($elm$core$Dict$insert, seed.q, priorCount + 1, seenCounts),
+							A3($elm$core$Dict$insert, seed.r, priorCount + 1, seenCounts),
 							acc) : _Utils_Tuple2(
-							A3($elm$core$Dict$insert, seed.q, priorCount + 1, seenCounts),
+							A3($elm$core$Dict$insert, seed.r, priorCount + 1, seenCounts),
 							_Utils_ap(
 								acc,
 								_List_fromArray(
 									[
-										{L: label, ac: lines}
+										{Q: label, ak: lines}
 									])));
 					}
 				}),
@@ -7239,12 +7827,12 @@ var $author$project$Export$seedListLine = F2(
 					return A2(
 						$elm$core$Maybe$map,
 						function (s) {
-							return s.q + (' (' + ($elm$core$String$fromInt(
-								A2($elm$core$Maybe$withDefault, s.a0, inst.a1)) + (')' + ((showPrimaryTag && _Utils_eq(
+							return s.r + (' (' + ($elm$core$String$fromInt(
+								A2($elm$core$Maybe$withDefault, s.bd, inst.be)) + (')' + ((showPrimaryTag && _Utils_eq(
 								resolvedPrimaryId,
-								$elm$core$Maybe$Just(inst.bg))) ? ' [Primary]' : ''))));
+								$elm$core$Maybe$Just(inst.bs))) ? ' [Primary]' : ''))));
 						},
-						$author$project$Seeds$getSeed(inst.v));
+						$author$project$Seeds$getSeed(inst.x));
 				},
 				instances));
 	});
@@ -7266,13 +7854,13 @@ var $author$project$Export$componentToString = function (c) {
 };
 var $author$project$Export$seedStatBlockRows = function (seed) {
 	var savingThrowStr = function () {
-		var _v0 = seed.aj;
+		var _v0 = seed.as;
 		if (_v0.$ === 1) {
 			return 'None';
 		} else {
 			var st = _v0.a;
 			var typeStr = function () {
-				var _v2 = st.ai;
+				var _v2 = st.ar;
 				switch (_v2) {
 					case 0:
 						return 'Will';
@@ -7282,9 +7870,9 @@ var $author$project$Export$seedStatBlockRows = function (seed) {
 						return 'Fortitude';
 				}
 			}();
-			var harmlessStr = st.bb ? ' (harmless)' : '';
+			var harmlessStr = st.bo ? ' (harmless)' : '';
 			var effectStr = function () {
-				var _v1 = st.S;
+				var _v1 = st.Y;
 				switch (_v1) {
 					case 0:
 						return 'negates';
@@ -7299,21 +7887,21 @@ var $author$project$Export$seedStatBlockRows = function (seed) {
 			return typeStr + (' ' + (effectStr + harmlessStr));
 		}
 	}();
-	var descriptorStr = $elm$core$List$isEmpty(seed.Z) ? '' : (' [' + (A2($elm$core$String$join, ', ', seed.Z) + ']'));
+	var descriptorStr = $elm$core$List$isEmpty(seed.ag) ? '' : (' [' + (A2($elm$core$String$join, ', ', seed.ag) + ']'));
 	return _Utils_ap(
 		_List_fromArray(
 			[
 				_Utils_Tuple2(
 				'School',
-				_Utils_ap(seed.ak, descriptorStr)),
+				_Utils_ap(seed.at, descriptorStr)),
 				_Utils_Tuple2(
 				'Components',
 				A2(
 					$elm$core$String$join,
 					', ',
-					A2($elm$core$List$map, $author$project$Export$componentToString, seed.W))),
-				_Utils_Tuple2('Casting Time', seed.V),
-				_Utils_Tuple2('Range', seed.ah)
+					A2($elm$core$List$map, $author$project$Export$componentToString, seed.ae))),
+				_Utils_Tuple2('Casting Time', seed.ad),
+				_Utils_Tuple2('Range', seed.ap)
 			]),
 		_Utils_ap(
 			A2(
@@ -7326,27 +7914,27 @@ var $author$project$Export$seedStatBlockRows = function (seed) {
 						function (t) {
 							return _Utils_Tuple2('Target', t);
 						},
-						seed.au),
+						seed.aE),
 						A2(
 						$elm$core$Maybe$map,
 						function (a) {
 							return _Utils_Tuple2('Area', a);
 						},
-						seed.U),
+						seed.ac),
 						A2(
 						$elm$core$Maybe$map,
 						function (e) {
 							return _Utils_Tuple2('Effect', e);
 						},
-						seed.S)
+						seed.Y)
 					])),
 			_List_fromArray(
 				[
-					_Utils_Tuple2('Duration', seed._),
+					_Utils_Tuple2('Duration', seed.ah),
 					_Utils_Tuple2('Saving Throw', savingThrowStr),
 					_Utils_Tuple2(
 					'Spell Resistance',
-					seed.aq ? 'Yes' : 'No')
+					seed.aA ? 'Yes' : 'No')
 				])));
 };
 var $author$project$Calc$availableSavingThrows = function (instances) {
@@ -7357,7 +7945,7 @@ var $author$project$Calc$availableSavingThrows = function (instances) {
 				return A2(
 					$elm$core$List$any,
 					function (s) {
-						return _Utils_eq(s.ai, st.ai);
+						return _Utils_eq(s.ar, st.ar);
 					},
 					acc) ? acc : _Utils_ap(
 					acc,
@@ -7371,9 +7959,9 @@ var $author$project$Calc$availableSavingThrows = function (instances) {
 				return A2(
 					$elm$core$Maybe$andThen,
 					function ($) {
-						return $.aj;
+						return $.as;
 					},
-					$author$project$Seeds$getSeed(inst.v));
+					$author$project$Seeds$getSeed(inst.x));
 			},
 			instances));
 };
@@ -7394,9 +7982,9 @@ var $author$project$Calc$availableSchools = function (instances) {
 				return A2(
 					$elm$core$Maybe$map,
 					function ($) {
-						return $.ak;
+						return $.at;
 					},
-					$author$project$Seeds$getSeed(inst.v));
+					$author$project$Seeds$getSeed(inst.x));
 			},
 			instances));
 };
@@ -7424,13 +8012,13 @@ var $author$project$Calc$deriveCastingTime = F2(
 			A2(
 				$elm$core$Maybe$map,
 				function ($) {
-					return $.V;
+					return $.ad;
 				},
 				primarySeed));
 		if (A2(
 			$elm$core$List$any,
 			function (af) {
-				return af.d === 2;
+				return af.e === 2;
 			},
 			globalFactors)) {
 			return 'Free action (quickened)';
@@ -7438,7 +8026,7 @@ var $author$project$Calc$deriveCastingTime = F2(
 			if (A2(
 				$elm$core$List$any,
 				function (af) {
-					return af.d === 1;
+					return af.e === 1;
 				},
 				globalFactors)) {
 				return '1 action';
@@ -7447,36 +8035,36 @@ var $author$project$Calc$deriveCastingTime = F2(
 					A2(
 						$elm$core$List$map,
 						function ($) {
-							return $.o;
+							return $.p;
 						},
 						A2(
 							$elm$core$List$filter,
 							function (af) {
-								return !af.d;
+								return !af.e;
 							},
 							globalFactors)));
 				var minExtra = $elm$core$List$sum(
 					A2(
 						$elm$core$List$map,
 						function ($) {
-							return $.o;
+							return $.p;
 						},
 						A2(
 							$elm$core$List$filter,
 							function (af) {
-								return af.d === 30;
+								return af.e === 30;
 							},
 							globalFactors)));
 				var dayExtra = $elm$core$List$sum(
 					A2(
 						$elm$core$List$map,
 						function ($) {
-							return $.o;
+							return $.p;
 						},
 						A2(
 							$elm$core$List$filter,
 							function (af) {
-								return af.d === 31;
+								return af.e === 31;
 							},
 							globalFactors)));
 				if (dayExtra > 0) {
@@ -7549,12 +8137,12 @@ var $author$project$Calc$durationRank = function (d) {
 	}
 };
 var $author$project$Calc$instanceDuration = function (inst) {
-	var _v0 = $author$project$Seeds$getSeed(inst.v);
+	var _v0 = $author$project$Seeds$getSeed(inst.x);
 	if (_v0.$ === 1) {
 		return '—';
 	} else {
 		var seed = _v0.a;
-		return seed._;
+		return seed.ah;
 	}
 };
 var $elm$core$Basics$not = _Basics_not;
@@ -7616,13 +8204,13 @@ var $author$project$Calc$deriveDuration = F2(
 		var isPermanent = A2(
 			$elm$core$List$any,
 			function (af) {
-				return af.d === 7;
+				return af.e === 7;
 			},
 			globalFactors);
 		var isDismissable = A2(
 			$elm$core$List$any,
 			function (af) {
-				return af.d === 8;
+				return af.e === 8;
 			},
 			globalFactors) || A2(
 			$elm$core$List$any,
@@ -7635,12 +8223,12 @@ var $author$project$Calc$deriveDuration = F2(
 			A2(
 				$elm$core$List$map,
 				function ($) {
-					return $.o;
+					return $.p;
 				},
 				A2(
 					$elm$core$List$filter,
 					function (af) {
-						return af.d === 6;
+						return af.e === 6;
 					},
 					globalFactors)));
 		var base = A2(
@@ -7729,12 +8317,12 @@ var $author$project$Calc$deriveRange = F2(
 			A2(
 				$elm$core$List$map,
 				function ($) {
-					return $.o;
+					return $.p;
 				},
 				A2(
 					$elm$core$List$filter,
 					function (af) {
-						return af.d === 9;
+						return af.e === 9;
 					},
 					globalFactors)));
 		var base = A2(
@@ -7743,7 +8331,7 @@ var $author$project$Calc$deriveRange = F2(
 			A2(
 				$elm$core$Maybe$map,
 				function ($) {
-					return $.ah;
+					return $.ap;
 				},
 				primarySeed));
 		return (doublings > 0) ? A2($author$project$Calc$scaleRange, doublings + 1, base) : base;
@@ -7755,7 +8343,7 @@ var $author$project$Calc$deriveSavingThrow = F3(
 		} else {
 			var st = mst.a;
 			var typeStr = function () {
-				var _v2 = st.ai;
+				var _v2 = st.ar;
 				switch (_v2) {
 					case 0:
 						return 'Will';
@@ -7765,9 +8353,9 @@ var $author$project$Calc$deriveSavingThrow = F3(
 						return 'Fortitude';
 				}
 			}();
-			var harmlessStr = st.bb ? ' (harmless)' : '';
+			var harmlessStr = st.bo ? ' (harmless)' : '';
 			var effectStr = function () {
-				var _v1 = st.S;
+				var _v1 = st.Y;
 				switch (_v1) {
 					case 0:
 						return 'negates';
@@ -7783,12 +8371,12 @@ var $author$project$Calc$deriveSavingThrow = F3(
 				A2(
 					$elm$core$List$map,
 					function ($) {
-						return $.o;
+						return $.p;
 					},
 					A2(
 						$elm$core$List$filter,
 						function (af) {
-							return af.d === 23;
+							return af.e === 23;
 						},
 						globalFactors)));
 			var totalBonus = saveDCBonus + dcBonusFromFactors;
@@ -7811,13 +8399,13 @@ var $author$project$Calc$statBlock = F8(
 		var seeds = A2(
 			$elm$core$List$filterMap,
 			function (inst) {
-				return $author$project$Seeds$getSeed(inst.v);
+				return $author$project$Seeds$getSeed(inst.x);
 			},
 			instances);
 		var spellResistance = A2(
 			$elm$core$List$any,
 			function ($) {
-				return $.aq;
+				return $.aA;
 			},
 			seeds) ? 'Yes' : 'No';
 		var school = A2(
@@ -7843,13 +8431,13 @@ var $author$project$Calc$statBlock = F8(
 					return A2(
 						$elm$core$Maybe$andThen,
 						function (i) {
-							return $author$project$Seeds$getSeed(i.v);
+							return $author$project$Seeds$getSeed(i.x);
 						},
 						$elm$core$List$head(
 							A2(
 								$elm$core$List$filter,
 								function (i) {
-									return _Utils_eq(i.bg, iid);
+									return _Utils_eq(i.bs, iid);
 								},
 								instances)));
 				},
@@ -7864,27 +8452,27 @@ var $author$project$Calc$statBlock = F8(
 		var personalToAreaActive = A2(
 			$elm$core$List$any,
 			function (af) {
-				return af.d === 12;
+				return af.e === 12;
 			},
 			globalFactors);
 		var range = A2($author$project$Calc$deriveRange, globalFactors, primarySeed);
 		var removeS = A2(
 			$elm$core$List$any,
 			function (af) {
-				return af.d === 5;
+				return af.e === 5;
 			},
 			globalFactors);
 		var removeV = A2(
 			$elm$core$List$any,
 			function (af) {
-				return af.d === 4;
+				return af.e === 4;
 			},
 			globalFactors);
 		var savingThrow = A3($author$project$Calc$deriveSavingThrow, resolvedSave, globalFactors, saveDCBonus);
 		var targetToAreaActive = A2(
 			$elm$core$List$any,
 			function (af) {
-				return af.d === 11;
+				return af.e === 11;
 			},
 			globalFactors);
 		var extraTargets = A2(
@@ -7893,19 +8481,19 @@ var $author$project$Calc$statBlock = F8(
 			A2(
 				$elm$core$Maybe$map,
 				function ($) {
-					return $.o;
+					return $.p;
 				},
 				$elm$core$List$head(
 					A2(
 						$elm$core$List$filter,
 						function (af) {
-							return af.d === 10;
+							return af.e === 10;
 						},
 						globalFactors))));
 		var effect = A2(
 			$elm$core$Maybe$andThen,
 			function ($) {
-				return $.S;
+				return $.Y;
 			},
 			primarySeed);
 		var duration = A2($author$project$Calc$deriveDuration, globalFactors, instances);
@@ -7922,7 +8510,7 @@ var $author$project$Calc$statBlock = F8(
 			A2(
 				$elm$core$List$concatMap,
 				function ($) {
-					return $.Z;
+					return $.ag;
 				},
 				seeds));
 		var convertingToArea = targetToAreaActive || personalToAreaActive;
@@ -7934,7 +8522,7 @@ var $author$project$Calc$statBlock = F8(
 			A2(
 				$elm$core$Maybe$andThen,
 				function ($) {
-					return $.au;
+					return $.aE;
 				},
 				primarySeed));
 		var castingTime = A2($author$project$Calc$deriveCastingTime, globalFactors, primarySeed);
@@ -7951,7 +8539,7 @@ var $author$project$Calc$statBlock = F8(
 			A2(
 				$elm$core$List$concatMap,
 				function ($) {
-					return $.W;
+					return $.ae;
 				},
 				seeds));
 		var components = A2(
@@ -7972,28 +8560,28 @@ var $author$project$Calc$statBlock = F8(
 		var area = convertingToArea ? A2($elm$core$Maybe$map, $author$project$Calc$targetToAreaText, activeToAreaShape) : A2(
 			$elm$core$Maybe$andThen,
 			function ($) {
-				return $.U;
+				return $.ac;
 			},
 			primarySeed);
-		return {U: area, V: castingTime, W: components, Z: descriptors, _: duration, S: effect, ah: range, aj: savingThrow, ak: school, aq: spellResistance, au: target};
+		return {ac: area, ad: castingTime, ae: components, ag: descriptors, ah: duration, Y: effect, ap: range, as: savingThrow, at: school, aA: spellResistance, aE: target};
 	});
 var $author$project$Export$statBlockRows = F2(
 	function (finalDC, sb) {
-		var descriptorStr = $elm$core$List$isEmpty(sb.Z) ? '' : (' [' + (A2($elm$core$String$join, ', ', sb.Z) + ']'));
+		var descriptorStr = $elm$core$List$isEmpty(sb.ag) ? '' : (' [' + (A2($elm$core$String$join, ', ', sb.ag) + ']'));
 		return _Utils_ap(
 			_List_fromArray(
 				[
 					_Utils_Tuple2(
 					'School',
-					_Utils_ap(sb.ak, descriptorStr)),
+					_Utils_ap(sb.at, descriptorStr)),
 					_Utils_Tuple2(
 					'Spellcraft DC',
 					$elm$core$String$fromInt(finalDC)),
 					_Utils_Tuple2(
 					'Components',
-					A2($elm$core$String$join, ', ', sb.W)),
-					_Utils_Tuple2('Casting Time', sb.V),
-					_Utils_Tuple2('Range', sb.ah)
+					A2($elm$core$String$join, ', ', sb.ae)),
+					_Utils_Tuple2('Casting Time', sb.ad),
+					_Utils_Tuple2('Range', sb.ap)
 				]),
 			_Utils_ap(
 				A2(
@@ -8006,25 +8594,25 @@ var $author$project$Export$statBlockRows = F2(
 							function (t) {
 								return _Utils_Tuple2('Target', t);
 							},
-							sb.au),
+							sb.aE),
 							A2(
 							$elm$core$Maybe$map,
 							function (a) {
 								return _Utils_Tuple2('Area', a);
 							},
-							sb.U),
+							sb.ac),
 							A2(
 							$elm$core$Maybe$map,
 							function (e) {
 								return _Utils_Tuple2('Effect', e);
 							},
-							sb.S)
+							sb.Y)
 						])),
 				_List_fromArray(
 					[
-						_Utils_Tuple2('Duration', sb._),
-						_Utils_Tuple2('Saving Throw', sb.aj),
-						_Utils_Tuple2('Spell Resistance', sb.aq)
+						_Utils_Tuple2('Duration', sb.ah),
+						_Utils_Tuple2('Saving Throw', sb.as),
+						_Utils_Tuple2('Spell Resistance', sb.aA)
 					])));
 	});
 var $author$project$Export$uniqueSeeds = function (instances) {
@@ -8035,7 +8623,7 @@ var $author$project$Export$uniqueSeeds = function (instances) {
 				return A2(
 					$elm$core$List$any,
 					function (s) {
-						return _Utils_eq(s.bd, seed.bd);
+						return _Utils_eq(s.aS, seed.aS);
 					},
 					acc) ? acc : _Utils_ap(
 					acc,
@@ -8046,12 +8634,12 @@ var $author$project$Export$uniqueSeeds = function (instances) {
 		A2(
 			$elm$core$List$filterMap,
 			function (inst) {
-				return $author$project$Seeds$getSeed(inst.v);
+				return $author$project$Seeds$getSeed(inst.x);
 			},
 			instances));
 };
-var $author$project$Export$generateMarkdown = F7(
-	function (spellName, instances, globalFactors, casterSaveDCBonus, maybePrimaryId, maybeTargetToAreaShape, maybePersonalToAreaShape) {
+var $author$project$Export$generateMarkdown = F8(
+	function (link, spellName, instances, globalFactors, casterSaveDCBonus, maybePrimaryId, maybeTargetToAreaShape, maybePersonalToAreaShape) {
 		var title = $elm$core$String$isEmpty(spellName) ? 'Unnamed Spell' : spellName;
 		var seeds = $author$project$Export$uniqueSeeds(instances);
 		var seedBlocks = $author$project$Export$seedFactorBlocks(instances);
@@ -8079,29 +8667,29 @@ var $author$project$Export$generateMarkdown = F7(
 					items));
 		};
 		var breakdown = A2($author$project$Calc$calculateBreakdown, instances, globalFactors);
-		var costs = $author$project$Calc$devCosts(breakdown.a9);
+		var costs = $author$project$Calc$devCosts(breakdown.bm);
 		var augments = A2($author$project$Export$globalFactorLines, 0, globalFactors);
-		return '# ' + (title + ('\n\n' + ('## Stat Block\n\n' + (mdRows(
-			A2($author$project$Export$statBlockRows, breakdown.a9, sb)) + ('\n' + ('## Seeds Used\n\n' + (A2($author$project$Export$seedListLine, maybePrimaryId, instances) + ('\n\n' + ('## DC Breakdown\n\n' + ('| | |\n|---|---|\n' + ('| Seeds | ' + ($author$project$Export$showSign(breakdown.br) + (' |\n' + ('| Seed Factors | ' + ($author$project$Export$showSign(breakdown.bq) + (' |\n' + ('| Augmenting | ' + ($author$project$Export$showSign(breakdown.a$) + (' |\n' + (((breakdown.bo > 1) ? '| Permanent Duration | ×5 |\n' : '') + (((breakdown.bs > 1) ? '| Stone Tablet | ×2 |\n' : '') + ('| Mitigating | ' + ($author$project$Export$showSign(breakdown.bi) + (' |\n' + ('| **Final DC** | **' + ($elm$core$String$fromInt(breakdown.a9) + ('** |\n\n' + ('## Development Costs\n\n' + ('| | |\n|---|---|\n' + ('| Gold Cost | ' + ($author$project$Export$formatNum(costs.ba) + (' gp |\n' + ('| Development Time | ' + ($elm$core$String$fromInt(costs.bu) + (' days |\n' + ('| XP Cost | ' + ($author$project$Export$formatNum(costs.bA) + (' XP |\n\n' + ('## Seed Factors\n\n' + (($elm$core$List$isEmpty(seedBlocks) ? '_None_\n\n' : $elm$core$String$concat(
+		return '# ' + (title + ('\n\n' + ('## Epic Spell Wizard Link\n\n' + (link + ('\n\n' + ('## Stat Block\n\n' + (mdRows(
+			A2($author$project$Export$statBlockRows, breakdown.bm, sb)) + ('\n' + ('## Seeds Used\n\n' + (A2($author$project$Export$seedListLine, maybePrimaryId, instances) + ('\n\n' + ('## DC Breakdown\n\n' + ('| | |\n|---|---|\n' + ('| Seeds | ' + ($author$project$Export$showSign(breakdown.bD) + (' |\n' + ('| Seed Factors | ' + ($author$project$Export$showSign(breakdown.bC) + (' |\n' + ('| Augmenting | ' + ($author$project$Export$showSign(breakdown.bc) + (' |\n' + (((breakdown.bA > 1) ? '| Permanent Duration | ×5 |\n' : '') + (((breakdown.bE > 1) ? '| Stone Tablet | ×2 |\n' : '') + ('| Mitigating | ' + ($author$project$Export$showSign(breakdown.bu) + (' |\n' + ('| **Final DC** | **' + ($elm$core$String$fromInt(breakdown.bm) + ('** |\n\n' + ('## Development Costs\n\n' + ('| | |\n|---|---|\n' + ('| Gold Cost | ' + ($author$project$Export$formatNum(costs.bn) + (' gp |\n' + ('| Development Time | ' + ($elm$core$String$fromInt(costs.bG) + (' days |\n' + ('| XP Cost | ' + ($author$project$Export$formatNum(costs.bM) + (' XP |\n\n' + ('## Seed Factors\n\n' + (($elm$core$List$isEmpty(seedBlocks) ? '_None_\n\n' : $elm$core$String$concat(
 			A2(
 				$elm$core$List$map,
 				function (b) {
-					return '**' + (b.L + ('**\n\n' + (bulletList(b.ac) + '\n')));
+					return '**' + (b.Q + ('**\n\n' + (bulletList(b.ak) + '\n')));
 				},
 				seedBlocks))) + ('## Global Augments\n\n' + (bulletList(augments) + ('\n' + ('## Global Mitigations\n\n' + (bulletList(mitigations) + ('\n' + ('## Original Seed Listing\n\n' + $elm$core$String$concat(
 			A2(
 				$elm$core$List$map,
 				function (seed) {
-					return '### ' + (seed.q + (((($elm$core$List$length(seeds) > 1) && _Utils_eq(
+					return '### ' + (seed.r + (((($elm$core$List$length(seeds) > 1) && _Utils_eq(
 						primarySeed,
-						$elm$core$Maybe$Just(seed.bd))) ? ' (Primary)' : '') + ('\n\n' + (mdRows(
-						$author$project$Export$seedStatBlockRows(seed)) + ('\n' + (seed.aA + '\n\n'))))));
+						$elm$core$Maybe$Just(seed.aS))) ? ' (Primary)' : '') + ('\n\n' + (mdRows(
+						$author$project$Export$seedStatBlockRows(seed)) + ('\n' + (seed.aM + '\n\n'))))));
 				},
-				seeds)))))))))))))))))))))))))))))))))))))))))))))))));
+				seeds))))))))))))))))))))))))))))))))))))))))))))))))))));
 	});
 var $elm$core$String$toUpper = _String_toUpper;
-var $author$project$Export$generatePlainText = F7(
-	function (spellName, instances, globalFactors, casterSaveDCBonus, maybePrimaryId, maybeTargetToAreaShape, maybePersonalToAreaShape) {
+var $author$project$Export$generatePlainText = F8(
+	function (link, spellName, instances, globalFactors, casterSaveDCBonus, maybePrimaryId, maybeTargetToAreaShape, maybePersonalToAreaShape) {
 		var title = $elm$core$String$isEmpty(spellName) ? 'Unnamed Spell' : spellName;
 		var seeds = $author$project$Export$uniqueSeeds(instances);
 		var seedBlocks = $author$project$Export$seedFactorBlocks(instances);
@@ -8133,27 +8721,28 @@ var $author$project$Export$generatePlainText = F7(
 					items));
 		};
 		var breakdown = A2($author$project$Calc$calculateBreakdown, instances, globalFactors);
-		var costs = $author$project$Calc$devCosts(breakdown.a9);
+		var costs = $author$project$Calc$devCosts(breakdown.bm);
 		var augments = A2($author$project$Export$globalFactorLines, 0, globalFactors);
-		return title + ('\n\n' + (header('Stat Block') + (ptRows(
-			A2($author$project$Export$statBlockRows, breakdown.a9, sb)) + ('\n' + (header('Seeds Used') + (A2($author$project$Export$seedListLine, maybePrimaryId, instances) + ('\n\n' + (header('DC Breakdown') + ('Seeds: ' + ($author$project$Export$showSign(breakdown.br) + ('\n' + ('Seed Factors: ' + ($author$project$Export$showSign(breakdown.bq) + ('\n' + ('Augmenting: ' + ($author$project$Export$showSign(breakdown.a$) + ('\n' + (((breakdown.bo > 1) ? 'Permanent Duration: x5\n' : '') + (((breakdown.bs > 1) ? 'Stone Tablet: x2\n' : '') + ('Mitigating: ' + ($author$project$Export$showSign(breakdown.bi) + ('\n' + ('Final DC: ' + ($elm$core$String$fromInt(breakdown.a9) + ('\n\n' + (header('Development Costs') + ('Gold Cost: ' + ($author$project$Export$formatNum(costs.ba) + (' gp\n' + ('Development Time: ' + ($elm$core$String$fromInt(costs.bu) + (' days\n' + ('XP Cost: ' + ($author$project$Export$formatNum(costs.bA) + (' XP\n\n' + (header('Seed Factors') + (($elm$core$List$isEmpty(seedBlocks) ? 'None\n\n' : $elm$core$String$concat(
+		return title + ('\n\n' + (header('Epic Spell Wizard Link') + (link + ('\n\n' + (header('Stat Block') + (ptRows(
+			A2($author$project$Export$statBlockRows, breakdown.bm, sb)) + ('\n' + (header('Seeds Used') + (A2($author$project$Export$seedListLine, maybePrimaryId, instances) + ('\n\n' + (header('DC Breakdown') + ('Seeds: ' + ($author$project$Export$showSign(breakdown.bD) + ('\n' + ('Seed Factors: ' + ($author$project$Export$showSign(breakdown.bC) + ('\n' + ('Augmenting: ' + ($author$project$Export$showSign(breakdown.bc) + ('\n' + (((breakdown.bA > 1) ? 'Permanent Duration: x5\n' : '') + (((breakdown.bE > 1) ? 'Stone Tablet: x2\n' : '') + ('Mitigating: ' + ($author$project$Export$showSign(breakdown.bu) + ('\n' + ('Final DC: ' + ($elm$core$String$fromInt(breakdown.bm) + ('\n\n' + (header('Development Costs') + ('Gold Cost: ' + ($author$project$Export$formatNum(costs.bn) + (' gp\n' + ('Development Time: ' + ($elm$core$String$fromInt(costs.bG) + (' days\n' + ('XP Cost: ' + ($author$project$Export$formatNum(costs.bM) + (' XP\n\n' + (header('Seed Factors') + (($elm$core$List$isEmpty(seedBlocks) ? 'None\n\n' : $elm$core$String$concat(
 			A2(
 				$elm$core$List$map,
 				function (b) {
-					return b.L + (':\n' + (bulletList(b.ac) + '\n'));
+					return b.Q + (':\n' + (bulletList(b.ak) + '\n'));
 				},
 				seedBlocks))) + (header('Global Augments') + (bulletList(augments) + ('\n' + (header('Global Mitigations') + (bulletList(mitigations) + ('\n' + (header('Original Seed Listing') + $elm$core$String$concat(
 			A2(
 				$elm$core$List$map,
 				function (seed) {
-					return seed.q + (((($elm$core$List$length(seeds) > 1) && _Utils_eq(
+					return seed.r + (((($elm$core$List$length(seeds) > 1) && _Utils_eq(
 						primarySeed,
-						$elm$core$Maybe$Just(seed.bd))) ? ' (Primary)' : '') + ('\n\n' + (ptRows(
-						$author$project$Export$seedStatBlockRows(seed)) + ('\n' + (seed.aA + '\n\n')))));
+						$elm$core$Maybe$Just(seed.aS))) ? ' (Primary)' : '') + ('\n\n' + (ptRows(
+						$author$project$Export$seedStatBlockRows(seed)) + ('\n' + (seed.aM + '\n\n')))));
 				},
-				seeds))))))))))))))))))))))))))))))))))))))))))))));
+				seeds)))))))))))))))))))))))))))))))))))))))))))))))));
 	});
-var $author$project$Main$update = F2(
+var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
+var $author$project$Main$updateInner = F2(
 	function (msg, model) {
 		switch (msg.$) {
 			case 0:
@@ -8161,27 +8750,27 @@ var $author$project$Main$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{ap: name}),
+						{az: name}),
 					$elm$core$Platform$Cmd$none);
 			case 1:
 				var seedId = msg.a;
 				var newPrimary = function () {
-					var _v1 = model.t;
+					var _v1 = model.u;
 					if (_v1.$ === 1) {
-						return $elm$core$Maybe$Just(model.N);
+						return $elm$core$Maybe$Just(model.S);
 					} else {
-						return model.t;
+						return model.u;
 					}
 				}();
-				var newInstance = {T: _List_Nil, a1: $elm$core$Maybe$Nothing, ay: $elm$core$Dict$empty, bg: model.N, v: seedId};
+				var newInstance = {ab: _List_Nil, be: $elm$core$Maybe$Nothing, aJ: $elm$core$Dict$empty, bs: model.S, x: seedId};
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{
-							N: model.N + 1,
-							t: newPrimary,
-							j: _Utils_ap(
-								model.j,
+							S: model.S + 1,
+							u: newPrimary,
+							k: _Utils_ap(
+								model.k,
 								_List_fromArray(
 									[newInstance]))
 						}),
@@ -8191,21 +8780,21 @@ var $author$project$Main$update = F2(
 				var remaining = A2(
 					$elm$core$List$filter,
 					function (i) {
-						return !_Utils_eq(i.bg, iid);
+						return !_Utils_eq(i.bs, iid);
 					},
-					model.j);
+					model.k);
 				var newPrimary = _Utils_eq(
-					model.t,
+					model.u,
 					$elm$core$Maybe$Just(iid)) ? A2(
 					$elm$core$Maybe$map,
 					function ($) {
-						return $.bg;
+						return $.bs;
 					},
-					$elm$core$List$head(remaining)) : model.t;
+					$elm$core$List$head(remaining)) : model.u;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{t: newPrimary, j: remaining}),
+						{u: newPrimary, k: remaining}),
 					$elm$core$Platform$Cmd$none);
 			case 8:
 				var iid = msg.a;
@@ -8213,7 +8802,7 @@ var $author$project$Main$update = F2(
 					_Utils_update(
 						model,
 						{
-							t: $elm$core$Maybe$Just(iid)
+							u: $elm$core$Maybe$Just(iid)
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 9:
@@ -8222,7 +8811,7 @@ var $author$project$Main$update = F2(
 					_Utils_update(
 						model,
 						{
-							an: $elm$core$Maybe$Just(school)
+							ax: $elm$core$Maybe$Just(school)
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 10:
@@ -8230,7 +8819,7 @@ var $author$project$Main$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{am: mst}),
+						{aw: mst}),
 					$elm$core$Platform$Cmd$none);
 			case 3:
 				var iid = msg.a;
@@ -8240,30 +8829,30 @@ var $author$project$Main$update = F2(
 					_Utils_update(
 						model,
 						{
-							j: A2(
+							k: A2(
 								$elm$core$List$map,
 								function (i) {
-									if (_Utils_eq(i.bg, iid)) {
+									if (_Utils_eq(i.bs, iid)) {
 										var existing = A2(
 											$elm$core$List$filter,
 											function (asf) {
-												return !_Utils_eq(asf.d, factorId);
+												return !_Utils_eq(asf.e, factorId);
 											},
-											i.T);
+											i.ab);
 										var updated = (qty > 0) ? _Utils_ap(
 											existing,
 											_List_fromArray(
 												[
-													{d: factorId, o: qty}
+													{e: factorId, p: qty}
 												])) : existing;
 										return _Utils_update(
 											i,
-											{T: updated});
+											{ab: updated});
 									} else {
 										return i;
 									}
 								},
-								model.j)
+								model.k)
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 4:
@@ -8274,16 +8863,16 @@ var $author$project$Main$update = F2(
 					_Utils_update(
 						model,
 						{
-							j: A2(
+							k: A2(
 								$elm$core$List$map,
 								function (i) {
-									return _Utils_eq(i.bg, iid) ? _Utils_update(
+									return _Utils_eq(i.bs, iid) ? _Utils_update(
 										i,
 										{
-											ay: A3($elm$core$Dict$insert, choiceId, value, i.ay)
+											aJ: A3($elm$core$Dict$insert, choiceId, value, i.aJ)
 										}) : i;
 								},
-								model.j)
+								model.k)
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 5:
@@ -8291,18 +8880,18 @@ var $author$project$Main$update = F2(
 				var alreadyApplied = A2(
 					$elm$core$List$any,
 					function (af) {
-						return _Utils_eq(af.d, factorId);
+						return _Utils_eq(af.e, factorId);
 					},
-					model.k);
+					model.l);
 				return alreadyApplied ? _Utils_Tuple2(model, $elm$core$Platform$Cmd$none) : _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{
-							k: _Utils_ap(
-								model.k,
+							l: _Utils_ap(
+								model.l,
 								_List_fromArray(
 									[
-										{d: factorId, o: 1}
+										{e: factorId, p: 1}
 									]))
 						}),
 					$elm$core$Platform$Cmd$none);
@@ -8312,14 +8901,14 @@ var $author$project$Main$update = F2(
 					_Utils_update(
 						model,
 						{
-							k: A2(
+							l: A2(
 								$elm$core$List$filter,
 								function (af) {
-									return !_Utils_eq(af.d, factorId);
+									return !_Utils_eq(af.e, factorId);
 								},
-								model.k),
-							G: (factorId === 12) ? $elm$core$Maybe$Nothing : model.G,
-							I: (factorId === 11) ? $elm$core$Maybe$Nothing : model.I
+								model.l),
+							I: (factorId === 12) ? $elm$core$Maybe$Nothing : model.I,
+							K: (factorId === 11) ? $elm$core$Maybe$Nothing : model.K
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 11:
@@ -8328,7 +8917,7 @@ var $author$project$Main$update = F2(
 					_Utils_update(
 						model,
 						{
-							I: $elm$core$Maybe$Just(shape)
+							K: $elm$core$Maybe$Just(shape)
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 12:
@@ -8337,7 +8926,7 @@ var $author$project$Main$update = F2(
 					_Utils_update(
 						model,
 						{
-							G: $elm$core$Maybe$Just(shape)
+							I: $elm$core$Maybe$Just(shape)
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 13:
@@ -8348,14 +8937,14 @@ var $author$project$Main$update = F2(
 					_Utils_update(
 						model,
 						{
-							j: A2(
+							k: A2(
 								$elm$core$List$map,
 								function (i) {
-									return _Utils_eq(i.bg, iid) ? _Utils_update(
+									return _Utils_eq(i.bs, iid) ? _Utils_update(
 										i,
-										{a1: parsed}) : i;
+										{be: parsed}) : i;
 								},
-								model.j)
+								model.k)
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 7:
@@ -8365,68 +8954,74 @@ var $author$project$Main$update = F2(
 					_Utils_update(
 						model,
 						{
-							k: A2(
+							l: A2(
 								$elm$core$List$filter,
 								function (af) {
-									return !_Utils_eq(af.d, factorId);
+									return !_Utils_eq(af.e, factorId);
 								},
-								model.k)
+								model.l)
 						}),
 					$elm$core$Platform$Cmd$none) : _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{
-							k: A2(
+							l: A2(
 								$elm$core$List$map,
 								function (af) {
-									return _Utils_eq(af.d, factorId) ? _Utils_update(
+									return _Utils_eq(af.e, factorId) ? _Utils_update(
 										af,
-										{o: qty}) : af;
+										{p: qty}) : af;
 								},
-								model.k)
+								model.l)
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 14:
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{al: !model.al}),
+						{av: !model.av}),
 					$elm$core$Platform$Cmd$none);
 			case 15:
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{ab: !model.ab}),
+						{aj: !model.aj}),
 					$elm$core$Platform$Cmd$none);
 			case 16:
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{at: !model.at}),
+						{aD: !model.aD}),
 					$elm$core$Platform$Cmd$none);
 			case 17:
 				var fmt = msg.a;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{aa: fmt}),
+						{ai: fmt}),
 					$elm$core$Platform$Cmd$none);
 			case 18:
+				var link = _Utils_ap(
+					model.v,
+					$author$project$UrlState$encode(model));
 				var generate = function () {
-					var _v2 = model.aa;
+					var _v2 = model.ai;
 					if (!_v2) {
 						return $author$project$Export$generateMarkdown;
 					} else {
 						return $author$project$Export$generatePlainText;
 					}
 				}();
-				var output = A7(generate, model.ap, model.j, model.k, 0, model.t, model.I, model.G);
+				var output = A8(generate, link, model.az, model.k, model.l, 0, model.u, model.K, model.I);
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{X: $elm$core$Maybe$Nothing}),
+						{
+							X: $elm$core$Maybe$Nothing,
+							an: $elm$core$Maybe$Just(0)
+						}),
 					$author$project$Main$copyToClipboard(output));
-			default:
+			case 19:
 				var success = msg.a;
 				return _Utils_Tuple2(
 					_Utils_update(
@@ -8435,6 +9030,87 @@ var $author$project$Main$update = F2(
 							X: $elm$core$Maybe$Just(success)
 						}),
 					$elm$core$Platform$Cmd$none);
+			case 20:
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{aq: !model.aq}),
+					$elm$core$Platform$Cmd$none);
+			case 21:
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							X: $elm$core$Maybe$Nothing,
+							an: $elm$core$Maybe$Just(1)
+						}),
+					$author$project$Main$copyToClipboard(
+						_Utils_ap(
+							model.v,
+							$author$project$UrlState$encode(model))));
+			case 22:
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{Z: !model.Z}),
+					$elm$core$Platform$Cmd$none);
+			case 23:
+				var tab = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{aF: tab}),
+					$elm$core$Platform$Cmd$none);
+			case 24:
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{_: $elm$core$Maybe$Nothing, N: '', O: !model.O}),
+					$elm$core$Platform$Cmd$none);
+			case 25:
+				var text = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{N: text}),
+					$elm$core$Platform$Cmd$none);
+			default:
+				var query = $author$project$UrlState$extractQuery(model.N);
+				if ($elm$core$String$isEmpty(query) || (!A2($elm$core$String$contains, '=', query))) {
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								_: $elm$core$Maybe$Just('That doesn\'t look like a valid Epic Spell Wizard link.')
+							}),
+						$elm$core$Platform$Cmd$none);
+				} else {
+					var decoded = A2($author$project$UrlState$applyQuery, query, $author$project$Main$defaultModel);
+					return _Utils_Tuple2(
+						_Utils_update(
+							decoded,
+							{v: model.v, _: $elm$core$Maybe$Nothing, N: '', O: false}),
+						$elm$core$Platform$Cmd$none);
+				}
+		}
+	});
+var $author$project$Main$update = F2(
+	function (msg, model) {
+		var _v0 = A2($author$project$Main$updateInner, msg, model);
+		var newModel = _v0.a;
+		var cmd = _v0.b;
+		if (!msg.$) {
+			return _Utils_Tuple2(newModel, cmd);
+		} else {
+			return _Utils_Tuple2(
+				newModel,
+				$elm$core$Platform$Cmd$batch(
+					_List_fromArray(
+						[
+							cmd,
+							$author$project$Main$pushUrl(
+							$author$project$UrlState$encode(newModel))
+						])));
 		}
 	});
 var $elm$html$Html$Attributes$stringProperty = F2(
@@ -8446,8 +9122,115 @@ var $elm$html$Html$Attributes$stringProperty = F2(
 	});
 var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
 var $elm$html$Html$div = _VirtualDom_node('div');
+var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $author$project$Types$ToggleFactorsPanel = {$: 15};
 var $elm$html$Html$button = _VirtualDom_node('button');
+var $elm$svg$Svg$Attributes$class = _VirtualDom_attribute('class');
+var $elm$svg$Svg$Attributes$fill = _VirtualDom_attribute('fill');
+var $elm$svg$Svg$Attributes$stroke = _VirtualDom_attribute('stroke');
+var $elm$svg$Svg$Attributes$strokeLinecap = _VirtualDom_attribute('stroke-linecap');
+var $elm$svg$Svg$Attributes$strokeLinejoin = _VirtualDom_attribute('stroke-linejoin');
+var $elm$svg$Svg$Attributes$strokeWidth = _VirtualDom_attribute('stroke-width');
+var $elm$svg$Svg$Attributes$viewBox = _VirtualDom_attribute('viewBox');
+var $author$project$View$Icons$baseAttrs = function (cls) {
+	return _List_fromArray(
+		[
+			$elm$svg$Svg$Attributes$viewBox('0 0 24 24'),
+			$elm$svg$Svg$Attributes$fill('none'),
+			$elm$svg$Svg$Attributes$stroke('currentColor'),
+			$elm$svg$Svg$Attributes$strokeWidth('1.5'),
+			$elm$svg$Svg$Attributes$strokeLinecap('round'),
+			$elm$svg$Svg$Attributes$strokeLinejoin('round'),
+			$elm$svg$Svg$Attributes$class(cls)
+		]);
+};
+var $elm$svg$Svg$trustedNode = _VirtualDom_nodeNS('http://www.w3.org/2000/svg');
+var $elm$svg$Svg$circle = $elm$svg$Svg$trustedNode('circle');
+var $elm$svg$Svg$Attributes$cx = _VirtualDom_attribute('cx');
+var $elm$svg$Svg$Attributes$cy = _VirtualDom_attribute('cy');
+var $elm$svg$Svg$line = $elm$svg$Svg$trustedNode('line');
+var $elm$svg$Svg$Attributes$r = _VirtualDom_attribute('r');
+var $elm$svg$Svg$svg = $elm$svg$Svg$trustedNode('svg');
+var $elm$svg$Svg$Attributes$x1 = _VirtualDom_attribute('x1');
+var $elm$svg$Svg$Attributes$x2 = _VirtualDom_attribute('x2');
+var $elm$svg$Svg$Attributes$y1 = _VirtualDom_attribute('y1');
+var $elm$svg$Svg$Attributes$y2 = _VirtualDom_attribute('y2');
+var $author$project$View$Icons$factorsIcon = function (cls) {
+	return A2(
+		$elm$svg$Svg$svg,
+		$author$project$View$Icons$baseAttrs(cls),
+		_List_fromArray(
+			[
+				A2(
+				$elm$svg$Svg$line,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$x1('4'),
+						$elm$svg$Svg$Attributes$y1('6'),
+						$elm$svg$Svg$Attributes$x2('20'),
+						$elm$svg$Svg$Attributes$y2('6')
+					]),
+				_List_Nil),
+				A2(
+				$elm$svg$Svg$circle,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$cx('9'),
+						$elm$svg$Svg$Attributes$cy('6'),
+						$elm$svg$Svg$Attributes$r('2'),
+						$elm$svg$Svg$Attributes$fill('currentColor'),
+						$elm$svg$Svg$Attributes$stroke('none')
+					]),
+				_List_Nil),
+				A2(
+				$elm$svg$Svg$line,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$x1('4'),
+						$elm$svg$Svg$Attributes$y1('12'),
+						$elm$svg$Svg$Attributes$x2('20'),
+						$elm$svg$Svg$Attributes$y2('12')
+					]),
+				_List_Nil),
+				A2(
+				$elm$svg$Svg$circle,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$cx('15'),
+						$elm$svg$Svg$Attributes$cy('12'),
+						$elm$svg$Svg$Attributes$r('2'),
+						$elm$svg$Svg$Attributes$fill('currentColor'),
+						$elm$svg$Svg$Attributes$stroke('none')
+					]),
+				_List_Nil),
+				A2(
+				$elm$svg$Svg$line,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$x1('4'),
+						$elm$svg$Svg$Attributes$y1('18'),
+						$elm$svg$Svg$Attributes$x2('20'),
+						$elm$svg$Svg$Attributes$y2('18')
+					]),
+				_List_Nil),
+				A2(
+				$elm$svg$Svg$circle,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$cx('11'),
+						$elm$svg$Svg$Attributes$cy('18'),
+						$elm$svg$Svg$Attributes$r('2'),
+						$elm$svg$Svg$Attributes$fill('currentColor'),
+						$elm$svg$Svg$Attributes$stroke('none')
+					]),
+				_List_Nil)
+			]));
+};
+var $author$project$Types$FactorsTab = 1;
+var $author$project$View$FactorsPanel$mobileVis = function (model) {
+	return (model.aF === 1) ? 'flex' : 'hidden';
+};
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 0, a: a};
 };
@@ -8466,8 +9249,8 @@ var $elm$html$Html$Events$onClick = function (msg) {
 		$elm$json$Json$Decode$succeed(msg));
 };
 var $elm$html$Html$span = _VirtualDom_node('span');
-var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
+var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
+var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
 var $elm$html$Html$Attributes$title = $elm$html$Html$Attributes$stringProperty('title');
 var $author$project$Types$SetPersonalToAreaShape = function (a) {
 	return {$: 12, a: a};
@@ -8489,12 +9272,10 @@ var $elm$html$Html$Events$stopPropagationOn = F2(
 			event,
 			$elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
 	});
-var $elm$json$Json$Decode$field = _Json_decodeField;
 var $elm$json$Json$Decode$at = F2(
 	function (fields, decoder) {
 		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
 	});
-var $elm$json$Json$Decode$string = _Json_decodeString;
 var $elm$html$Html$Events$targetValue = A2(
 	$elm$json$Json$Decode$at,
 	_List_fromArray(
@@ -8585,6 +9366,18 @@ var $author$project$View$FactorsPanel$viewAreaShapeDropdown = F2(
 							$author$project$Calc$targetToAreaShapes)))
 				]));
 	});
+var $author$project$View$FactorsPanel$viewFactorSectionHeader = function (sectionName) {
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('text-xs text-indigo-500 font-semibold uppercase tracking-wider mt-2 mb-1 pt-2 border-t border-gray-800 first:mt-0 first:border-t-0')
+			]),
+		_List_fromArray(
+			[
+				$elm$html$Html$text(sectionName)
+			]));
+};
 var $author$project$Types$AddGlobalFactor = function (a) {
 	return {$: 5, a: a};
 };
@@ -8607,29 +9400,29 @@ var $author$project$View$FactorsPanel$viewGlobalFactorRow = F2(
 			A2(
 				$elm$core$Maybe$map,
 				function ($) {
-					return $.o;
+					return $.p;
 				},
 				maybeApplied));
 		var isActive = !_Utils_eq(maybeApplied, $elm$core$Maybe$Nothing);
-		var dimClass = isActive ? '' : ' opacity-40';
+		var dimClass = isActive ? ' bg-arcane-800/50 rounded' : ' opacity-60';
 		var dcDisplay = function () {
-			var _v1 = factor.bh;
+			var _v1 = factor.bt;
 			switch (_v1) {
 				case 0:
-					return (factor.Y > 0) ? ('+' + ($elm$core$String$fromInt(factor.Y) + ' DC')) : ($elm$core$String$fromInt(factor.Y) + ' DC');
+					return (factor.af > 0) ? ('+' + ($elm$core$String$fromInt(factor.af) + ' DC')) : ($elm$core$String$fromInt(factor.af) + ' DC');
 				case 1:
 					if (!isActive) {
-						return ((factor.Y > 0) ? '+' : '') + ($elm$core$String$fromInt(factor.Y) + ' DC ea.');
+						return ((factor.af > 0) ? '+' : '') + ($elm$core$String$fromInt(factor.af) + ' DC ea.');
 					} else {
-						var total = factor.Y * qty;
+						var total = factor.af * qty;
 						return ((total > 0) ? '+' : '') + ($elm$core$String$fromInt(total) + ' DC');
 					}
 				default:
-					return '×' + $elm$core$String$fromInt(factor.bk);
+					return '×' + $elm$core$String$fromInt(factor.bw);
 			}
 		}();
 		var controls = function () {
-			var _v0 = factor.bh;
+			var _v0 = factor.bt;
 			switch (_v0) {
 				case 1:
 					return A2(
@@ -8648,7 +9441,7 @@ var $author$project$View$FactorsPanel$viewGlobalFactorRow = F2(
 										$elm$html$Html$Events$onClick(
 										A2(
 											$author$project$Types$SetGlobalFactorQty,
-											factor.bd,
+											factor.aS,
 											A2($elm$core$Basics$max, 0, qty - 1))),
 										$elm$html$Html$Attributes$disabled(!qty)
 									]),
@@ -8673,7 +9466,7 @@ var $author$project$View$FactorsPanel$viewGlobalFactorRow = F2(
 									[
 										$elm$html$Html$Attributes$class('w-5 h-5 rounded bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs flex items-center justify-center'),
 										$elm$html$Html$Events$onClick(
-										isActive ? A2($author$project$Types$SetGlobalFactorQty, factor.bd, qty + 1) : $author$project$Types$AddGlobalFactor(factor.bd))
+										isActive ? A2($author$project$Types$SetGlobalFactorQty, factor.aS, qty + 1) : $author$project$Types$AddGlobalFactor(factor.aS))
 									]),
 								_List_fromArray(
 									[
@@ -8688,7 +9481,7 @@ var $author$project$View$FactorsPanel$viewGlobalFactorRow = F2(
 								$elm$html$Html$Attributes$type_('checkbox'),
 								$elm$html$Html$Attributes$checked(isActive),
 								$elm$html$Html$Events$onClick(
-								isActive ? $author$project$Types$RemoveGlobalFactor(factor.bd) : $author$project$Types$AddGlobalFactor(factor.bd)),
+								isActive ? $author$project$Types$RemoveGlobalFactor(factor.aS) : $author$project$Types$AddGlobalFactor(factor.aS)),
 								$elm$html$Html$Attributes$class('w-4 h-4 accent-arcane-500 cursor-pointer')
 							]),
 						_List_Nil);
@@ -8700,7 +9493,7 @@ var $author$project$View$FactorsPanel$viewGlobalFactorRow = F2(
 								$elm$html$Html$Attributes$type_('checkbox'),
 								$elm$html$Html$Attributes$checked(isActive),
 								$elm$html$Html$Events$onClick(
-								isActive ? $author$project$Types$RemoveGlobalFactor(factor.bd) : $author$project$Types$AddGlobalFactor(factor.bd)),
+								isActive ? $author$project$Types$RemoveGlobalFactor(factor.aS) : $author$project$Types$AddGlobalFactor(factor.aS)),
 								$elm$html$Html$Attributes$class('w-4 h-4 accent-arcane-500 cursor-pointer')
 							]),
 						_List_Nil);
@@ -8710,7 +9503,7 @@ var $author$project$View$FactorsPanel$viewGlobalFactorRow = F2(
 			$elm$html$Html$div,
 			_List_fromArray(
 				[
-					$elm$html$Html$Attributes$class('flex items-center justify-between py-1 gap-2 text-sm h-10' + dimClass)
+					$elm$html$Html$Attributes$class('flex items-center justify-between py-1 px-2 -mx-2 gap-2 text-sm h-10' + dimClass)
 				]),
 			_List_fromArray(
 				[
@@ -8730,7 +9523,7 @@ var $author$project$View$FactorsPanel$viewGlobalFactorRow = F2(
 								]),
 							_List_fromArray(
 								[
-									$elm$html$Html$text(factor.q)
+									$elm$html$Html$text(factor.r)
 								])),
 							A2(
 							$elm$html$Html$div,
@@ -8740,7 +9533,7 @@ var $author$project$View$FactorsPanel$viewGlobalFactorRow = F2(
 								]),
 							_List_fromArray(
 								[
-									$elm$html$Html$text(factor.b)
+									$elm$html$Html$text(factor.c)
 								]))
 						])),
 					A2(
@@ -8770,7 +9563,7 @@ var $author$project$View$FactorsPanel$viewGlobalFactorSection = F3(
 		var categoryFactors = A2(
 			$elm$core$List$filter,
 			function (f) {
-				return _Utils_eq(f.aw, category);
+				return _Utils_eq(f.aH, category);
 			},
 			$author$project$Factors$allFactors);
 		return A2(
@@ -8797,29 +9590,46 @@ var $author$project$View$FactorsPanel$viewGlobalFactorSection = F3(
 						[
 							$elm$html$Html$Attributes$class('px-4 py-2')
 						]),
-					A2(
-						$elm$core$List$concatMap,
-						function (f) {
-							var maybeApplied = $elm$core$List$head(
-								A2(
-									$elm$core$List$filter,
-									function (af) {
-										return _Utils_eq(af.d, f.bd);
-									},
-									model.k));
-							var isActive = !_Utils_eq(maybeApplied, $elm$core$Maybe$Nothing);
-							return A2(
-								$elm$core$List$cons,
-								A2($author$project$View$FactorsPanel$viewGlobalFactorRow, f, maybeApplied),
-								((f.bd === 11) && isActive) ? _List_fromArray(
+					A3(
+						$elm$core$List$foldl,
+						F2(
+							function (f, _v0) {
+								var lastSection = _v0.a;
+								var rows = _v0.b;
+								var maybeApplied = $elm$core$List$head(
+									A2(
+										$elm$core$List$filter,
+										function (af) {
+											return _Utils_eq(af.e, f.aS);
+										},
+										model.l));
+								var isActive = !_Utils_eq(maybeApplied, $elm$core$Maybe$Nothing);
+								var headerRow = (!_Utils_eq(
+									$elm$core$Maybe$Just(f.b),
+									lastSection)) ? _List_fromArray(
 									[
-										A2($author$project$View$FactorsPanel$viewAreaShapeDropdown, model.I, $author$project$Types$SetTargetToAreaShape)
-									]) : (((f.bd === 12) && isActive) ? _List_fromArray(
+										$author$project$View$FactorsPanel$viewFactorSectionHeader(f.b)
+									]) : _List_Nil;
+								var extraRows = ((f.aS === 11) && isActive) ? _List_fromArray(
 									[
-										A2($author$project$View$FactorsPanel$viewAreaShapeDropdown, model.G, $author$project$Types$SetPersonalToAreaShape)
-									]) : _List_Nil));
-						},
-						categoryFactors))
+										A2($author$project$View$FactorsPanel$viewAreaShapeDropdown, model.K, $author$project$Types$SetTargetToAreaShape)
+									]) : (((f.aS === 12) && isActive) ? _List_fromArray(
+									[
+										A2($author$project$View$FactorsPanel$viewAreaShapeDropdown, model.I, $author$project$Types$SetPersonalToAreaShape)
+									]) : _List_Nil);
+								return _Utils_Tuple2(
+									$elm$core$Maybe$Just(f.b),
+									_Utils_ap(
+										rows,
+										_Utils_ap(
+											headerRow,
+											A2(
+												$elm$core$List$cons,
+												A2($author$project$View$FactorsPanel$viewGlobalFactorRow, f, maybeApplied),
+												extraRows))));
+							}),
+						_Utils_Tuple2($elm$core$Maybe$Nothing, _List_Nil),
+						categoryFactors).b)
 				]));
 	});
 var $author$project$Types$RemoveSeedInstance = function (a) {
@@ -8845,12 +9655,46 @@ var $author$project$Types$SetChoice = F3(
 	function (a, b, c) {
 		return {$: 4, a: a, b: b, c: c};
 	});
+var $author$project$View$FactorsPanel$showSign = function (n) {
+	return (n >= 0) ? ('+' + $elm$core$String$fromInt(n)) : $elm$core$String$fromInt(n);
+};
 var $author$project$View$FactorsPanel$viewChoiceDropdown = F2(
 	function (inst, choice) {
+		var dcModifierFor = function (opt) {
+			return A2(
+				$elm$core$Maybe$map,
+				$elm$core$Tuple$second,
+				$elm$core$List$head(
+					A2(
+						$elm$core$List$filter,
+						function (_v2) {
+							var o = _v2.a;
+							return _Utils_eq(o, opt);
+						},
+						choice.aL)));
+		};
+		var optionLabel = function (opt) {
+			var _v1 = dcModifierFor(opt);
+			if (!_v1.$) {
+				var dc = _v1.a;
+				return opt + (' (' + ($author$project$View$FactorsPanel$showSign(dc) + ' DC)'));
+			} else {
+				return opt;
+			}
+		};
 		var current = A2(
 			$elm$core$Maybe$withDefault,
-			choice.a4,
-			A2($elm$core$Dict$get, choice.bd, inst.ay));
+			choice.bh,
+			A2($elm$core$Dict$get, choice.aS, inst.aJ));
+		var currentDcLabel = function () {
+			var _v0 = dcModifierFor(current);
+			if (!_v0.$) {
+				var dc = _v0.a;
+				return ' — ' + ($author$project$View$FactorsPanel$showSign(dc) + ' DC');
+			} else {
+				return '';
+			}
+		}();
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
@@ -8867,7 +9711,8 @@ var $author$project$View$FactorsPanel$viewChoiceDropdown = F2(
 						]),
 					_List_fromArray(
 						[
-							$elm$html$Html$text(choice.L)
+							$elm$html$Html$text(
+							_Utils_ap(choice.Q, currentDcLabel))
 						])),
 					A2(
 					$elm$html$Html$select,
@@ -8875,7 +9720,7 @@ var $author$project$View$FactorsPanel$viewChoiceDropdown = F2(
 						[
 							$elm$html$Html$Attributes$class('w-full bg-gray-800 text-gray-200 text-xs rounded px-2 py-1 border border-gray-700'),
 							$elm$html$Html$Events$onInput(
-							A2($author$project$Types$SetChoice, inst.bg, choice.bd))
+							A2($author$project$Types$SetChoice, inst.bs, choice.aS))
 						]),
 					A2(
 						$elm$core$List$map,
@@ -8890,10 +9735,11 @@ var $author$project$View$FactorsPanel$viewChoiceDropdown = F2(
 									]),
 								_List_fromArray(
 									[
-										$elm$html$Html$text(opt)
+										$elm$html$Html$text(
+										optionLabel(opt))
 									]));
 						},
-						choice.af))
+						choice.aa))
 				]));
 	});
 var $elm$html$Html$blockquote = _VirtualDom_node('blockquote');
@@ -8906,7 +9752,7 @@ var $author$project$View$FactorsPanel$viewSeedDescriptionQuote = function (seed)
 			]),
 		_List_fromArray(
 			[
-				$elm$html$Html$text(seed.aA)
+				$elm$html$Html$text(seed.aM)
 			]));
 };
 var $author$project$Types$SetSeedFactor = F3(
@@ -8925,25 +9771,25 @@ var $author$project$View$FactorsPanel$viewSeedFactor = F2(
 			A2(
 				$elm$core$Maybe$map,
 				function ($) {
-					return $.o;
+					return $.p;
 				},
 				$elm$core$List$head(
 					A2(
 						$elm$core$List$filter,
 						function (asf) {
-							return _Utils_eq(asf.d, sf.bd);
+							return _Utils_eq(asf.e, sf.aS);
 						},
-						inst.T))));
-		var dcLabel = (!sf.Y) ? '(special)' : ((sf.Y > 0) ? ('+' + ($elm$core$String$fromInt(
-			sf.Y * A2($elm$core$Basics$max, 1, currentQty)) + ' DC')) : ($elm$core$String$fromInt(
-			sf.Y * A2($elm$core$Basics$max, 1, currentQty)) + ' DC'));
+						inst.ab))));
+		var dcLabel = $author$project$Seeds$isSpecialSeedFactor(sf.aS) ? '(special)' : ((sf.af > 0) ? ('+' + ($elm$core$String$fromInt(
+			sf.af * A2($elm$core$Basics$max, 1, currentQty)) + ' DC')) : ($elm$core$String$fromInt(
+			sf.af * A2($elm$core$Basics$max, 1, currentQty)) + ' DC'));
 		var isActive = currentQty > 0;
-		var dimClass = isActive ? '' : ' opacity-40';
+		var dimClass = isActive ? ' bg-arcane-800/50 rounded' : ' opacity-60';
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
 				[
-					$elm$html$Html$Attributes$class('flex items-center justify-between py-1 gap-2 text-sm' + dimClass)
+					$elm$html$Html$Attributes$class('flex items-center justify-between py-1 px-2 -mx-2 gap-2 text-sm' + dimClass)
 				]),
 			_List_fromArray(
 				[
@@ -8963,9 +9809,9 @@ var $author$project$View$FactorsPanel$viewSeedFactor = F2(
 								]),
 							_List_fromArray(
 								[
-									$elm$html$Html$text(sf.q)
+									$elm$html$Html$text(sf.r)
 								])),
-							$elm$core$String$isEmpty(sf.aA) ? $elm$html$Html$text('') : A2(
+							$elm$core$String$isEmpty(sf.aM) ? $elm$html$Html$text('') : A2(
 							$elm$html$Html$div,
 							_List_fromArray(
 								[
@@ -8973,7 +9819,7 @@ var $author$project$View$FactorsPanel$viewSeedFactor = F2(
 								]),
 							_List_fromArray(
 								[
-									$elm$html$Html$text(sf.aA)
+									$elm$html$Html$text(sf.aM)
 								]))
 						])),
 					A2(
@@ -8995,7 +9841,7 @@ var $author$project$View$FactorsPanel$viewSeedFactor = F2(
 									$elm$html$Html$text(dcLabel)
 								])),
 							function () {
-							var _v0 = sf.bh;
+							var _v0 = sf.bt;
 							if (!_v0) {
 								return A2(
 									$elm$html$Html$button,
@@ -9006,8 +9852,8 @@ var $author$project$View$FactorsPanel$viewSeedFactor = F2(
 											$elm$html$Html$Events$onClick(
 											A3(
 												$author$project$Types$SetSeedFactor,
-												inst.bg,
-												sf.bd,
+												inst.bs,
+												sf.aS,
 												(currentQty > 0) ? 0 : 1))
 										]),
 									_List_fromArray(
@@ -9032,8 +9878,8 @@ var $author$project$View$FactorsPanel$viewSeedFactor = F2(
 													$elm$html$Html$Events$onClick(
 													A3(
 														$author$project$Types$SetSeedFactor,
-														inst.bg,
-														sf.bd,
+														inst.bs,
+														sf.aS,
 														A2($elm$core$Basics$max, 0, currentQty - 1)))
 												]),
 											_List_fromArray(
@@ -9059,8 +9905,8 @@ var $author$project$View$FactorsPanel$viewSeedFactor = F2(
 													$elm$html$Html$Events$onClick(
 													A3(
 														$author$project$Types$SetSeedFactor,
-														inst.bg,
-														sf.bd,
+														inst.bs,
+														sf.aS,
 														function () {
 															var _v1 = sf.a;
 															if (_v1.$ === 1) {
@@ -9083,7 +9929,7 @@ var $author$project$View$FactorsPanel$viewSeedFactor = F2(
 	});
 var $author$project$View$FactorsPanel$viewSeedInstanceFactors = F2(
 	function (model, inst) {
-		var _v0 = $author$project$Seeds$getSeed(inst.v);
+		var _v0 = $author$project$Seeds$getSeed(inst.x);
 		if (_v0.$ === 1) {
 			return $elm$html$Html$text('');
 		} else {
@@ -9091,7 +9937,7 @@ var $author$project$View$FactorsPanel$viewSeedInstanceFactors = F2(
 			var universalFactorRows = A2(
 				$elm$core$List$map,
 				$author$project$View$FactorsPanel$viewSeedFactor(inst),
-				seed.bw);
+				seed.bI);
 			var modeFactorSections = A2(
 				$elm$core$List$concatMap,
 				function (m) {
@@ -9101,23 +9947,23 @@ var $author$project$View$FactorsPanel$viewSeedInstanceFactors = F2(
 							$elm$html$Html$div,
 							_List_fromArray(
 								[
-									$elm$html$Html$Attributes$class('text-xs text-gray-500 font-semibold uppercase tracking-wider mt-2 mb-1 pt-2 border-t border-gray-800')
+									$elm$html$Html$Attributes$class('text-xs text-indigo-500 font-semibold uppercase tracking-wider mt-2 mb-1 pt-2 border-t border-gray-800')
 								]),
 							_List_fromArray(
 								[
-									$elm$html$Html$text(m.q)
+									$elm$html$Html$text(m.r)
 								])),
 						A2(
 							$elm$core$List$map,
 							$author$project$View$FactorsPanel$viewSeedFactor(inst),
-							m.a8));
+							m.bl));
 				},
 				A2(
 					$elm$core$List$filter,
 					function (m) {
-						return !$elm$core$List$isEmpty(m.a8);
+						return !$elm$core$List$isEmpty(m.bl);
 					},
-					seed.bj));
+					seed.bv));
 			var factorRows = ($elm$core$List$isEmpty(universalFactorRows) && $elm$core$List$isEmpty(modeFactorSections)) ? _List_fromArray(
 				[
 					A2(
@@ -9131,11 +9977,11 @@ var $author$project$View$FactorsPanel$viewSeedInstanceFactors = F2(
 							$elm$html$Html$text('No seed-specific factors')
 						]))
 				]) : _Utils_ap(universalFactorRows, modeFactorSections);
-			var currentDC = A2($elm$core$Maybe$withDefault, seed.a0, inst.a1);
+			var currentDC = A2($elm$core$Maybe$withDefault, seed.bd, inst.be);
 			var choiceRows = A2(
 				$elm$core$List$map,
 				$author$project$View$FactorsPanel$viewChoiceDropdown(inst),
-				seed.ay);
+				seed.aJ);
 			var baseDCRow = A2(
 				$elm$html$Html$div,
 				_List_fromArray(
@@ -9171,7 +10017,7 @@ var $author$project$View$FactorsPanel$viewSeedInstanceFactors = F2(
 								_List_fromArray(
 									[
 										$elm$html$Html$text(
-										'default: ' + $elm$core$String$fromInt(seed.a0))
+										'default: ' + $elm$core$String$fromInt(seed.bd))
 									]))
 							])),
 						A2(
@@ -9190,7 +10036,7 @@ var $author$project$View$FactorsPanel$viewSeedInstanceFactors = F2(
 										$elm$html$Html$Events$onClick(
 										A2(
 											$author$project$Types$SetSeedBaseDCOverride,
-											inst.bg,
+											inst.bs,
 											$elm$core$String$fromInt(currentDC - 1)))
 									]),
 								_List_fromArray(
@@ -9206,7 +10052,7 @@ var $author$project$View$FactorsPanel$viewSeedInstanceFactors = F2(
 										$elm$html$Html$Attributes$value(
 										$elm$core$String$fromInt(currentDC)),
 										$elm$html$Html$Events$onInput(
-										$author$project$Types$SetSeedBaseDCOverride(inst.bg)),
+										$author$project$Types$SetSeedBaseDCOverride(inst.bs)),
 										$elm$html$Html$Attributes$class('w-10 bg-gray-800 border border-gray-600 rounded px-2 py-0.5 text-xs text-gray-100 tabular-nums text-center focus:outline-none focus:border-arcane-400')
 									]),
 								_List_Nil),
@@ -9218,7 +10064,7 @@ var $author$project$View$FactorsPanel$viewSeedInstanceFactors = F2(
 										$elm$html$Html$Events$onClick(
 										A2(
 											$author$project$Types$SetSeedBaseDCOverride,
-											inst.bg,
+											inst.bs,
 											$elm$core$String$fromInt(currentDC + 1)))
 									]),
 								_List_fromArray(
@@ -9251,7 +10097,7 @@ var $author$project$View$FactorsPanel$viewSeedInstanceFactors = F2(
 									]),
 								_List_fromArray(
 									[
-										$elm$html$Html$text('── ' + (seed.q + ' ──'))
+										$elm$html$Html$text('── ' + (seed.r + ' ──'))
 									])),
 								A2(
 								$elm$html$Html$div,
@@ -9261,13 +10107,13 @@ var $author$project$View$FactorsPanel$viewSeedInstanceFactors = F2(
 									]),
 								_List_fromArray(
 									[
-										($elm$core$List$length(model.j) > 1) ? (_Utils_eq(
-										model.t,
-										$elm$core$Maybe$Just(inst.bg)) ? A2(
+										($elm$core$List$length(model.k) > 1) ? (_Utils_eq(
+										model.u,
+										$elm$core$Maybe$Just(inst.bs)) ? A2(
 										$elm$html$Html$span,
 										_List_fromArray(
 											[
-												$elm$html$Html$Attributes$class('text-xs text-arcane-400 font-semibold px-1.5 py-0.5 rounded border border-arcane-700 bg-arcane-950')
+												$elm$html$Html$Attributes$class('text-xs text-arcane-400 font-semibold px-1.5 py-0.5 rounded border border-arcane-700 bg-arcane-800')
 											]),
 										_List_fromArray(
 											[
@@ -9278,7 +10124,7 @@ var $author$project$View$FactorsPanel$viewSeedInstanceFactors = F2(
 											[
 												$elm$html$Html$Attributes$class('text-xs text-gray-600 hover:text-gray-300 px-1.5 py-0.5 rounded border border-gray-800 hover:border-gray-600'),
 												$elm$html$Html$Events$onClick(
-												$author$project$Types$SetPrimarySeed(inst.bg))
+												$author$project$Types$SetPrimarySeed(inst.bs))
 											]),
 										_List_fromArray(
 											[
@@ -9290,7 +10136,7 @@ var $author$project$View$FactorsPanel$viewSeedInstanceFactors = F2(
 											[
 												$elm$html$Html$Attributes$class('text-gray-600 hover:text-red-400 text-xs'),
 												$elm$html$Html$Events$onClick(
-												$author$project$Types$RemoveSeedInstance(inst.bg))
+												$author$project$Types$RemoveSeedInstance(inst.bs))
 											]),
 										_List_fromArray(
 											[
@@ -9316,12 +10162,13 @@ var $author$project$View$FactorsPanel$viewSeedInstanceFactors = F2(
 	});
 var $author$project$View$FactorsPanel$viewFactorsPanel = F2(
 	function (model, _v0) {
-		if (model.ab) {
+		if (model.aj) {
 			return A2(
 				$elm$html$Html$div,
 				_List_fromArray(
 					[
-						$elm$html$Html$Attributes$class('flex-1 flex flex-col bg-gray-950 border-r border-gray-700 overflow-y-auto min-w-0')
+						$elm$html$Html$Attributes$class(
+						$author$project$View$FactorsPanel$mobileVis(model) + ' flex-col flex-1 md:flex bg-gray-950 border-r border-gray-700 overflow-y-auto min-w-0')
 					]),
 				_List_fromArray(
 					[
@@ -9337,17 +10184,18 @@ var $author$project$View$FactorsPanel$viewFactorsPanel = F2(
 								$elm$html$Html$span,
 								_List_fromArray(
 									[
-										$elm$html$Html$Attributes$class('text-xs font-bold uppercase tracking-widest text-gray-400')
+										$elm$html$Html$Attributes$class('flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-gray-400')
 									]),
 								_List_fromArray(
 									[
+										$author$project$View$Icons$factorsIcon('w-3.5 h-3.5'),
 										$elm$html$Html$text('Factors')
 									])),
 								A2(
 								$elm$html$Html$button,
 								_List_fromArray(
 									[
-										$elm$html$Html$Attributes$class('text-gray-500 hover:text-gray-300 text-lg'),
+										$elm$html$Html$Attributes$class('hidden md:inline-block text-gray-500 hover:text-gray-300 text-lg'),
 										$elm$html$Html$Events$onClick($author$project$Types$ToggleFactorsPanel),
 										$elm$html$Html$Attributes$title('Collapse panel')
 									]),
@@ -9362,33 +10210,36 @@ var $author$project$View$FactorsPanel$viewFactorsPanel = F2(
 						A2(
 							$elm$core$List$map,
 							$author$project$View$FactorsPanel$viewSeedInstanceFactors(model),
-							model.j)),
+							model.k)),
 						A3($author$project$View$FactorsPanel$viewGlobalFactorSection, model, 'Augmenting', 0),
 						A3($author$project$View$FactorsPanel$viewGlobalFactorSection, model, 'Mitigating', 1)
 					]));
 		} else {
-			var totalFactors = $elm$core$List$length(model.k) + $elm$core$List$sum(
+			var totalFactors = $elm$core$List$length(model.l) + $elm$core$List$sum(
 				A2(
 					$elm$core$List$map,
 					function (i) {
-						return $elm$core$List$length(i.T);
+						return $elm$core$List$length(i.ab);
 					},
-					model.j));
+					model.k));
 			return A2(
 				$elm$html$Html$div,
 				_List_fromArray(
 					[
-						$elm$html$Html$Attributes$class('w-8 shrink-0 flex flex-col items-center bg-gray-950 border-r border-gray-700 cursor-pointer hover:bg-gray-900'),
+						$elm$html$Html$Attributes$class(
+						$author$project$View$FactorsPanel$mobileVis(model) + ' flex-col items-center gap-2 w-full md:flex md:w-8 shrink-0 bg-gray-950 border-r border-gray-700 cursor-pointer hover:bg-gray-900 pt-4'),
 						$elm$html$Html$Events$onClick($author$project$Types$ToggleFactorsPanel),
 						$elm$html$Html$Attributes$title('Expand factors panel')
 					]),
 				_List_fromArray(
 					[
+						$author$project$View$Icons$factorsIcon('w-4 h-4 text-gray-500'),
 						A2(
 						$elm$html$Html$div,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$class('mt-4 text-gray-500 text-xs rotate-90 whitespace-nowrap select-none')
+								A2($elm$html$Html$Attributes$style, 'writing-mode', 'vertical-rl'),
+								$elm$html$Html$Attributes$class('text-gray-500 text-xs whitespace-nowrap select-none')
 							]),
 						_List_fromArray(
 							[
@@ -9398,63 +10249,513 @@ var $author$project$View$FactorsPanel$viewFactorsPanel = F2(
 					]));
 		}
 	});
-var $author$project$Types$SetSpellName = function (a) {
-	return {$: 0, a: a};
+var $author$project$Types$ToggleHelpModal = {$: 22};
+var $elm$html$Html$h1 = _VirtualDom_node('h1');
+var $author$project$View$Header$viewHeader = function (model) {
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('flex items-center justify-between px-6 py-3 bg-gray-900 border-b border-gray-700 shrink-0')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$h1,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('text-2xl font-bold text-arcane-400 tracking-wide')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Epic Spell Wizard')
+					])),
+				A2(
+				$elm$html$Html$button,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('px-3 py-1.5 rounded border border-arcane-600 text-arcane-400 text-sm hover:bg-arcane-900'),
+						$elm$html$Html$Events$onClick($author$project$Types$ToggleHelpModal)
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('How does this work?')
+					]))
+			]));
 };
-var $elm$html$Html$Attributes$placeholder = $elm$html$Html$Attributes$stringProperty('placeholder');
-var $author$project$View$Header$viewHeader = F2(
-	function (model, breakdown) {
+var $elm$html$Html$h2 = _VirtualDom_node('h2');
+var $elm$html$Html$h3 = _VirtualDom_node('h3');
+var $author$project$View$HelpModal$viewSection = F2(
+	function (heading, body) {
 		return A2(
 			$elm$html$Html$div,
+			_List_Nil,
 			_List_fromArray(
 				[
-					$elm$html$Html$Attributes$class('flex items-center justify-between px-6 py-3 bg-gray-900 border-b border-gray-700 shrink-0')
+					A2(
+					$elm$html$Html$h3,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('text-sm font-semibold text-gray-200 mb-1')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(heading)
+						])),
+					A2(
+					$elm$html$Html$p,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('text-sm text-gray-400 leading-relaxed')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(body)
+						]))
+				]));
+	});
+var $elm$html$Html$a = _VirtualDom_node('a');
+var $elm$html$Html$Attributes$href = function (url) {
+	return A2(
+		$elm$html$Html$Attributes$stringProperty,
+		'href',
+		_VirtualDom_noJavaScriptUri(url));
+};
+var $elm$html$Html$li = _VirtualDom_node('li');
+var $elm$html$Html$Attributes$rel = _VirtualDom_attribute('rel');
+var $elm$html$Html$Attributes$target = $elm$html$Html$Attributes$stringProperty('target');
+var $elm$html$Html$ul = _VirtualDom_node('ul');
+var $author$project$View$HelpModal$viewSuggestedReading = A2(
+	$elm$html$Html$div,
+	_List_Nil,
+	_List_fromArray(
+		[
+			A2(
+			$elm$html$Html$h3,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('text-sm font-semibold text-gray-200 mb-1')
+				]),
+			_List_fromArray(
+				[
+					$elm$html$Html$text('Suggested reading')
+				])),
+			A2(
+			$elm$html$Html$p,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('text-sm text-gray-400 leading-relaxed mb-1')
+				]),
+			_List_fromArray(
+				[
+					$elm$html$Html$text('This tool assumes you already know how epic spells work. If you\'re new to the system, read these first:')
+				])),
+			A2(
+			$elm$html$Html$ul,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('list-disc list-inside text-sm space-y-0.5')
 				]),
 			_List_fromArray(
 				[
 					A2(
-					$elm$html$Html$input,
+					$elm$html$Html$li,
+					_List_Nil,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$class('bg-transparent text-2xl font-bold text-gray-100 outline-none placeholder-gray-600 w-96'),
-							$elm$html$Html$Attributes$placeholder('Unnamed Spell'),
-							$elm$html$Html$Attributes$value(model.ap),
-							$elm$html$Html$Events$onInput($author$project$Types$SetSpellName)
-						]),
-					_List_Nil),
+							A2(
+							$elm$html$Html$a,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$href('https://www.d20srd.org/srd/epic/spellsIntro.htm'),
+									$elm$html$Html$Attributes$target('_blank'),
+									$elm$html$Html$Attributes$rel('noopener noreferrer'),
+									$elm$html$Html$Attributes$class('text-arcane-400 hover:text-arcane-500 underline')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Epic Spells: Introduction')
+								]))
+						])),
+					A2(
+					$elm$html$Html$li,
+					_List_Nil,
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$a,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$href('https://www.d20srd.org/srd/epic/developingEpicSpells.htm'),
+									$elm$html$Html$Attributes$target('_blank'),
+									$elm$html$Html$Attributes$rel('noopener noreferrer'),
+									$elm$html$Html$Attributes$class('text-arcane-400 hover:text-arcane-500 underline')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Developing Epic Spells')
+								]))
+						]))
+				]))
+		]));
+var $author$project$View$HelpModal$viewHelpModal = A2(
+	$elm$html$Html$div,
+	_List_fromArray(
+		[
+			$elm$html$Html$Attributes$class('fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4')
+		]),
+	_List_fromArray(
+		[
+			A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('bg-gray-900 border border-gray-700 rounded-lg max-w-lg w-full max-h-[85vh] overflow-y-auto p-6 space-y-4')
+				]),
+			_List_fromArray(
+				[
 					A2(
 					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$class('flex items-center gap-3')
+							$elm$html$Html$Attributes$class('flex items-center justify-between')
 						]),
 					_List_fromArray(
 						[
 							A2(
-							$elm$html$Html$span,
+							$elm$html$Html$h2,
 							_List_fromArray(
 								[
-									$elm$html$Html$Attributes$class('text-gray-400 text-sm uppercase tracking-widest')
+									$elm$html$Html$Attributes$class('text-lg font-bold text-arcane-400')
 								]),
 							_List_fromArray(
 								[
-									$elm$html$Html$text('Spellcraft DC')
+									$elm$html$Html$text('How does this work?')
 								])),
 							A2(
-							$elm$html$Html$span,
+							$elm$html$Html$button,
 							_List_fromArray(
 								[
-									$elm$html$Html$Attributes$class('text-arcane-400 text-4xl font-bold tabular-nums')
+									$elm$html$Html$Attributes$class('text-gray-500 hover:text-gray-300 text-lg'),
+									$elm$html$Html$Events$onClick($author$project$Types$ToggleHelpModal)
 								]),
 							_List_fromArray(
 								[
-									$elm$html$Html$text(
-									$elm$core$String$fromInt(breakdown.a9))
+									$elm$html$Html$text('✕')
 								]))
+						])),
+					$author$project$View$HelpModal$viewSuggestedReading,
+					A2($author$project$View$HelpModal$viewSection, 'The basic flow', 'Add seeds from the Seeds panel, then tune their factors and choices ' + ('(and any global augmenting or mitigating factors) in the Factors panel. ' + ('The Summary panel keeps a running DC breakdown, development costs, and ' + 'stat block as you go.'))),
+					A2($author$project$View$HelpModal$viewSection, 'The link is your save', 'The address bar updates live as you work — it always reflects the exact ' + ('spell you\'re building. Copying the URL, using the Share button next to ' + ('the spell name, or just bookmarking the page at any point is how you ' + ('\"save\" — reopening that link rebuilds the spell exactly as you left it. ' + ('The \"Epic Spell Wizard Link\" at the top of a copied spell summary is ' + 'the same link.'))))),
+					A2($author$project$View$HelpModal$viewSection, 'Nothing here is prohibited', 'Epic spell development is meant to be flexible, so this tool doesn\'t stop ' + ('you from combining factors or mitigations that don\'t really make sense ' + ('together. If you and your DM have worked out some unusual combination, ' + ('go for it — it\'s on you to make sure the choices you select are ' + 'actually applicable to what you\'re building.')))),
+					A2($author$project$View$HelpModal$viewSection, 'This isn\'t the final word', 'This tool is a calculator and organizer, not a rules authority. Epic spell ' + ('development is a collaborative process — any spell you develop here ' + 'still needs your Dungeon Master\'s approval.')),
+					A2(
+					$elm$html$Html$button,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('w-full py-2 rounded bg-arcane-500 hover:bg-arcane-400 text-white text-sm font-semibold'),
+							$elm$html$Html$Events$onClick($author$project$Types$ToggleHelpModal)
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Got it')
+						]))
+				]))
+		]));
+var $author$project$Types$LoadImportedLink = {$: 26};
+var $author$project$Types$SetImportInput = function (a) {
+	return {$: 25, a: a};
+};
+var $author$project$Types$ToggleImportModal = {$: 24};
+var $elm$html$Html$Attributes$placeholder = $elm$html$Html$Attributes$stringProperty('placeholder');
+var $elm$html$Html$Attributes$rows = function (n) {
+	return A2(
+		_VirtualDom_attribute,
+		'rows',
+		$elm$core$String$fromInt(n));
+};
+var $elm$html$Html$textarea = _VirtualDom_node('textarea');
+var $author$project$View$ImportLinkModal$viewImportLinkModal = function (model) {
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('bg-gray-900 border border-gray-700 rounded-lg max-w-lg w-full p-6 space-y-4')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('flex items-center justify-between')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$h2,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$class('text-lg font-bold text-arcane-400')
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Import a spell link')
+									])),
+								A2(
+								$elm$html$Html$button,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$class('text-gray-500 hover:text-gray-300 text-lg'),
+										$elm$html$Html$Events$onClick($author$project$Types$ToggleImportModal)
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text('✕')
+									]))
+							])),
+						A2(
+						$elm$html$Html$p,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('text-sm text-gray-400 leading-relaxed')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Paste a shared Epic Spell Wizard link (or just its query string) below to load that spell here, replacing whatever you\'re currently building.')
+							])),
+						A2(
+						$elm$html$Html$textarea,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('w-full bg-gray-800 border border-gray-600 rounded px-3 py-2 text-sm text-gray-100 outline-none focus:border-arcane-400'),
+								$elm$html$Html$Attributes$rows(4),
+								$elm$html$Html$Attributes$placeholder('https://.../epic-spell-wizard/?name=...'),
+								$elm$html$Html$Attributes$value(model.N),
+								$elm$html$Html$Events$onInput($author$project$Types$SetImportInput)
+							]),
+						_List_Nil),
+						function () {
+						var _v0 = model._;
+						if (!_v0.$) {
+							var message = _v0.a;
+							return A2(
+								$elm$html$Html$p,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$class('text-red-400 text-xs')
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text(message)
+									]));
+						} else {
+							return $elm$html$Html$text('');
+						}
+					}(),
+						A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('w-full py-2 rounded bg-arcane-500 hover:bg-arcane-400 text-white text-sm font-semibold'),
+								$elm$html$Html$Events$onClick($author$project$Types$LoadImportedLink)
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Load')
+							]))
+					]))
+			]));
+};
+var $author$project$Types$SummaryTab = 2;
+var $elm$svg$Svg$Attributes$d = _VirtualDom_attribute('d');
+var $elm$svg$Svg$path = $elm$svg$Svg$trustedNode('path');
+var $author$project$View$Icons$importIcon = function (cls) {
+	return A2(
+		$elm$svg$Svg$svg,
+		$author$project$View$Icons$baseAttrs(cls),
+		_List_fromArray(
+			[
+				A2(
+				$elm$svg$Svg$path,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$d('M12 3V14')
+					]),
+				_List_Nil),
+				A2(
+				$elm$svg$Svg$path,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$d('M7.5 9.5L12 14L16.5 9.5')
+					]),
+				_List_Nil),
+				A2(
+				$elm$svg$Svg$path,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$d('M4 16V18C4 19.1046 4.89543 20 6 20H18C19.1046 20 20 19.1046 20 18V16')
+					]),
+				_List_Nil)
+			]));
+};
+var $author$project$View$MobileNav$importButton = A2(
+	$elm$html$Html$button,
+	_List_fromArray(
+		[
+			$elm$html$Html$Attributes$class('flex-1 flex flex-col items-center gap-0.5 py-2 text-xs text-gray-500'),
+			$elm$html$Html$Events$onClick($author$project$Types$ToggleImportModal)
+		]),
+	_List_fromArray(
+		[
+			$author$project$View$Icons$importIcon('w-5 h-5'),
+			A2(
+			$elm$html$Html$span,
+			_List_Nil,
+			_List_fromArray(
+				[
+					$elm$html$Html$text('Import')
+				]))
+		]));
+var $author$project$Types$SetMobileTab = function (a) {
+	return {$: 23, a: a};
+};
+var $author$project$View$MobileNav$navButton = F4(
+	function (model, tab, icon, label) {
+		return A2(
+			$elm$html$Html$button,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class(
+					'flex-1 flex flex-col items-center gap-0.5 py-2 text-xs ' + (_Utils_eq(model.aF, tab) ? 'text-arcane-400' : 'text-gray-500')),
+					$elm$html$Html$Events$onClick(
+					$author$project$Types$SetMobileTab(tab))
+				]),
+			_List_fromArray(
+				[
+					icon('w-5 h-5'),
+					A2(
+					$elm$html$Html$span,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$text(label)
 						]))
 				]));
 	});
+var $author$project$View$Icons$seedsIcon = function (cls) {
+	return A2(
+		$elm$svg$Svg$svg,
+		$author$project$View$Icons$baseAttrs(cls),
+		_List_fromArray(
+			[
+				A2(
+				$elm$svg$Svg$path,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$d('M12 21V9')
+					]),
+				_List_Nil),
+				A2(
+				$elm$svg$Svg$path,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$d('M12 9C12 9 6 9 6 4C11 4 12 9 12 9Z')
+					]),
+				_List_Nil),
+				A2(
+				$elm$svg$Svg$path,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$d('M12 9C12 9 18 9 18 4C13 4 12 9 12 9Z')
+					]),
+				_List_Nil)
+			]));
+};
+var $elm$svg$Svg$Attributes$height = _VirtualDom_attribute('height');
+var $elm$svg$Svg$rect = $elm$svg$Svg$trustedNode('rect');
+var $elm$svg$Svg$Attributes$rx = _VirtualDom_attribute('rx');
+var $elm$svg$Svg$Attributes$width = _VirtualDom_attribute('width');
+var $elm$svg$Svg$Attributes$x = _VirtualDom_attribute('x');
+var $elm$svg$Svg$Attributes$y = _VirtualDom_attribute('y');
+var $author$project$View$Icons$summaryIcon = function (cls) {
+	return A2(
+		$elm$svg$Svg$svg,
+		$author$project$View$Icons$baseAttrs(cls),
+		_List_fromArray(
+			[
+				A2(
+				$elm$svg$Svg$rect,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$x('5'),
+						$elm$svg$Svg$Attributes$y('3'),
+						$elm$svg$Svg$Attributes$width('14'),
+						$elm$svg$Svg$Attributes$height('18'),
+						$elm$svg$Svg$Attributes$rx('2')
+					]),
+				_List_Nil),
+				A2(
+				$elm$svg$Svg$line,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$x1('8'),
+						$elm$svg$Svg$Attributes$y1('8'),
+						$elm$svg$Svg$Attributes$x2('16'),
+						$elm$svg$Svg$Attributes$y2('8')
+					]),
+				_List_Nil),
+				A2(
+				$elm$svg$Svg$line,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$x1('8'),
+						$elm$svg$Svg$Attributes$y1('12'),
+						$elm$svg$Svg$Attributes$x2('16'),
+						$elm$svg$Svg$Attributes$y2('12')
+					]),
+				_List_Nil),
+				A2(
+				$elm$svg$Svg$line,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$x1('8'),
+						$elm$svg$Svg$Attributes$y1('16'),
+						$elm$svg$Svg$Attributes$x2('13'),
+						$elm$svg$Svg$Attributes$y2('16')
+					]),
+				_List_Nil)
+			]));
+};
+var $author$project$View$MobileNav$viewMobileNav = function (model) {
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('md:hidden fixed bottom-0 inset-x-0 flex border-t border-gray-700 bg-gray-900 z-20')
+			]),
+		_Utils_ap(
+			_List_fromArray(
+				[
+					A4($author$project$View$MobileNav$navButton, model, 0, $author$project$View$Icons$seedsIcon, 'Seeds'),
+					A4($author$project$View$MobileNav$navButton, model, 1, $author$project$View$Icons$factorsIcon, 'Factors'),
+					A4($author$project$View$MobileNav$navButton, model, 2, $author$project$View$Icons$summaryIcon, 'Summary')
+				]),
+			model.P ? _List_fromArray(
+				[$author$project$View$MobileNav$importButton]) : _List_Nil));
+};
 var $author$project$Types$ToggleSeedsPanel = {$: 14};
+var $author$project$View$SeedsPanel$mobileVis = function (model) {
+	return (!model.aF) ? 'flex' : 'hidden';
+};
 var $author$project$Types$AddSeedInstance = function (a) {
 	return {$: 1, a: a};
 };
@@ -9464,7 +10765,7 @@ var $author$project$View$SeedsPanel$viewSeedCard = F2(
 			A2(
 				$elm$core$List$filter,
 				function (i) {
-					return _Utils_eq(i.v, seed.bd);
+					return _Utils_eq(i.x, seed.aS);
 				},
 				instances));
 		var activeClass = (count > 0) ? 'bg-arcane-900 border-arcane-500 text-arcane-400' : 'bg-gray-800 border-gray-700 text-gray-300 hover:border-gray-500';
@@ -9474,8 +10775,8 @@ var $author$project$View$SeedsPanel$viewSeedCard = F2(
 				[
 					$elm$html$Html$Attributes$class('w-full flex justify-between items-center px-3 py-2 rounded border text-sm ' + activeClass),
 					$elm$html$Html$Events$onClick(
-					$author$project$Types$AddSeedInstance(seed.bd)),
-					$elm$html$Html$Attributes$title(seed.aA)
+					$author$project$Types$AddSeedInstance(seed.aS)),
+					$elm$html$Html$Attributes$title(seed.aM)
 				]),
 			_List_fromArray(
 				[
@@ -9484,7 +10785,7 @@ var $author$project$View$SeedsPanel$viewSeedCard = F2(
 					_List_Nil,
 					_List_fromArray(
 						[
-							$elm$html$Html$text(seed.q)
+							$elm$html$Html$text(seed.r)
 						])),
 					A2(
 					$elm$html$Html$span,
@@ -9495,7 +10796,7 @@ var $author$project$View$SeedsPanel$viewSeedCard = F2(
 					_List_fromArray(
 						[
 							$elm$html$Html$text(
-							$elm$core$String$fromInt(seed.a0)),
+							$elm$core$String$fromInt(seed.bd)),
 							(count > 0) ? A2(
 							$elm$html$Html$span,
 							_List_fromArray(
@@ -9511,11 +10812,12 @@ var $author$project$View$SeedsPanel$viewSeedCard = F2(
 				]));
 	});
 var $author$project$View$SeedsPanel$viewSeedsPanel = function (model) {
-	return model.al ? A2(
+	return model.av ? A2(
 		$elm$html$Html$div,
 		_List_fromArray(
 			[
-				$elm$html$Html$Attributes$class('w-72 shrink-0 flex flex-col bg-gray-900 border-r border-gray-700 overflow-y-auto')
+				$elm$html$Html$Attributes$class(
+				$author$project$View$SeedsPanel$mobileVis(model) + ' flex-col w-full md:flex md:w-72 shrink-0 bg-gray-900 border-r border-gray-700 overflow-y-auto')
 			]),
 		_List_fromArray(
 			[
@@ -9531,17 +10833,18 @@ var $author$project$View$SeedsPanel$viewSeedsPanel = function (model) {
 						$elm$html$Html$span,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$class('text-xs font-bold uppercase tracking-widest text-gray-400')
+								$elm$html$Html$Attributes$class('flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-gray-400')
 							]),
 						_List_fromArray(
 							[
+								$author$project$View$Icons$seedsIcon('w-3.5 h-3.5'),
 								$elm$html$Html$text('Seeds')
 							])),
 						A2(
 						$elm$html$Html$button,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$class('text-gray-500 hover:text-gray-300 text-lg'),
+								$elm$html$Html$Attributes$class('hidden md:inline-block text-gray-500 hover:text-gray-300 text-lg'),
 								$elm$html$Html$Events$onClick($author$project$Types$ToggleSeedsPanel),
 								$elm$html$Html$Attributes$title('Collapse panel')
 							]),
@@ -9568,35 +10871,41 @@ var $author$project$View$SeedsPanel$viewSeedsPanel = function (model) {
 					]),
 				A2(
 					$elm$core$List$map,
-					$author$project$View$SeedsPanel$viewSeedCard(model.j),
+					$author$project$View$SeedsPanel$viewSeedCard(model.k),
 					$author$project$Seeds$allSeeds))
 			])) : A2(
 		$elm$html$Html$div,
 		_List_fromArray(
 			[
-				$elm$html$Html$Attributes$class('w-8 shrink-0 flex flex-col items-center bg-gray-900 border-r border-gray-700 cursor-pointer hover:bg-gray-800'),
+				$elm$html$Html$Attributes$class(
+				$author$project$View$SeedsPanel$mobileVis(model) + ' flex-col items-center gap-2 w-full md:flex md:w-8 shrink-0 bg-gray-900 border-r border-gray-700 cursor-pointer hover:bg-gray-800 pt-4'),
 				$elm$html$Html$Events$onClick($author$project$Types$ToggleSeedsPanel),
 				$elm$html$Html$Attributes$title('Expand seeds panel')
 			]),
 		_List_fromArray(
 			[
+				$author$project$View$Icons$seedsIcon('w-4 h-4 text-gray-500'),
 				A2(
 				$elm$html$Html$div,
 				_List_fromArray(
 					[
-						$elm$html$Html$Attributes$class('mt-4 text-gray-500 text-xs rotate-90 whitespace-nowrap select-none')
+						A2($elm$html$Html$Attributes$style, 'writing-mode', 'vertical-rl'),
+						$elm$html$Html$Attributes$class('text-gray-500 text-xs whitespace-nowrap select-none')
 					]),
 				_List_fromArray(
 					[
 						$elm$html$Html$text(
 						'SEEDS (' + ($elm$core$String$fromInt(
-							$elm$core$List$length(model.j)) + ')'))
+							$elm$core$List$length(model.k)) + ')'))
 					]))
 			]));
 };
 var $author$project$Types$ToggleSummaryPanel = {$: 16};
+var $author$project$View$SummaryPanel$mobileVis = function (model) {
+	return (model.aF === 2) ? 'flex' : 'hidden';
+};
 var $author$project$Types$CopySpellSummary = {$: 18};
-var $author$project$Types$PlainTextExport = 1;
+var $author$project$Types$MarkdownExport = 0;
 var $author$project$Types$SetExportFormat = function (a) {
 	return {$: 17, a: a};
 };
@@ -9607,7 +10916,7 @@ var $author$project$View$SummaryPanel$formatButton = F3(
 			_List_fromArray(
 				[
 					$elm$html$Html$Attributes$class(
-					'flex-1 py-1.5 text-xs font-semibold ' + (_Utils_eq(model.aa, fmt) ? 'bg-arcane-500 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700')),
+					'flex-1 py-1.5 text-xs font-semibold ' + (_Utils_eq(model.ai, fmt) ? 'bg-gray-600 text-gray-100' : 'bg-gray-800 text-gray-400 hover:bg-gray-700')),
 					$elm$html$Html$Events$onClick(
 					$author$project$Types$SetExportFormat(fmt))
 				]),
@@ -9633,8 +10942,8 @@ var $author$project$View$SummaryPanel$viewCopyFooter = function (model) {
 					]),
 				_List_fromArray(
 					[
-						A3($author$project$View$SummaryPanel$formatButton, model, 0, 'Markdown'),
-						A3($author$project$View$SummaryPanel$formatButton, model, 1, 'Plain Text')
+						A3($author$project$View$SummaryPanel$formatButton, model, 1, 'Plain Text'),
+						A3($author$project$View$SummaryPanel$formatButton, model, 0, 'Markdown')
 					])),
 				A2(
 				$elm$html$Html$button,
@@ -9648,9 +10957,10 @@ var $author$project$View$SummaryPanel$viewCopyFooter = function (model) {
 						$elm$html$Html$text('Copy Spell Summary')
 					])),
 				function () {
-				var _v0 = model.X;
-				if (!_v0.$) {
-					if (_v0.a) {
+				var _v0 = _Utils_Tuple2(model.an, model.X);
+				if (((!_v0.a.$) && (!_v0.a.a)) && (!_v0.b.$)) {
+					if (_v0.b.a) {
+						var _v1 = _v0.a.a;
 						return A2(
 							$elm$html$Html$div,
 							_List_fromArray(
@@ -9662,6 +10972,7 @@ var $author$project$View$SummaryPanel$viewCopyFooter = function (model) {
 									$elm$html$Html$text('Copied to clipboard!')
 								]));
 					} else {
+						var _v2 = _v0.a.a;
 						return A2(
 							$elm$html$Html$div,
 							_List_fromArray(
@@ -9741,32 +11052,32 @@ var $author$project$View$SummaryPanel$viewDcBreakdown = function (bd) {
 						A3(
 						$author$project$View$SummaryPanel$viewBreakdownRow,
 						'Seeds',
-						$author$project$View$SummaryPanel$showSign(bd.br),
+						$author$project$View$SummaryPanel$showSign(bd.bD),
 						'text-gray-300'),
 						A3(
 						$author$project$View$SummaryPanel$viewBreakdownRow,
 						'Seed factors',
-						$author$project$View$SummaryPanel$showSign(bd.bq),
+						$author$project$View$SummaryPanel$showSign(bd.bC),
 						'text-gray-300'),
 						A3(
 						$author$project$View$SummaryPanel$viewBreakdownRow,
 						'Augmenting',
-						$author$project$View$SummaryPanel$showSign(bd.a$),
+						$author$project$View$SummaryPanel$showSign(bd.bc),
 						'text-gray-300'),
-						(bd.bo > 1) ? A3(
+						(bd.bA > 1) ? A3(
 						$author$project$View$SummaryPanel$viewBreakdownRow,
 						'× Permanent',
-						'×' + $elm$core$String$fromInt(bd.bo),
+						'×' + $elm$core$String$fromInt(bd.bA),
 						'text-yellow-400') : $elm$html$Html$text(''),
-						(bd.bs > 1) ? A3(
+						(bd.bE > 1) ? A3(
 						$author$project$View$SummaryPanel$viewBreakdownRow,
 						'× Stone Tablet',
-						'×' + $elm$core$String$fromInt(bd.bs),
+						'×' + $elm$core$String$fromInt(bd.bE),
 						'text-yellow-400') : $elm$html$Html$text(''),
 						A3(
 						$author$project$View$SummaryPanel$viewBreakdownRow,
 						'Mitigating',
-						$author$project$View$SummaryPanel$showSign(bd.bi),
+						$author$project$View$SummaryPanel$showSign(bd.bu),
 						'text-green-400'),
 						A2(
 						$elm$html$Html$div,
@@ -9795,7 +11106,7 @@ var $author$project$View$SummaryPanel$viewDcBreakdown = function (bd) {
 								_List_fromArray(
 									[
 										$elm$html$Html$text(
-										$elm$core$String$fromInt(bd.a9))
+										$elm$core$String$fromInt(bd.bm))
 									]))
 							]))
 					]))
@@ -9870,15 +11181,15 @@ var $author$project$View$SummaryPanel$viewDevCosts = function (costs) {
 						A2(
 						$author$project$View$SummaryPanel$viewCostRow,
 						'Gold',
-						$author$project$View$SummaryPanel$formatNumber(costs.ba) + ' gp'),
+						$author$project$View$SummaryPanel$formatNumber(costs.bn) + ' gp'),
 						A2(
 						$author$project$View$SummaryPanel$viewCostRow,
 						'Time',
-						$elm$core$String$fromInt(costs.bu) + ' days'),
+						$elm$core$String$fromInt(costs.bG) + ' days'),
 						A2(
 						$author$project$View$SummaryPanel$viewCostRow,
 						'XP',
-						$author$project$View$SummaryPanel$formatNumber(costs.bA) + ' XP')
+						$author$project$View$SummaryPanel$formatNumber(costs.bM) + ' XP')
 					]))
 			]));
 };
@@ -9891,20 +11202,20 @@ var $author$project$View$SummaryPanel$viewGlobalFactorList = F3(
 					$elm$core$Maybe$map,
 					function (f) {
 						return _Utils_ap(
-							f.q,
+							f.r,
 							_Utils_ap(
-								(af.o > 1) ? (' ×' + $elm$core$String$fromInt(af.o)) : '',
-								(f.bh === 2) ? (' (×' + ($elm$core$String$fromInt(f.bk) + ')')) : (' (' + ($author$project$View$SummaryPanel$showSign(f.Y * af.o) + ')'))));
+								(af.p > 1) ? (' ×' + $elm$core$String$fromInt(af.p)) : '',
+								(f.bt === 2) ? (' (×' + ($elm$core$String$fromInt(f.bw) + ')')) : (' (' + ($author$project$View$SummaryPanel$showSign(f.af * af.p) + ')'))));
 					},
 					$elm$core$List$head(
 						A2(
 							$elm$core$List$filter,
 							function (f) {
-								return _Utils_eq(f.bd, af.d) && _Utils_eq(f.aw, category);
+								return _Utils_eq(f.aS, af.e) && _Utils_eq(f.aH, category);
 							},
 							$author$project$Factors$allFactors)));
 			},
-			model.k);
+			model.l);
 		return A2(
 			$elm$html$Html$div,
 			_List_Nil,
@@ -9962,7 +11273,7 @@ var $author$project$View$SummaryPanel$viewSeedFactorsBySeed = function (model) {
 				function (inst, _v1) {
 					var seenCounts = _v1.a;
 					var acc = _v1.b;
-					var _v2 = $author$project$Seeds$getSeed(inst.v);
+					var _v2 = $author$project$Seeds$getSeed(inst.x);
 					if (_v2.$ === 1) {
 						return _Utils_Tuple2(seenCounts, acc);
 					} else {
@@ -9970,12 +11281,12 @@ var $author$project$View$SummaryPanel$viewSeedFactorsBySeed = function (model) {
 						var priorCount = A2(
 							$elm$core$Maybe$withDefault,
 							0,
-							A2($elm$core$Dict$get, seed.q, seenCounts));
+							A2($elm$core$Dict$get, seed.r, seenCounts));
 						var overrideLines = function () {
-							var _v3 = inst.a1;
-							if (!_v3.$) {
-								var dc = _v3.a;
-								return (!_Utils_eq(dc, seed.a0)) ? _List_fromArray(
+							var _v5 = inst.be;
+							if (!_v5.$) {
+								var dc = _v5.a;
+								return (!_Utils_eq(dc, seed.bd)) ? _List_fromArray(
 									[
 										'Base DC override: ' + $elm$core$String$fromInt(dc)
 									]) : _List_Nil;
@@ -9983,24 +11294,42 @@ var $author$project$View$SummaryPanel$viewSeedFactorsBySeed = function (model) {
 								return _List_Nil;
 							}
 						}();
-						var label = (!priorCount) ? seed.q : (seed.q + (' (' + ($elm$core$String$fromInt(priorCount + 1) + ')')));
+						var label = (!priorCount) ? seed.r : (seed.r + (' (' + ($elm$core$String$fromInt(priorCount + 1) + ')')));
 						var choiceLines = A2(
 							$elm$core$List$map,
 							function (c) {
-								return c.L + (': ' + A2(
+								var selected = A2(
 									$elm$core$Maybe$withDefault,
-									c.a4,
-									A2($elm$core$Dict$get, c.bd, inst.ay)));
+									c.bh,
+									A2($elm$core$Dict$get, c.aS, inst.aJ));
+								var dcSuffix = A2(
+									$elm$core$Maybe$withDefault,
+									'',
+									A2(
+										$elm$core$Maybe$map,
+										function (_v4) {
+											var dc = _v4.b;
+											return ' (' + ($author$project$View$SummaryPanel$showSign(dc) + ' DC)');
+										},
+										$elm$core$List$head(
+											A2(
+												$elm$core$List$filter,
+												function (_v3) {
+													var opt = _v3.a;
+													return _Utils_eq(opt, selected);
+												},
+												c.aL))));
+								return c.Q + (': ' + (selected + dcSuffix));
 							},
-							seed.ay);
+							seed.aJ);
 						var availableFactors = _Utils_ap(
-							seed.bw,
+							seed.bI,
 							A2(
 								$elm$core$List$concatMap,
 								function ($) {
-									return $.a8;
+									return $.bl;
 								},
-								seed.bj));
+								seed.bv));
 						var factorLines = A2(
 							$elm$core$List$filterMap,
 							function (asf) {
@@ -10008,32 +11337,32 @@ var $author$project$View$SummaryPanel$viewSeedFactorsBySeed = function (model) {
 									$elm$core$Maybe$map,
 									function (sf) {
 										return _Utils_ap(
-											sf.q,
+											sf.r,
 											_Utils_ap(
-												(asf.o > 1) ? (' ×' + $elm$core$String$fromInt(asf.o)) : '',
-												(!sf.Y) ? ' (special)' : (' (' + ($author$project$View$SummaryPanel$showSign(sf.Y * asf.o) + ')'))));
+												(asf.p > 1) ? (' ×' + $elm$core$String$fromInt(asf.p)) : '',
+												$author$project$Seeds$isSpecialSeedFactor(sf.aS) ? ' (special)' : (' (' + ($author$project$View$SummaryPanel$showSign(sf.af * asf.p) + ')'))));
 									},
 									$elm$core$List$head(
 										A2(
 											$elm$core$List$filter,
 											function (sf) {
-												return _Utils_eq(sf.bd, asf.d);
+												return _Utils_eq(sf.aS, asf.e);
 											},
 											availableFactors)));
 							},
 							A2(
 								$elm$core$List$filter,
 								function (asf) {
-									return asf.o > 0;
+									return asf.p > 0;
 								},
-								inst.T));
+								inst.ab));
 						var lines = _Utils_ap(
 							choiceLines,
 							_Utils_ap(overrideLines, factorLines));
 						return $elm$core$List$isEmpty(lines) ? _Utils_Tuple2(
-							A3($elm$core$Dict$insert, seed.q, priorCount + 1, seenCounts),
+							A3($elm$core$Dict$insert, seed.r, priorCount + 1, seenCounts),
 							acc) : _Utils_Tuple2(
-							A3($elm$core$Dict$insert, seed.q, priorCount + 1, seenCounts),
+							A3($elm$core$Dict$insert, seed.r, priorCount + 1, seenCounts),
 							_Utils_ap(
 								acc,
 								_List_fromArray(
@@ -10043,7 +11372,7 @@ var $author$project$View$SummaryPanel$viewSeedFactorsBySeed = function (model) {
 					}
 				}),
 			_Utils_Tuple2($elm$core$Dict$empty, _List_Nil),
-			model.j).b);
+			model.k).b);
 	return A2(
 		$elm$html$Html$div,
 		_List_Nil,
@@ -10121,31 +11450,31 @@ var $author$project$View$SummaryPanel$viewSeedFactorsBySeed = function (model) {
 			]));
 };
 var $author$project$View$SummaryPanel$resolvePrimaryInstanceId = function (model) {
-	var _v0 = model.t;
+	var _v0 = model.u;
 	if (!_v0.$) {
 		var pid = _v0.a;
 		return A2(
 			$elm$core$List$any,
 			function (i) {
-				return _Utils_eq(i.bg, pid);
+				return _Utils_eq(i.bs, pid);
 			},
-			model.j) ? $elm$core$Maybe$Just(pid) : A2(
+			model.k) ? $elm$core$Maybe$Just(pid) : A2(
 			$elm$core$Maybe$map,
 			function ($) {
-				return $.bg;
+				return $.bs;
 			},
-			$elm$core$List$head(model.j));
+			$elm$core$List$head(model.k));
 	} else {
 		return A2(
 			$elm$core$Maybe$map,
 			function ($) {
-				return $.bg;
+				return $.bs;
 			},
-			$elm$core$List$head(model.j));
+			$elm$core$List$head(model.k));
 	}
 };
 var $author$project$View$SummaryPanel$viewSeedsUsed = function (model) {
-	var showPrimaryTag = $elm$core$List$length(model.j) > 1;
+	var showPrimaryTag = $elm$core$List$length(model.k) > 1;
 	var primaryId = $author$project$View$SummaryPanel$resolvePrimaryInstanceId(model);
 	var names = A2(
 		$elm$core$List$filterMap,
@@ -10153,14 +11482,14 @@ var $author$project$View$SummaryPanel$viewSeedsUsed = function (model) {
 			return A2(
 				$elm$core$Maybe$map,
 				function (s) {
-					return s.q + (' (' + ($elm$core$String$fromInt(
-						A2($elm$core$Maybe$withDefault, s.a0, inst.a1)) + (')' + ((showPrimaryTag && _Utils_eq(
+					return s.r + (' (' + ($elm$core$String$fromInt(
+						A2($elm$core$Maybe$withDefault, s.bd, inst.be)) + (')' + ((showPrimaryTag && _Utils_eq(
 						primaryId,
-						$elm$core$Maybe$Just(inst.bg))) ? ' [Primary]' : ''))));
+						$elm$core$Maybe$Just(inst.bs))) ? ' [Primary]' : ''))));
 				},
-				$author$project$Seeds$getSeed(inst.v));
+				$author$project$Seeds$getSeed(inst.x));
 		},
-		model.j);
+		model.k);
 	return A2(
 		$elm$html$Html$div,
 		_List_Nil,
@@ -10189,17 +11518,184 @@ var $author$project$View$SummaryPanel$viewSeedsUsed = function (model) {
 					]))
 			]));
 };
-var $author$project$View$SummaryPanel$viewSpellName = function (model) {
+var $author$project$Types$CopyShareLink = {$: 21};
+var $author$project$Types$SetSpellName = function (a) {
+	return {$: 0, a: a};
+};
+var $author$project$Types$ToggleRenameSpell = {$: 20};
+var $elm$html$Html$Attributes$autofocus = $elm$html$Html$Attributes$boolProperty('autofocus');
+var $elm$html$Html$Events$onBlur = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'blur',
+		$elm$json$Json$Decode$succeed(msg));
+};
+var $elm$json$Json$Decode$fail = _Json_fail;
+var $author$project$View$SummaryPanel$onEnter = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'keydown',
+		A2(
+			$elm$json$Json$Decode$andThen,
+			function (key) {
+				return (key === 'Enter') ? $elm$json$Json$Decode$succeed(msg) : $elm$json$Json$Decode$fail('not Enter');
+			},
+			A2($elm$json$Json$Decode$field, 'key', $elm$json$Json$Decode$string)));
+};
+var $author$project$View$Icons$shareIcon = function (cls) {
+	return A2(
+		$elm$svg$Svg$svg,
+		$author$project$View$Icons$baseAttrs(cls),
+		_List_fromArray(
+			[
+				A2(
+				$elm$svg$Svg$circle,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$cx('18'),
+						$elm$svg$Svg$Attributes$cy('5'),
+						$elm$svg$Svg$Attributes$r('2.5'),
+						$elm$svg$Svg$Attributes$fill('currentColor'),
+						$elm$svg$Svg$Attributes$stroke('none')
+					]),
+				_List_Nil),
+				A2(
+				$elm$svg$Svg$circle,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$cx('6'),
+						$elm$svg$Svg$Attributes$cy('12'),
+						$elm$svg$Svg$Attributes$r('2.5'),
+						$elm$svg$Svg$Attributes$fill('currentColor'),
+						$elm$svg$Svg$Attributes$stroke('none')
+					]),
+				_List_Nil),
+				A2(
+				$elm$svg$Svg$circle,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$cx('18'),
+						$elm$svg$Svg$Attributes$cy('19'),
+						$elm$svg$Svg$Attributes$r('2.5'),
+						$elm$svg$Svg$Attributes$fill('currentColor'),
+						$elm$svg$Svg$Attributes$stroke('none')
+					]),
+				_List_Nil),
+				A2(
+				$elm$svg$Svg$line,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$x1('8.2'),
+						$elm$svg$Svg$Attributes$y1('10.8'),
+						$elm$svg$Svg$Attributes$x2('15.8'),
+						$elm$svg$Svg$Attributes$y2('6.2')
+					]),
+				_List_Nil),
+				A2(
+				$elm$svg$Svg$line,
+				_List_fromArray(
+					[
+						$elm$svg$Svg$Attributes$x1('8.2'),
+						$elm$svg$Svg$Attributes$y1('13.2'),
+						$elm$svg$Svg$Attributes$x2('15.8'),
+						$elm$svg$Svg$Attributes$y2('17.8')
+					]),
+				_List_Nil)
+			]));
+};
+var $author$project$View$SummaryPanel$viewSpellNameSection = function (model) {
 	return A2(
 		$elm$html$Html$div,
+		_List_Nil,
 		_List_fromArray(
 			[
-				$elm$html$Html$Attributes$class('text-sm font-semibold text-gray-200 truncate')
-			]),
-		_List_fromArray(
-			[
-				$elm$html$Html$text(
-				$elm$core$String$isEmpty(model.ap) ? 'Unnamed Spell' : model.ap)
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('flex items-start justify-between gap-2')
+					]),
+				_List_fromArray(
+					[
+						model.aq ? A2(
+						$elm$html$Html$input,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('flex-1 min-w-0 bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm font-semibold text-gray-100 outline-none focus:border-arcane-400'),
+								$elm$html$Html$Attributes$value(model.az),
+								$elm$html$Html$Events$onInput($author$project$Types$SetSpellName),
+								$elm$html$Html$Events$onBlur($author$project$Types$ToggleRenameSpell),
+								$author$project$View$SummaryPanel$onEnter($author$project$Types$ToggleRenameSpell),
+								$elm$html$Html$Attributes$autofocus(true)
+							]),
+						_List_Nil) : A2(
+						$elm$html$Html$span,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('flex-1 min-w-0 text-sm font-semibold text-gray-200 break-words')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text(
+								$elm$core$String$isEmpty(model.az) ? 'Unnamed Spell' : model.az)
+							])),
+						A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('shrink-0 text-arcane-400 opacity-60 hover:opacity-100'),
+								$elm$html$Html$Events$onClick($author$project$Types$CopyShareLink),
+								$elm$html$Html$Attributes$title('Copy shareable link')
+							]),
+						_List_fromArray(
+							[
+								$author$project$View$Icons$shareIcon('w-4 h-4')
+							]))
+					])),
+				A2(
+				$elm$html$Html$button,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('mt-1 text-xs text-gray-500 hover:text-gray-300 underline'),
+						$elm$html$Html$Events$onClick($author$project$Types$ToggleRenameSpell)
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						model.aq ? 'Finish renaming' : 'Rename this spell')
+					])),
+				function () {
+				var _v0 = _Utils_Tuple2(model.an, model.X);
+				if (((!_v0.a.$) && (_v0.a.a === 1)) && (!_v0.b.$)) {
+					if (_v0.b.a) {
+						var _v1 = _v0.a.a;
+						return A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('text-green-400 text-xs mt-1')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Link copied!')
+								]));
+					} else {
+						var _v2 = _v0.a.a;
+						return A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('text-red-400 text-xs mt-1')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Copy failed — check browser permissions.')
+								]));
+					}
+				} else {
+					return $elm$html$Html$text('');
+				}
+			}()
 			]));
 };
 var $author$project$Types$SetSavingThrow = function (a) {
@@ -10208,11 +11704,6 @@ var $author$project$Types$SetSavingThrow = function (a) {
 var $author$project$Types$SetSchool = function (a) {
 	return {$: 9, a: a};
 };
-var $elm$core$Basics$composeL = F3(
-	function (g, f, x) {
-		return g(
-			f(x));
-	});
 var $elm$core$List$all = F2(
 	function (isOkay, list) {
 		return !A2(
@@ -10232,7 +11723,7 @@ var $author$project$View$SummaryPanel$saveTypeLabel = function (st) {
 };
 var $author$project$View$SummaryPanel$viewStatBlock = F3(
 	function (model, breakdown, sb) {
-		var schools = $author$project$Calc$availableSchools(model.j);
+		var schools = $author$project$Calc$availableSchools(model.k);
 		var rowEl = F2(
 			function (label, el) {
 				return A2(
@@ -10288,7 +11779,7 @@ var $author$project$View$SummaryPanel$viewStatBlock = F3(
 								]))
 						]));
 			});
-		var descriptorStr = $elm$core$List$isEmpty(sb.Z) ? '' : (' [' + (A2($elm$core$String$join, ', ', sb.Z) + ']'));
+		var descriptorStr = $elm$core$List$isEmpty(sb.ag) ? '' : (' [' + (A2($elm$core$String$join, ', ', sb.ag) + ']'));
 		var schoolEl = function () {
 			if (!schools.b) {
 				return A2(
@@ -10319,7 +11810,7 @@ var $author$project$View$SummaryPanel$viewStatBlock = F3(
 									[
 										$elm$html$Html$text(single)
 									])),
-								$elm$core$List$isEmpty(sb.Z) ? $elm$html$Html$text('') : A2(
+								$elm$core$List$isEmpty(sb.ag) ? $elm$html$Html$text('') : A2(
 								$elm$html$Html$div,
 								_List_fromArray(
 									[
@@ -10337,7 +11828,7 @@ var $author$project$View$SummaryPanel$viewStatBlock = F3(
 							$elm$core$Maybe$withDefault,
 							'',
 							$elm$core$List$head(schools)),
-						model.an);
+						model.ax);
 					return A2(
 						$elm$html$Html$div,
 						_List_Nil,
@@ -10367,7 +11858,7 @@ var $author$project$View$SummaryPanel$viewStatBlock = F3(
 												]));
 									},
 									schools)),
-								$elm$core$List$isEmpty(sb.Z) ? $elm$html$Html$text('') : A2(
+								$elm$core$List$isEmpty(sb.ag) ? $elm$html$Html$text('') : A2(
 								$elm$html$Html$div,
 								_List_fromArray(
 									[
@@ -10381,7 +11872,7 @@ var $author$project$View$SummaryPanel$viewStatBlock = F3(
 				}
 			}
 		}();
-		var availableSaves = $author$project$Calc$availableSavingThrows(model.j);
+		var availableSaves = $author$project$Calc$availableSavingThrows(model.k);
 		var savingThrowEl = function () {
 			if (!availableSaves.b) {
 				return A2(
@@ -10404,19 +11895,19 @@ var $author$project$View$SummaryPanel$viewStatBlock = F3(
 							]),
 						_List_fromArray(
 							[
-								$elm$html$Html$text(sb.aj)
+								$elm$html$Html$text(sb.as)
 							]));
 				} else {
 					var harmlessStr = A2(
 						$elm$core$List$all,
 						function ($) {
-							return $.bb;
+							return $.bo;
 						},
 						availableSaves) ? ' (harmless)' : '';
 					var effects = A2(
 						$elm$core$List$map,
 						function ($) {
-							return $.S;
+							return $.Y;
 						},
 						availableSaves);
 					var effectStr = function () {
@@ -10456,7 +11947,7 @@ var $author$project$View$SummaryPanel$viewStatBlock = F3(
 								A2(
 									$elm$core$Basics$composeR,
 									function ($) {
-										return $.ai;
+										return $.ar;
 									},
 									$author$project$View$SummaryPanel$saveTypeLabel),
 								$elm$core$List$head(availableSaves))),
@@ -10465,10 +11956,10 @@ var $author$project$View$SummaryPanel$viewStatBlock = F3(
 							A2(
 								$elm$core$Basics$composeR,
 								function ($) {
-									return $.ai;
+									return $.ar;
 								},
 								$author$project$View$SummaryPanel$saveTypeLabel),
-							model.am));
+							model.aw));
 					return A2(
 						$elm$html$Html$div,
 						_List_fromArray(
@@ -10490,7 +11981,7 @@ var $author$project$View$SummaryPanel$viewStatBlock = F3(
 														$elm$core$List$filter,
 														function (st) {
 															return _Utils_eq(
-																$author$project$View$SummaryPanel$saveTypeLabel(st.ai),
+																$author$project$View$SummaryPanel$saveTypeLabel(st.ar),
 																typeStr);
 														},
 														availableSaves)));
@@ -10500,7 +11991,7 @@ var $author$project$View$SummaryPanel$viewStatBlock = F3(
 								A2(
 									$elm$core$List$map,
 									function (st) {
-										var label = $author$project$View$SummaryPanel$saveTypeLabel(st.ai);
+										var label = $author$project$View$SummaryPanel$saveTypeLabel(st.ar);
 										return A2(
 											$elm$html$Html$option,
 											_List_fromArray(
@@ -10561,13 +12052,13 @@ var $author$project$View$SummaryPanel$viewStatBlock = F3(
 								A2(
 								row,
 								'Spellcraft DC',
-								$elm$core$String$fromInt(breakdown.a9)),
+								$elm$core$String$fromInt(breakdown.bm)),
 								A2(
 								row,
 								'Components',
-								A2($elm$core$String$join, ', ', sb.W)),
-								A2(row, 'Casting Time', sb.V),
-								A2(row, 'Range', sb.ah)
+								A2($elm$core$String$join, ', ', sb.ae)),
+								A2(row, 'Casting Time', sb.ad),
+								A2(row, 'Range', sb.ap)
 							]),
 						_Utils_ap(
 							A2(
@@ -10578,31 +12069,32 @@ var $author$project$View$SummaryPanel$viewStatBlock = F3(
 										A2(
 										$elm$core$Maybe$map,
 										row('Target'),
-										sb.au),
+										sb.aE),
 										A2(
 										$elm$core$Maybe$map,
 										row('Area'),
-										sb.U),
+										sb.ac),
 										A2(
 										$elm$core$Maybe$map,
 										row('Effect'),
-										sb.S)
+										sb.Y)
 									])),
 							_List_fromArray(
 								[
-									A2(row, 'Duration', sb._),
+									A2(row, 'Duration', sb.ah),
 									A2(rowEl, 'Saving Throw', savingThrowEl),
-									A2(row, 'Spell Resistance', sb.aq)
+									A2(row, 'Spell Resistance', sb.aA)
 								]))))
 				]));
 	});
 var $author$project$View$SummaryPanel$viewSummaryPanel = F4(
 	function (model, breakdown, costs, sb) {
-		return model.at ? A2(
+		return model.aD ? A2(
 			$elm$html$Html$div,
 			_List_fromArray(
 				[
-					$elm$html$Html$Attributes$class('w-96 shrink-0 flex flex-col bg-gray-900 overflow-hidden')
+					$elm$html$Html$Attributes$class(
+					$author$project$View$SummaryPanel$mobileVis(model) + ' flex-col w-full md:flex md:w-96 shrink-0 bg-gray-900 overflow-hidden')
 				]),
 			_List_fromArray(
 				[
@@ -10618,17 +12110,18 @@ var $author$project$View$SummaryPanel$viewSummaryPanel = F4(
 							$elm$html$Html$span,
 							_List_fromArray(
 								[
-									$elm$html$Html$Attributes$class('text-xs font-bold uppercase tracking-widest text-gray-400')
+									$elm$html$Html$Attributes$class('flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-gray-400')
 								]),
 							_List_fromArray(
 								[
+									$author$project$View$Icons$summaryIcon('w-3.5 h-3.5'),
 									$elm$html$Html$text('Summary')
 								])),
 							A2(
 							$elm$html$Html$button,
 							_List_fromArray(
 								[
-									$elm$html$Html$Attributes$class('text-gray-500 hover:text-gray-300 text-lg'),
+									$elm$html$Html$Attributes$class('hidden md:inline-block text-gray-500 hover:text-gray-300 text-lg'),
 									$elm$html$Html$Events$onClick($author$project$Types$ToggleSummaryPanel),
 									$elm$html$Html$Attributes$title('Collapse panel')
 								]),
@@ -10645,7 +12138,7 @@ var $author$project$View$SummaryPanel$viewSummaryPanel = F4(
 						]),
 					_List_fromArray(
 						[
-							$author$project$View$SummaryPanel$viewSpellName(model),
+							$author$project$View$SummaryPanel$viewSpellNameSection(model),
 							A3($author$project$View$SummaryPanel$viewStatBlock, model, breakdown, sb),
 							$author$project$View$SummaryPanel$viewSeedsUsed(model),
 							$author$project$View$SummaryPanel$viewDcBreakdown(breakdown),
@@ -10659,17 +12152,20 @@ var $author$project$View$SummaryPanel$viewSummaryPanel = F4(
 			$elm$html$Html$div,
 			_List_fromArray(
 				[
-					$elm$html$Html$Attributes$class('w-8 shrink-0 flex flex-col items-center bg-gray-900 cursor-pointer hover:bg-gray-800'),
+					$elm$html$Html$Attributes$class(
+					$author$project$View$SummaryPanel$mobileVis(model) + ' flex-col items-center gap-2 w-full md:flex md:w-8 shrink-0 bg-gray-900 cursor-pointer hover:bg-gray-800 pt-4'),
 					$elm$html$Html$Events$onClick($author$project$Types$ToggleSummaryPanel),
 					$elm$html$Html$Attributes$title('Expand summary panel')
 				]),
 			_List_fromArray(
 				[
+					$author$project$View$Icons$summaryIcon('w-4 h-4 text-gray-500'),
 					A2(
 					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$class('mt-4 text-gray-500 text-xs rotate-90 whitespace-nowrap select-none')
+							A2($elm$html$Html$Attributes$style, 'writing-mode', 'vertical-rl'),
+							$elm$html$Html$Attributes$class('text-gray-500 text-xs whitespace-nowrap select-none')
 						]),
 					_List_fromArray(
 						[
@@ -10678,9 +12174,9 @@ var $author$project$View$SummaryPanel$viewSummaryPanel = F4(
 				]));
 	});
 var $author$project$Main$view = function (model) {
-	var sb = A8($author$project$Calc$statBlock, model.j, model.k, 0, model.t, model.an, model.am, model.I, model.G);
-	var breakdown = A2($author$project$Calc$calculateBreakdown, model.j, model.k);
-	var costs = $author$project$Calc$devCosts(breakdown.a9);
+	var sb = A8($author$project$Calc$statBlock, model.k, model.l, 0, model.u, model.ax, model.aw, model.K, model.I);
+	var breakdown = A2($author$project$Calc$calculateBreakdown, model.k, model.l);
+	var costs = $author$project$Calc$devCosts(breakdown.bm);
 	return A2(
 		$elm$html$Html$div,
 		_List_fromArray(
@@ -10689,31 +12185,48 @@ var $author$project$Main$view = function (model) {
 			]),
 		_List_fromArray(
 			[
-				A2($author$project$View$Header$viewHeader, model, breakdown),
+				$author$project$View$Header$viewHeader(model),
 				A2(
 				$elm$html$Html$div,
 				_List_fromArray(
 					[
-						$elm$html$Html$Attributes$class('flex flex-1 overflow-hidden')
+						$elm$html$Html$Attributes$class('flex flex-1 overflow-hidden pb-14 md:pb-0')
 					]),
 				_List_fromArray(
 					[
 						$author$project$View$SeedsPanel$viewSeedsPanel(model),
 						A2($author$project$View$FactorsPanel$viewFactorsPanel, model, breakdown),
 						A4($author$project$View$SummaryPanel$viewSummaryPanel, model, breakdown, costs, sb)
-					]))
+					])),
+				$author$project$View$MobileNav$viewMobileNav(model),
+				model.Z ? $author$project$View$HelpModal$viewHelpModal : $elm$html$Html$text(''),
+				model.O ? $author$project$View$ImportLinkModal$viewImportLinkModal(model) : $elm$html$Html$text('')
 			]));
 };
 var $author$project$Main$main = $elm$browser$Browser$element(
 	{
-		bf: function (_v0) {
-			return _Utils_Tuple2($author$project$Main$init, $elm$core$Platform$Cmd$none);
-		},
-		bt: function (_v1) {
+		br: $author$project$Main$init,
+		bF: function (_v0) {
 			return $author$project$Main$copyResult($author$project$Types$CopyResult);
 		},
-		bx: $author$project$Main$update,
-		by: $author$project$Main$view
+		bJ: $author$project$Main$update,
+		bK: $author$project$Main$view
 	});
 _Platform_export({'Main':{'init':$author$project$Main$main(
-	$elm$json$Json$Decode$succeed(0))(0)}});}(this));
+	A2(
+		$elm$json$Json$Decode$andThen,
+		function (search) {
+			return A2(
+				$elm$json$Json$Decode$andThen,
+				function (isStandalone) {
+					return A2(
+						$elm$json$Json$Decode$andThen,
+						function (baseUrl) {
+							return $elm$json$Json$Decode$succeed(
+								{v: baseUrl, P: isStandalone, au: search});
+						},
+						A2($elm$json$Json$Decode$field, 'baseUrl', $elm$json$Json$Decode$string));
+				},
+				A2($elm$json$Json$Decode$field, 'isStandalone', $elm$json$Json$Decode$bool));
+		},
+		A2($elm$json$Json$Decode$field, 'search', $elm$json$Json$Decode$string)))(0)}});}(this));
