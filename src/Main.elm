@@ -10,6 +10,8 @@ import Types exposing (..)
 import UrlState
 import View.FactorsPanel exposing (viewFactorsPanel)
 import View.Header exposing (viewHeader)
+import View.HelpModal exposing (viewHelpModal)
+import View.MobileNav exposing (viewMobileNav)
 import View.SeedsPanel exposing (viewSeedsPanel)
 import View.SummaryPanel exposing (viewSummaryPanel)
 
@@ -66,8 +68,12 @@ defaultModel =
     , factorsPanelOpen = True
     , summaryPanelOpen = True
     , copySuccess = Nothing
-    , exportFormat = MarkdownExport
+    , pendingCopy = Nothing
+    , exportFormat = PlainTextExport
     , baseUrl = ""
+    , renamingSpell = False
+    , helpModalOpen = False
+    , activeMobileTab = SeedsTab
     }
 
 
@@ -93,7 +99,14 @@ update msg model =
         ( newModel, cmd ) =
             updateInner msg model
     in
-    ( newModel, Cmd.batch [ cmd, pushUrl (UrlState.encode newModel) ] )
+    case msg of
+        SetSpellName _ ->
+            -- Skip the URL sync while the name is actively being typed;
+            -- ToggleRenameSpell (fired on blur) pushes it once editing ends.
+            ( newModel, cmd )
+
+        _ ->
+            ( newModel, Cmd.batch [ cmd, pushUrl (UrlState.encode newModel) ] )
 
 
 updateInner : Msg -> Model -> ( Model, Cmd Msg )
@@ -307,10 +320,24 @@ updateInner msg model =
                         model.targetToAreaShape
                         model.personalToAreaShape
             in
-            ( { model | copySuccess = Nothing }, copyToClipboard output )
+            ( { model | copySuccess = Nothing, pendingCopy = Just SummaryCopyTarget }, copyToClipboard output )
 
         CopyResult success ->
             ( { model | copySuccess = Just success }, Cmd.none )
+
+        ToggleRenameSpell ->
+            ( { model | renamingSpell = not model.renamingSpell }, Cmd.none )
+
+        CopyShareLink ->
+            ( { model | copySuccess = Nothing, pendingCopy = Just ShareCopyTarget }
+            , copyToClipboard (model.baseUrl ++ UrlState.encode model)
+            )
+
+        ToggleHelpModal ->
+            ( { model | helpModalOpen = not model.helpModalOpen }, Cmd.none )
+
+        SetMobileTab tab ->
+            ( { model | activeMobileTab = tab }, Cmd.none )
 
 
 
@@ -330,10 +357,16 @@ view model =
             statBlock model.seedInstances model.appliedFactors 0 model.primarySeedInstanceId model.selectedSchool model.selectedSavingThrow model.targetToAreaShape model.personalToAreaShape
     in
     div [ class "flex flex-col h-screen bg-gray-950 text-gray-100 overflow-hidden" ]
-        [ viewHeader model breakdown
-        , div [ class "flex flex-1 overflow-hidden" ]
+        [ viewHeader model
+        , div [ class "flex flex-1 overflow-hidden pb-14 md:pb-0" ]
             [ viewSeedsPanel model
             , viewFactorsPanel model breakdown
             , viewSummaryPanel model breakdown costs sb
             ]
+        , viewMobileNav model
+        , if model.helpModalOpen then
+            viewHelpModal
+
+          else
+            text ""
         ]

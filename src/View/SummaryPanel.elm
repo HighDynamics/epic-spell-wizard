@@ -5,27 +5,39 @@ import Dict
 import Factors exposing (allFactors)
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onClick, onInput)
+import Html.Events exposing (on, onBlur, onClick, onInput)
+import Json.Decode as Decode
 import Seeds exposing (getSeed, isSpecialSeedFactor)
 import Types exposing (..)
+import View.Icons exposing (shareIcon, summaryIcon)
+
+
+mobileVis : Model -> String
+mobileVis model =
+    if model.activeMobileTab == SummaryTab then
+        "flex"
+
+    else
+        "hidden"
 
 
 viewSummaryPanel : Model -> DcBreakdown -> DevCosts -> StatBlockData -> Html Msg
 viewSummaryPanel model breakdown costs sb =
     if model.summaryPanelOpen then
-        div [ class "w-96 shrink-0 flex flex-col bg-gray-900 overflow-hidden" ]
+        div [ class (mobileVis model ++ " flex-col w-full md:flex md:w-96 shrink-0 bg-gray-900 overflow-hidden") ]
             [ -- Panel header
               div [ class "flex items-center justify-between px-4 py-3 border-b border-gray-700 shrink-0" ]
-                [ span [ class "text-xs font-bold uppercase tracking-widest text-gray-400" ] [ text "Summary" ]
+                [ span [ class "flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-gray-400" ]
+                    [ summaryIcon "w-3.5 h-3.5", text "Summary" ]
                 , button
-                    [ class "text-gray-500 hover:text-gray-300 text-lg"
+                    [ class "hidden md:inline-block text-gray-500 hover:text-gray-300 text-lg"
                     , onClick ToggleSummaryPanel
                     , title "Collapse panel"
                     ]
                     [ text "▶" ]
                 ]
             , div [ class "flex-1 overflow-y-auto p-4 space-y-5" ]
-                [ viewSpellName model
+                [ viewSpellNameSection model
                 , viewStatBlock model breakdown sb
                 , viewSeedsUsed model
                 , viewDcBreakdown breakdown
@@ -39,19 +51,66 @@ viewSummaryPanel model breakdown costs sb =
 
     else
         div
-            [ class "w-8 shrink-0 flex flex-col items-center bg-gray-900 cursor-pointer hover:bg-gray-800"
+            [ class (mobileVis model ++ " flex-col items-center gap-2 w-full md:flex md:w-8 shrink-0 bg-gray-900 cursor-pointer hover:bg-gray-800 pt-4")
             , onClick ToggleSummaryPanel
             , title "Expand summary panel"
             ]
-            [ div [ class "mt-4 text-gray-500 text-xs rotate-90 whitespace-nowrap select-none" ]
+            [ summaryIcon "w-4 h-4 text-gray-500"
+            , div
+                [ style "writing-mode" "vertical-rl"
+                , class "text-gray-500 text-xs whitespace-nowrap select-none"
+                ]
                 [ text "SUMMARY" ]
             ]
 
 
-viewSpellName : Model -> Html Msg
-viewSpellName model =
-    div [ class "text-sm font-semibold text-gray-200 truncate" ]
-        [ text (if String.isEmpty model.spellName then "Unnamed Spell" else model.spellName) ]
+viewSpellNameSection : Model -> Html Msg
+viewSpellNameSection model =
+    div []
+        [ div [ class "flex items-start justify-between gap-2" ]
+            [ if model.renamingSpell then
+                input
+                    [ class "flex-1 min-w-0 bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm font-semibold text-gray-100 outline-none focus:border-arcane-400"
+                    , value model.spellName
+                    , onInput SetSpellName
+                    , onBlur ToggleRenameSpell
+                    , onEnter ToggleRenameSpell
+                    , autofocus True
+                    ]
+                    []
+
+              else
+                span [ class "flex-1 min-w-0 text-sm font-semibold text-gray-200 break-words" ]
+                    [ text (if String.isEmpty model.spellName then "Unnamed Spell" else model.spellName) ]
+            , button
+                [ class "shrink-0 text-arcane-400 opacity-60 hover:opacity-100"
+                , onClick CopyShareLink
+                , title "Copy shareable link"
+                ]
+                [ shareIcon "w-4 h-4" ]
+            ]
+        , button
+            [ class "mt-1 text-xs text-gray-500 hover:text-gray-300 underline"
+            , onClick ToggleRenameSpell
+            ]
+            [ text
+                (if model.renamingSpell then
+                    "Finish renaming"
+
+                 else
+                    "Rename this spell"
+                )
+            ]
+        , case ( model.pendingCopy, model.copySuccess ) of
+            ( Just ShareCopyTarget, Just True ) ->
+                div [ class "text-green-400 text-xs mt-1" ] [ text "Link copied!" ]
+
+            ( Just ShareCopyTarget, Just False ) ->
+                div [ class "text-red-400 text-xs mt-1" ] [ text "Copy failed — check browser permissions." ]
+
+            _ ->
+                text ""
+        ]
 
 
 resolvePrimaryInstanceId : Model -> Maybe SeedInstanceId
@@ -518,24 +577,39 @@ viewCopyFooter : Model -> Html Msg
 viewCopyFooter model =
     div [ class "shrink-0 border-t border-gray-700 bg-gray-900 p-4 space-y-2" ]
         [ div [ class "flex rounded overflow-hidden border border-gray-700" ]
-            [ formatButton model MarkdownExport "Markdown"
-            , formatButton model PlainTextExport "Plain Text"
+            [ formatButton model PlainTextExport "Plain Text"
+            , formatButton model MarkdownExport "Markdown"
             ]
         , button
             [ class "w-full py-2 rounded bg-arcane-500 hover:bg-arcane-400 text-white text-sm font-semibold"
             , onClick CopySpellSummary
             ]
             [ text "Copy Spell Summary" ]
-        , case model.copySuccess of
-            Just True ->
+        , case ( model.pendingCopy, model.copySuccess ) of
+            ( Just SummaryCopyTarget, Just True ) ->
                 div [ class "text-green-400 text-xs text-center" ] [ text "Copied to clipboard!" ]
 
-            Just False ->
+            ( Just SummaryCopyTarget, Just False ) ->
                 div [ class "text-red-400 text-xs text-center" ] [ text "Copy failed — check browser permissions." ]
 
-            Nothing ->
+            _ ->
                 text ""
         ]
+
+
+onEnter : Msg -> Html.Attribute Msg
+onEnter msg =
+    on "keydown"
+        (Decode.field "key" Decode.string
+            |> Decode.andThen
+                (\key ->
+                    if key == "Enter" then
+                        Decode.succeed msg
+
+                    else
+                        Decode.fail "not Enter"
+                )
+        )
 
 
 formatButton : Model -> ExportFormat -> String -> Html Msg
@@ -544,7 +618,7 @@ formatButton model fmt label =
         [ class
             ("flex-1 py-1.5 text-xs font-semibold "
                 ++ (if model.exportFormat == fmt then
-                        "bg-arcane-500 text-white"
+                        "bg-gray-600 text-gray-100"
 
                     else
                         "bg-gray-800 text-gray-400 hover:bg-gray-700"

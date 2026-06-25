@@ -5,17 +5,28 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Seeds exposing (allSeeds)
 import Types exposing (..)
+import View.Icons exposing (seedsIcon)
+
+
+mobileVis : Model -> String
+mobileVis model =
+    if model.activeMobileTab == SeedsTab then
+        "flex"
+
+    else
+        "hidden"
 
 
 viewSeedsPanel : Model -> Html Msg
 viewSeedsPanel model =
     if model.seedsPanelOpen then
-        div [ class "w-72 shrink-0 flex flex-col bg-gray-900 border-r border-gray-700 overflow-y-auto" ]
+        div [ class (mobileVis model ++ " flex-col w-full md:flex md:w-72 shrink-0 bg-gray-900 border-r border-gray-700 overflow-y-auto") ]
             [ -- Panel header with collapse button
               div [ class "flex items-center justify-between px-4 py-3 border-b border-gray-700 sticky top-0 bg-gray-900 z-10" ]
-                [ span [ class "text-xs font-bold uppercase tracking-widest text-gray-400" ] [ text "Seeds" ]
+                [ span [ class "flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-gray-400" ]
+                    [ seedsIcon "w-3.5 h-3.5", text "Seeds" ]
                 , button
-                    [ class "text-gray-500 hover:text-gray-300 text-lg"
+                    [ class "hidden md:inline-block text-gray-500 hover:text-gray-300 text-lg"
                     , onClick ToggleSeedsPanel
                     , title "Collapse panel"
                     ]
@@ -31,11 +42,15 @@ viewSeedsPanel model =
     else
         -- Collapsed: narrow tab strip
         div
-            [ class "w-8 shrink-0 flex flex-col items-center bg-gray-900 border-r border-gray-700 cursor-pointer hover:bg-gray-800"
+            [ class (mobileVis model ++ " flex-col items-center gap-2 w-full md:flex md:w-8 shrink-0 bg-gray-900 border-r border-gray-700 cursor-pointer hover:bg-gray-800 pt-4")
             , onClick ToggleSeedsPanel
             , title "Expand seeds panel"
             ]
-            [ div [ class "mt-4 text-gray-500 text-xs rotate-90 whitespace-nowrap select-none" ]
+            [ seedsIcon "w-4 h-4 text-gray-500"
+            , div
+                [ style "writing-mode" "vertical-rl"
+                , class "text-gray-500 text-xs whitespace-nowrap select-none"
+                ]
                 [ text ("SEEDS (" ++ String.fromInt (List.length model.seedInstances) ++ ")") ]
             ]
 

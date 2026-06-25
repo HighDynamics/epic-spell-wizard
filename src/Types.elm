@@ -293,6 +293,21 @@ type ExportFormat
     | PlainTextExport
 
 
+type CopyTarget
+    = SummaryCopyTarget
+    | ShareCopyTarget
+
+
+
+-- ─── Mobile navigation ────────────────────────────────────────────────────────
+
+
+type MobileTab
+    = SeedsTab
+    | FactorsTab
+    | SummaryTab
+
+
 
 -- ─── App state ───────────────────────────────────────────────────────────────
 
@@ -311,8 +326,12 @@ type alias Model =
     , factorsPanelOpen : Bool
     , summaryPanelOpen : Bool
     , copySuccess : Maybe Bool
+    , pendingCopy : Maybe CopyTarget
     , exportFormat : ExportFormat
     , baseUrl : String
+    , renamingSpell : Bool
+    , helpModalOpen : Bool
+    , activeMobileTab : MobileTab
     }
 
 
@@ -337,3 +356,7 @@ type Msg
     | SetExportFormat ExportFormat
     | CopySpellSummary
     | CopyResult Bool
+    | ToggleRenameSpell
+    | CopyShareLink
+    | ToggleHelpModal
+    | SetMobileTab MobileTab

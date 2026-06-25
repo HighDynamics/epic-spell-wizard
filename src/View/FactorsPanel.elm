@@ -8,17 +8,28 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
 import Seeds exposing (getSeed, isSpecialSeedFactor)
 import Types exposing (..)
+import View.Icons exposing (factorsIcon)
+
+
+mobileVis : Model -> String
+mobileVis model =
+    if model.activeMobileTab == FactorsTab then
+        "flex"
+
+    else
+        "hidden"
 
 
 viewFactorsPanel : Model -> DcBreakdown -> Html Msg
 viewFactorsPanel model _ =
     if model.factorsPanelOpen then
-        div [ class "flex-1 flex flex-col bg-gray-950 border-r border-gray-700 overflow-y-auto min-w-0" ]
+        div [ class (mobileVis model ++ " flex-col flex-1 md:flex bg-gray-950 border-r border-gray-700 overflow-y-auto min-w-0") ]
             [ -- Panel header
               div [ class "flex items-center justify-between px-4 py-3 border-b border-gray-700 sticky top-0 bg-gray-950 z-10" ]
-                [ span [ class "text-xs font-bold uppercase tracking-widest text-gray-400" ] [ text "Factors" ]
+                [ span [ class "flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-gray-400" ]
+                    [ factorsIcon "w-3.5 h-3.5", text "Factors" ]
                 , button
-                    [ class "text-gray-500 hover:text-gray-300 text-lg"
+                    [ class "hidden md:inline-block text-gray-500 hover:text-gray-300 text-lg"
                     , onClick ToggleFactorsPanel
                     , title "Collapse panel"
                     ]
@@ -39,11 +50,15 @@ viewFactorsPanel model _ =
                     + List.sum (List.map (\i -> List.length i.appliedSeedFactors) model.seedInstances)
         in
         div
-            [ class "w-8 shrink-0 flex flex-col items-center bg-gray-950 border-r border-gray-700 cursor-pointer hover:bg-gray-900"
+            [ class (mobileVis model ++ " flex-col items-center gap-2 w-full md:flex md:w-8 shrink-0 bg-gray-950 border-r border-gray-700 cursor-pointer hover:bg-gray-900 pt-4")
             , onClick ToggleFactorsPanel
             , title "Expand factors panel"
             ]
-            [ div [ class "mt-4 text-gray-500 text-xs rotate-90 whitespace-nowrap select-none" ]
+            [ factorsIcon "w-4 h-4 text-gray-500"
+            , div
+                [ style "writing-mode" "vertical-rl"
+                , class "text-gray-500 text-xs whitespace-nowrap select-none"
+                ]
                 [ text ("FACTORS (" ++ String.fromInt totalFactors ++ ")") ]
             ]
 
@@ -121,7 +136,7 @@ viewSeedInstanceFactors model inst =
                     , div [ class "flex items-center gap-2" ]
                         [ if List.length model.seedInstances > 1 then
                             if model.primarySeedInstanceId == Just inst.instanceId then
-                                span [ class "text-xs text-arcane-400 font-semibold px-1.5 py-0.5 rounded border border-arcane-700 bg-arcane-950" ]
+                                span [ class "text-xs text-arcane-400 font-semibold px-1.5 py-0.5 rounded border border-arcane-700 bg-arcane-800" ]
                                     [ text "Primary" ]
 
                             else
