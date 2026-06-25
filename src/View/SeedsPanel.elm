@@ -3,7 +3,7 @@ module View.SeedsPanel exposing (viewSeedsPanel)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
-import Seeds exposing (allSeeds, getSeed)
+import Seeds exposing (allSeeds)
 import Types exposing (..)
 
 
@@ -21,17 +21,11 @@ viewSeedsPanel model =
                     ]
                     [ text "◀" ]
                 ]
+            , div [ class "px-4 py-3 text-gray-500 text-xs text-center border-b border-gray-800" ]
+                [ text "Click/Tap to add a seed to your spell" ]
             , -- Seed catalog
               div [ class "p-3 grid grid-cols-1 gap-1" ]
                 (List.map (viewSeedCard model.seedInstances) allSeeds)
-            , -- Active instances
-              if List.isEmpty model.seedInstances then
-                div [ class "px-4 py-6 text-gray-600 text-sm text-center" ]
-                    [ text "Click a seed to add it to the spell." ]
-
-              else
-                div [ class "border-t border-gray-700" ]
-                    (List.map viewSeedInstance model.seedInstances)
             ]
 
     else
@@ -74,26 +68,3 @@ viewSeedCard instances seed =
                 text ""
             ]
         ]
-
-
-viewSeedInstance : SeedInstance -> Html Msg
-viewSeedInstance inst =
-    case getSeed inst.seedId of
-        Nothing ->
-            text ""
-
-        Just seed ->
-            div [ class "px-3 py-3 border-b border-gray-800" ]
-                [ -- Instance header
-                  div [ class "flex items-center justify-between mb-2" ]
-                    [ span [ class "text-sm font-semibold text-arcane-400" ] [ text seed.name ]
-                    , button
-                        [ class "text-gray-600 hover:text-red-400 text-xs"
-                        , onClick (RemoveSeedInstance inst.instanceId)
-                        ]
-                        [ text "✕" ]
-                    ]
-                , -- Original seed description (always visible so the user can read the source text)
-                  p [ class "text-xs text-gray-500 italic mb-2 leading-relaxed" ]
-                    [ text seed.description ]
-                ]

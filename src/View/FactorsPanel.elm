@@ -141,8 +141,15 @@ viewSeedInstanceFactors model inst =
                         ]
                     ]
                 , div [ class "px-4 py-2" ]
-                    (baseDCRow :: choiceRows ++ factorRows)
+                    (viewSeedDescriptionQuote seed :: baseDCRow :: choiceRows ++ factorRows)
                 ]
+
+
+viewSeedDescriptionQuote : Seed -> Html Msg
+viewSeedDescriptionQuote seed =
+    blockquote
+        [ class "border-l-2 border-gray-700 pl-3 mb-3 text-gray-400 text-xs italic leading-relaxed" ]
+        [ text seed.description ]
 
 
 viewChoiceDropdown : SeedInstance -> SeedChoice -> Html Msg
