@@ -7164,6 +7164,36 @@ var $author$project$Types$SeedsTab = 0;
 var $elm$core$Set$Set_elm_builtin = $elm$core$Basics$identity;
 var $elm$core$Set$empty = $elm$core$Dict$empty;
 var $author$project$Main$defaultModel = {aJ: 0, l: _List_Nil, v: '', C: $elm$core$Maybe$Nothing, N: $elm$core$Set$empty, O: $elm$core$Set$empty, aa: $elm$core$Maybe$Nothing, P: $elm$core$Set$empty, am: 1, an: true, ac: false, ad: $elm$core$Maybe$Nothing, Q: '', R: false, S: false, W: 0, ar: $elm$core$Maybe$Nothing, F: $elm$core$Maybe$Nothing, r: $elm$core$Maybe$Nothing, au: false, k: _List_Nil, az: true, aA: $elm$core$Maybe$Nothing, aB: $elm$core$Maybe$Nothing, aD: '', aH: true, H: $elm$core$Maybe$Nothing};
+var $elm$core$String$replace = F3(
+	function (before, after, string) {
+		return A2(
+			$elm$core$String$join,
+			after,
+			A2($elm$core$String$split, before, string));
+	});
+var $author$project$UrlState$escapeForSharing = function (s) {
+	return A3(
+		$elm$core$String$replace,
+		'~',
+		'%7E',
+		A3(
+			$elm$core$String$replace,
+			'\'',
+			'%27',
+			A3(
+				$elm$core$String$replace,
+				'*',
+				'%2A',
+				A3(
+					$elm$core$String$replace,
+					'!',
+					'%21',
+					A3(
+						$elm$core$String$replace,
+						')',
+						'%29',
+						A3($elm$core$String$replace, '(', '%28', s))))));
+};
 var $author$project$UrlState$boolFlag = function (b) {
 	return b ? '1' : '0';
 };
@@ -7401,11 +7431,12 @@ var $elm$url$Url$Builder$toQuery = function (parameters) {
 	}
 };
 var $author$project$UrlState$encode = function (model) {
-	return $elm$url$Url$Builder$toQuery(
-		A2(
-			$elm$core$List$filterMap,
-			$elm$core$Basics$identity,
-			$author$project$UrlState$params(model)));
+	return $author$project$UrlState$escapeForSharing(
+		$elm$url$Url$Builder$toQuery(
+			A2(
+				$elm$core$List$filterMap,
+				$elm$core$Basics$identity,
+				$author$project$UrlState$params(model))));
 };
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $author$project$Main$pushUrl = _Platform_outgoingPort('pushUrl', $elm$json$Json$Encode$string);
@@ -8345,13 +8376,6 @@ var $author$project$Calc$formatLargeInt = function (n) {
 		$elm$core$String$fromInt(
 			A2($elm$core$Basics$modBy, 1000, n))))) : $elm$core$String$fromInt(n);
 };
-var $elm$core$String$replace = F3(
-	function (before, after, string) {
-		return A2(
-			$elm$core$String$join,
-			after,
-			A2($elm$core$String$split, before, string));
-	});
 var $author$project$Calc$scaleRange = F2(
 	function (mult, s) {
 		var _v0 = $elm$core$String$uncons(s);
