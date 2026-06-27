@@ -5223,6 +5223,11 @@ var $elm$core$Maybe$andThen = F2(
 			return $elm$core$Maybe$Nothing;
 		}
 	});
+var $elm$core$Basics$composeL = F3(
+	function (g, f, x) {
+		return g(
+			f(x));
+	});
 var $author$project$Types$AddExtraTarget = 10;
 var $author$project$Types$AreaToTarget = 20;
 var $author$project$Types$AreaToTouch = 21;
@@ -6108,8 +6113,7 @@ var $author$project$Seeds$fortify = {
 			{
 			bq: _List_fromArray(
 				[
-					{aj: 4, aQ: '', aW: 'fortify_sr_plus', bx: 1, a: $elm$core$Maybe$Nothing, V: 'Each +1 SR above 25'},
-					{aj: -2, aQ: '', aW: 'fortify_sr_minus', bx: 1, a: $elm$core$Maybe$Nothing, V: 'Each –1 SR below 25'},
+					{aj: 2, aQ: 'Any mode: adds DR/magic', aW: 'fortify_dr', bx: 1, a: $elm$core$Maybe$Nothing, V: 'Each +1 damage reduction'},
 					{
 					aj: 15,
 					aQ: '+15 DC surcharge to make DR bypass epic',
@@ -6118,6 +6122,15 @@ var $author$project$Seeds$fortify = {
 					a: $elm$core$Maybe$Just(1),
 					V: 'Damage Reduction vs. epic'
 				}
+				]),
+			aW: 'fortify_damage_reduction',
+			V: 'Damage Reduction'
+		},
+			{
+			bq: _List_fromArray(
+				[
+					{aj: 4, aQ: '', aW: 'fortify_sr_plus', bx: 1, a: $elm$core$Maybe$Nothing, V: 'Each +1 SR above 25'},
+					{aj: -2, aQ: '', aW: 'fortify_sr_minus', bx: 1, a: $elm$core$Maybe$Nothing, V: 'Each –1 SR below 25'}
 				]),
 			aW: 'fortify_sr',
 			V: 'Grant Spell Resistance 25'
@@ -6138,10 +6151,7 @@ var $author$project$Seeds$fortify = {
 	ax: 'Transmutation',
 	aE: true,
 	aI: $elm$core$Maybe$Just('Creature touched'),
-	bM: _List_fromArray(
-		[
-			{aj: 2, aQ: 'Any mode: adds DR/magic', aW: 'fortify_dr', bx: 1, a: $elm$core$Maybe$Nothing, V: 'Each +1 damage reduction'}
-		])
+	bM: _List_Nil
 };
 var $author$project$Types$DF = 3;
 var $author$project$Types$Heal = 15;
@@ -6888,7 +6898,7 @@ var $author$project$UrlState$decodeSeedInstance = function (raw) {
 					bj: $elm$core$String$toInt(baseDCStr),
 					aN: $author$project$UrlState$decodeChoices(choicesStr),
 					aX: 0,
-					r: seed.aW
+					s: seed.aW
 				};
 			},
 			$elm$core$List$head(
@@ -6915,6 +6925,25 @@ var $author$project$UrlState$decodeSeedInstances = function (raw) {
 			$elm$core$List$filterMap,
 			$author$project$UrlState$decodeSeedInstance,
 			A2($elm$core$String$split, ';', raw)));
+};
+var $author$project$UrlState$decodeShapeSlug = function (slug) {
+	switch (slug) {
+		case 'bolt-5x300':
+			return 'Bolt (5 ft. × 300 ft.)';
+		case 'bolt-10x150':
+			return 'Bolt (10 ft. × 150 ft.)';
+		case 'cylinder':
+			return 'Cylinder';
+		case 'cone':
+			return '40-ft. cone';
+		case 'cubes':
+			return 'Four 10-ft. cubes';
+		case 'radius':
+			return '20-ft. radius';
+		default:
+			var other = slug;
+			return other;
+	}
 };
 var $elm$core$List$drop = F2(
 	function (n, list) {
@@ -7065,12 +7094,12 @@ var $author$project$UrlState$applyQuery = F2(
 						$elm$core$Maybe$map,
 						$author$project$UrlState$decodeAppliedFactors,
 						A2($elm$core$Dict$get, 'factors', query))),
-				G: A2(
+				C: A2(
 					$elm$core$Maybe$withDefault,
-					model.G,
+					model.C,
 					A2(
 						$elm$core$Maybe$map,
-						$elm$core$Maybe$Just,
+						A2($elm$core$Basics$composeL, $elm$core$Maybe$Just, $author$project$UrlState$decodeShapeSlug),
 						A2($elm$core$Dict$get, 'bolt', query))),
 				an: A2(
 					$elm$core$Maybe$withDefault,
@@ -7080,14 +7109,14 @@ var $author$project$UrlState$applyQuery = F2(
 						$author$project$UrlState$panelFlagAt1,
 						A2($elm$core$Dict$get, 'panels', query))),
 				W: $elm$core$List$length(decodedInstances),
-				I: A2(
+				F: A2(
 					$elm$core$Maybe$withDefault,
-					model.I,
+					model.F,
 					A2(
 						$elm$core$Maybe$map,
-						$elm$core$Maybe$Just,
+						A2($elm$core$Basics$composeL, $elm$core$Maybe$Just, $author$project$UrlState$decodeShapeSlug),
 						A2($elm$core$Dict$get, 'p2a', query))),
-				u: primaryFromIndex,
+				r: primaryFromIndex,
 				k: decodedInstances,
 				az: A2(
 					$elm$core$Maybe$withDefault,
@@ -7121,12 +7150,12 @@ var $author$project$UrlState$applyQuery = F2(
 						$elm$core$Maybe$andThen,
 						$author$project$UrlState$panelFlagAt2,
 						A2($elm$core$Dict$get, 'panels', query))),
-				K: A2(
+				H: A2(
 					$elm$core$Maybe$withDefault,
-					model.K,
+					model.H,
 					A2(
 						$elm$core$Maybe$map,
-						$elm$core$Maybe$Just,
+						A2($elm$core$Basics$composeL, $elm$core$Maybe$Just, $author$project$UrlState$decodeShapeSlug),
 						A2($elm$core$Dict$get, 't2a', query)))
 			});
 	});
@@ -7134,15 +7163,10 @@ var $author$project$Types$PlainTextExport = 1;
 var $author$project$Types$SeedsTab = 0;
 var $elm$core$Set$Set_elm_builtin = $elm$core$Basics$identity;
 var $elm$core$Set$empty = $elm$core$Dict$empty;
-var $author$project$Main$defaultModel = {aJ: 0, l: _List_Nil, v: '', G: $elm$core$Maybe$Nothing, N: $elm$core$Set$empty, O: $elm$core$Set$empty, aa: $elm$core$Maybe$Nothing, P: $elm$core$Set$empty, am: 1, an: true, ac: false, ad: $elm$core$Maybe$Nothing, Q: '', R: false, S: false, W: 0, ar: $elm$core$Maybe$Nothing, I: $elm$core$Maybe$Nothing, u: $elm$core$Maybe$Nothing, au: false, k: _List_Nil, az: true, aA: $elm$core$Maybe$Nothing, aB: $elm$core$Maybe$Nothing, aD: '', aH: true, K: $elm$core$Maybe$Nothing};
+var $author$project$Main$defaultModel = {aJ: 0, l: _List_Nil, v: '', C: $elm$core$Maybe$Nothing, N: $elm$core$Set$empty, O: $elm$core$Set$empty, aa: $elm$core$Maybe$Nothing, P: $elm$core$Set$empty, am: 1, an: true, ac: false, ad: $elm$core$Maybe$Nothing, Q: '', R: false, S: false, W: 0, ar: $elm$core$Maybe$Nothing, F: $elm$core$Maybe$Nothing, r: $elm$core$Maybe$Nothing, au: false, k: _List_Nil, az: true, aA: $elm$core$Maybe$Nothing, aB: $elm$core$Maybe$Nothing, aD: '', aH: true, H: $elm$core$Maybe$Nothing};
 var $author$project$UrlState$boolFlag = function (b) {
 	return b ? '1' : '0';
 };
-var $elm$core$Basics$composeL = F3(
-	function (g, f, x) {
-		return g(
-			f(x));
-	});
 var $author$project$Factors$getFactor = function (id) {
 	return $elm$core$List$head(
 		A2(
@@ -7229,13 +7253,32 @@ var $author$project$UrlState$encodeSeedInstance = function (inst) {
 					},
 					inst.af)))))));
 		},
-		$author$project$Seeds$getSeed(inst.r));
+		$author$project$Seeds$getSeed(inst.s));
 };
 var $author$project$UrlState$encodeSeedInstances = function (instances) {
 	return A2(
 		$elm$core$String$join,
 		';',
 		A2($elm$core$List$filterMap, $author$project$UrlState$encodeSeedInstance, instances));
+};
+var $author$project$UrlState$encodeShapeSlug = function (shape) {
+	switch (shape) {
+		case 'Bolt (5 ft. × 300 ft.)':
+			return 'bolt-5x300';
+		case 'Bolt (10 ft. × 150 ft.)':
+			return 'bolt-10x150';
+		case 'Cylinder':
+			return 'cylinder';
+		case '40-ft. cone':
+			return 'cone';
+		case 'Four 10-ft. cubes':
+			return 'cubes';
+		case '20-ft. radius':
+			return 'radius';
+		default:
+			var other = shape;
+			return other;
+	}
 };
 var $author$project$UrlState$indexOfInstance = F2(
 	function (pid, instances) {
@@ -7288,16 +7331,25 @@ var $author$project$UrlState$params = function (model) {
 			model.aA),
 			A2(
 			$elm$core$Maybe$map,
-			$elm$url$Url$Builder$string('t2a'),
-			model.K),
+			A2(
+				$elm$core$Basics$composeL,
+				$elm$url$Url$Builder$string('t2a'),
+				$author$project$UrlState$encodeShapeSlug),
+			model.H),
 			A2(
 			$elm$core$Maybe$map,
-			$elm$url$Url$Builder$string('p2a'),
-			model.I),
+			A2(
+				$elm$core$Basics$composeL,
+				$elm$url$Url$Builder$string('p2a'),
+				$author$project$UrlState$encodeShapeSlug),
+			model.F),
 			A2(
 			$elm$core$Maybe$map,
-			$elm$url$Url$Builder$string('bolt'),
-			model.G),
+			A2(
+				$elm$core$Basics$composeL,
+				$elm$url$Url$Builder$string('bolt'),
+				$author$project$UrlState$encodeShapeSlug),
+			model.C),
 			function () {
 			var panelsStr = _Utils_ap(
 				$author$project$UrlState$boolFlag(model.az),
@@ -7320,7 +7372,7 @@ var $author$project$UrlState$params = function (model) {
 				function (pid) {
 					return A2($author$project$UrlState$indexOfInstance, pid, model.k);
 				},
-				model.u)),
+				model.r)),
 			$elm$core$List$isEmpty(model.k) ? $elm$core$Maybe$Nothing : $elm$core$Maybe$Just(
 			A2(
 				$elm$url$Url$Builder$string,
@@ -7409,13 +7461,13 @@ var $elm$core$List$sum = function (numbers) {
 	return A3($elm$core$List$foldl, $elm$core$Basics$add, 0, numbers);
 };
 var $author$project$Calc$effectiveSeedBaseDC = function (inst) {
-	var _v0 = $author$project$Seeds$getSeed(inst.r);
+	var _v0 = $author$project$Seeds$getSeed(inst.s);
 	if (_v0.$ === 1) {
 		return 0;
 	} else {
 		var seed = _v0.a;
 		var baseDC = A2($elm$core$Maybe$withDefault, seed.bi, inst.bj);
-		if (inst.r === 13) {
+		if (inst.s === 13) {
 			var intervals = $elm$core$List$sum(
 				A2(
 					$elm$core$List$map,
@@ -7430,7 +7482,7 @@ var $author$project$Calc$effectiveSeedBaseDC = function (inst) {
 						inst.af)));
 			return baseDC * A2($elm$core$Basics$pow, 2, intervals);
 		} else {
-			if (inst.r === 18) {
+			if (inst.s === 18) {
 				var noLoe = A2(
 					$elm$core$List$any,
 					function (asf) {
@@ -7475,7 +7527,7 @@ var $elm$core$Tuple$second = function (_v0) {
 	return y;
 };
 var $author$project$Calc$seedInstanceFactorDC = function (inst) {
-	var _v0 = $author$project$Seeds$getSeed(inst.r);
+	var _v0 = $author$project$Seeds$getSeed(inst.s);
 	if (_v0.$ === 1) {
 		return 0;
 	} else {
@@ -7695,7 +7747,7 @@ var $author$project$Export$primarySeedId = F2(
 		return A2(
 			$elm$core$Maybe$map,
 			function ($) {
-				return $.r;
+				return $.s;
 			},
 			A2(
 				$elm$core$Maybe$andThen,
@@ -7726,7 +7778,7 @@ var $author$project$Export$seedFactorBlocks = function (instances) {
 				function (inst, _v0) {
 					var seenCounts = _v0.a;
 					var acc = _v0.b;
-					var _v1 = $author$project$Seeds$getSeed(inst.r);
+					var _v1 = $author$project$Seeds$getSeed(inst.s);
 					if (_v1.$ === 1) {
 						return _Utils_Tuple2(seenCounts, acc);
 					} else {
@@ -7839,7 +7891,7 @@ var $author$project$Calc$sortByName = function (instances) {
 					function ($) {
 						return $.V;
 					},
-					$author$project$Seeds$getSeed(inst.r)));
+					$author$project$Seeds$getSeed(inst.s)));
 		},
 		instances);
 };
@@ -7861,7 +7913,7 @@ var $author$project$Export$seedListLine = F2(
 								resolvedPrimaryId,
 								$elm$core$Maybe$Just(inst.aX))) ? ' [Primary]' : ''))));
 						},
-						$author$project$Seeds$getSeed(inst.r));
+						$author$project$Seeds$getSeed(inst.s));
 				},
 				$author$project$Calc$sortByName(instances)));
 	});
@@ -7990,7 +8042,7 @@ var $author$project$Calc$availableSavingThrows = function (instances) {
 					function ($) {
 						return $.aw;
 					},
-					$author$project$Seeds$getSeed(inst.r));
+					$author$project$Seeds$getSeed(inst.s));
 			},
 			instances));
 };
@@ -8013,7 +8065,7 @@ var $author$project$Calc$availableSchools = function (instances) {
 					function ($) {
 						return $.ax;
 					},
-					$author$project$Seeds$getSeed(inst.r));
+					$author$project$Seeds$getSeed(inst.s));
 			},
 			instances));
 };
@@ -8173,7 +8225,7 @@ var $author$project$Calc$durationRank = function (d) {
 	}
 };
 var $author$project$Calc$instanceDuration = function (inst) {
-	var _v0 = $author$project$Seeds$getSeed(inst.r);
+	var _v0 = $author$project$Seeds$getSeed(inst.s);
 	if (_v0.$ === 1) {
 		return '—';
 	} else {
@@ -8430,7 +8482,7 @@ var $author$project$Calc$statBlock = F9(
 		var seeds = A2(
 			$elm$core$List$filterMap,
 			function (inst) {
-				return $author$project$Seeds$getSeed(inst.r);
+				return $author$project$Seeds$getSeed(inst.s);
 			},
 			instances);
 		var spellResistance = A2(
@@ -8462,7 +8514,7 @@ var $author$project$Calc$statBlock = F9(
 					return A2(
 						$elm$core$Maybe$andThen,
 						function (i) {
-							return $author$project$Seeds$getSeed(i.r);
+							return $author$project$Seeds$getSeed(i.s);
 						},
 						$elm$core$List$head(
 							A2(
@@ -8766,7 +8818,7 @@ var $author$project$Export$uniqueSeeds = function (instances) {
 		A2(
 			$elm$core$List$filterMap,
 			function (inst) {
-				return $author$project$Seeds$getSeed(inst.r);
+				return $author$project$Seeds$getSeed(inst.s);
 			},
 			instances));
 };
@@ -9273,20 +9325,20 @@ var $author$project$Main$updateInner = F2(
 			case 1:
 				var seedId = msg.a;
 				var newPrimary = function () {
-					var _v1 = model.u;
+					var _v1 = model.r;
 					if (_v1.$ === 1) {
 						return $elm$core$Maybe$Just(model.W);
 					} else {
-						return model.u;
+						return model.r;
 					}
 				}();
-				var newInstance = {af: _List_Nil, bj: $elm$core$Maybe$Nothing, aN: $elm$core$Dict$empty, aX: model.W, r: seedId};
+				var newInstance = {af: _List_Nil, bj: $elm$core$Maybe$Nothing, aN: $elm$core$Dict$empty, aX: model.W, s: seedId};
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{
 							W: model.W + 1,
-							u: newPrimary,
+							r: newPrimary,
 							k: _Utils_ap(
 								model.k,
 								_List_fromArray(
@@ -9302,17 +9354,19 @@ var $author$project$Main$updateInner = F2(
 					},
 					model.k);
 				var newPrimary = _Utils_eq(
-					model.u,
+					model.r,
 					$elm$core$Maybe$Just(iid)) ? A2(
 					$elm$core$Maybe$map,
 					function ($) {
 						return $.aX;
 					},
-					$elm$core$List$head(remaining)) : model.u;
+					$elm$core$List$head(remaining)) : model.r;
 				return _Utils_Tuple2(
-					_Utils_update(
+					$elm$core$List$isEmpty(remaining) ? _Utils_update(
 						model,
-						{u: newPrimary, k: remaining}),
+						{l: _List_Nil, C: $elm$core$Maybe$Nothing, F: $elm$core$Maybe$Nothing, r: newPrimary, k: remaining, H: $elm$core$Maybe$Nothing}) : _Utils_update(
+						model,
+						{r: newPrimary, k: remaining}),
 					$elm$core$Platform$Cmd$none);
 			case 8:
 				var iid = msg.a;
@@ -9320,7 +9374,7 @@ var $author$project$Main$updateInner = F2(
 					_Utils_update(
 						model,
 						{
-							u: $elm$core$Maybe$Just(iid)
+							r: $elm$core$Maybe$Just(iid)
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 9:
@@ -9425,9 +9479,9 @@ var $author$project$Main$updateInner = F2(
 									return !_Utils_eq(af.e, factorId);
 								},
 								model.l),
-							G: (factorId === 15) ? $elm$core$Maybe$Nothing : model.G,
-							I: (factorId === 12) ? $elm$core$Maybe$Nothing : model.I,
-							K: (factorId === 11) ? $elm$core$Maybe$Nothing : model.K
+							C: (factorId === 15) ? $elm$core$Maybe$Nothing : model.C,
+							F: (factorId === 12) ? $elm$core$Maybe$Nothing : model.F,
+							H: (factorId === 11) ? $elm$core$Maybe$Nothing : model.H
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 11:
@@ -9436,7 +9490,7 @@ var $author$project$Main$updateInner = F2(
 					_Utils_update(
 						model,
 						{
-							K: $elm$core$Maybe$Just(shape)
+							H: $elm$core$Maybe$Just(shape)
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 12:
@@ -9445,7 +9499,7 @@ var $author$project$Main$updateInner = F2(
 					_Utils_update(
 						model,
 						{
-							I: $elm$core$Maybe$Just(shape)
+							F: $elm$core$Maybe$Just(shape)
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 13:
@@ -9454,7 +9508,7 @@ var $author$project$Main$updateInner = F2(
 					_Utils_update(
 						model,
 						{
-							G: $elm$core$Maybe$Just(shape)
+							C: $elm$core$Maybe$Just(shape)
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 14:
@@ -9567,7 +9621,7 @@ var $author$project$Main$updateInner = F2(
 						return $author$project$Export$generatePlainText;
 					}
 				}();
-				var output = A9(generate, link, model.aD, model.k, model.l, 0, model.u, model.K, model.I, model.G);
+				var output = A9(generate, link, model.aD, model.k, model.l, 0, model.r, model.H, model.F, model.C);
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
@@ -9811,7 +9865,7 @@ var $author$project$Calc$seedInstanceLabels = function (instances) {
 			function (inst, _v0) {
 				var seenCounts = _v0.a;
 				var acc = _v0.b;
-				var _v1 = $author$project$Seeds$getSeed(inst.r);
+				var _v1 = $author$project$Seeds$getSeed(inst.s);
 				if (_v1.$ === 1) {
 					return _Utils_Tuple2(seenCounts, acc);
 				} else {
@@ -10238,13 +10292,13 @@ var $author$project$View$FactorsPanel$viewGlobalFactorSection = F3(
 													]) : _List_Nil;
 												var extraRows = ((f.aW === 11) && isActive) ? _List_fromArray(
 													[
-														A3($author$project$View$FactorsPanel$viewAreaShapeDropdown, model.K, $author$project$Types$SetTargetToAreaShape, $author$project$Calc$targetToAreaShapes)
+														A3($author$project$View$FactorsPanel$viewAreaShapeDropdown, model.H, $author$project$Types$SetTargetToAreaShape, $author$project$Calc$targetToAreaShapes)
 													]) : (((f.aW === 12) && isActive) ? _List_fromArray(
 													[
-														A3($author$project$View$FactorsPanel$viewAreaShapeDropdown, model.I, $author$project$Types$SetPersonalToAreaShape, $author$project$Calc$targetToAreaShapes)
+														A3($author$project$View$FactorsPanel$viewAreaShapeDropdown, model.F, $author$project$Types$SetPersonalToAreaShape, $author$project$Calc$targetToAreaShapes)
 													]) : (((f.aW === 15) && isActive) ? _List_fromArray(
 													[
-														A3($author$project$View$FactorsPanel$viewAreaShapeDropdown, model.G, $author$project$Types$SetBoltShape, $author$project$Calc$boltShapes)
+														A3($author$project$View$FactorsPanel$viewAreaShapeDropdown, model.C, $author$project$Types$SetBoltShape, $author$project$Calc$boltShapes)
 													]) : _List_Nil));
 												return _Utils_Tuple2(
 													$elm$core$Maybe$Just(f.b),
@@ -10672,7 +10726,7 @@ var $author$project$View$FactorsPanel$viewSeedFactor = F2(
 	});
 var $author$project$View$FactorsPanel$viewSeedInstanceFactors = F3(
 	function (model, labels, inst) {
-		var _v0 = $author$project$Seeds$getSeed(inst.r);
+		var _v0 = $author$project$Seeds$getSeed(inst.s);
 		if (_v0.$ === 1) {
 			return $elm$html$Html$text('');
 		} else {
@@ -10861,7 +10915,7 @@ var $author$project$View$FactorsPanel$viewSeedInstanceFactors = F3(
 								_List_fromArray(
 									[
 										($elm$core$List$length(model.k) > 1) ? (_Utils_eq(
-										model.u,
+										model.r,
 										$elm$core$Maybe$Just(inst.aX)) ? A2(
 										$elm$html$Html$span,
 										_List_fromArray(
@@ -11570,7 +11624,7 @@ var $author$project$View$SeedsPanel$viewSeedCard = F2(
 			A2(
 				$elm$core$List$filter,
 				function (i) {
-					return _Utils_eq(i.r, seed.aW);
+					return _Utils_eq(i.s, seed.aW);
 				},
 				instances));
 		var activeClass = (count > 0) ? 'bg-arcane-900 border-arcane-500 text-arcane-400' : 'bg-gray-800 border-gray-700 text-gray-300 hover:border-gray-500';
@@ -12076,7 +12130,7 @@ var $author$project$View$SummaryPanel$viewSeedFactorsBySeed = function (model) {
 		A2(
 			$elm$core$List$filterMap,
 			function (inst) {
-				var _v1 = $author$project$Seeds$getSeed(inst.r);
+				var _v1 = $author$project$Seeds$getSeed(inst.s);
 				if (_v1.$ === 1) {
 					return $elm$core$Maybe$Nothing;
 				} else {
@@ -12243,7 +12297,7 @@ var $author$project$View$SummaryPanel$viewSeedFactorsBySeed = function (model) {
 			]));
 };
 var $author$project$View$SummaryPanel$resolvePrimaryInstanceId = function (model) {
-	var _v0 = model.u;
+	var _v0 = model.r;
 	if (!_v0.$) {
 		var pid = _v0.a;
 		return A2(
@@ -12280,7 +12334,7 @@ var $author$project$View$SummaryPanel$viewSeedsUsed = function (model) {
 						primaryId,
 						$elm$core$Maybe$Just(inst.aX))) ? ' [Primary]' : ''))));
 				},
-				$author$project$Seeds$getSeed(inst.r));
+				$author$project$Seeds$getSeed(inst.s));
 		},
 		$author$project$Calc$sortByName(model.k));
 	return A2(
@@ -12967,7 +13021,7 @@ var $author$project$View$SummaryPanel$viewSummaryPanel = F4(
 				]));
 	});
 var $author$project$Main$view = function (model) {
-	var sb = A9($author$project$Calc$statBlock, model.k, model.l, 0, model.u, model.aB, model.aA, model.K, model.I, model.G);
+	var sb = A9($author$project$Calc$statBlock, model.k, model.l, 0, model.r, model.aB, model.aA, model.H, model.F, model.C);
 	var breakdown = A2($author$project$Calc$calculateBreakdown, model.k, model.l);
 	var costs = $author$project$Calc$devCosts(breakdown.br);
 	return A2(
