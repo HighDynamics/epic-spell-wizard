@@ -10,7 +10,7 @@ import Json.Decode as Decode
 import Seeds exposing (getSeed, isSpecialSeedFactor)
 import Set
 import Types exposing (..)
-import View.Icons exposing (factorsIcon)
+import View.Icons exposing (chevronIcon, factorsIcon)
 
 
 -- Like onClick, but stops the event from bubbling up to an ancestor's own
@@ -164,13 +164,10 @@ viewSeedInstanceFactors model labels inst =
                     , onClick (ToggleSeedInstanceCollapsed inst.instanceId)
                     ]
                     [ span [ class "text-xs text-arcane-400 font-semibold uppercase tracking-wider flex items-center gap-1.5" ]
-                        [ span
-                            [ class
-                                ("inline-block transition-transform duration-200 ease-in-out "
-                                    ++ (if isCollapsed then "rotate-0" else "rotate-90")
-                                )
-                            ]
-                            [ text "▸" ]
+                        [ chevronIcon
+                            ("w-4 h-4 transition-transform duration-200 ease-in-out "
+                                ++ (if isCollapsed then "rotate-0" else "rotate-90")
+                            )
                         , text ("── " ++ label ++ " ──")
                         ]
                     , div [ class "flex items-center gap-2" ]
@@ -444,13 +441,10 @@ viewGlobalFactorSection model label category =
             [ class "flex items-center px-4 py-2 bg-gray-900 text-xs text-gray-400 font-semibold uppercase tracking-wider cursor-pointer gap-1.5"
             , onClick (ToggleGlobalFactorSection label)
             ]
-            [ span
-                [ class
-                    ("inline-block transition-transform duration-200 ease-in-out "
-                        ++ (if isCollapsed then "rotate-0" else "rotate-90")
-                    )
-                ]
-                [ text "▸" ]
+            [ chevronIcon
+                ("w-4 h-4 transition-transform duration-200 ease-in-out "
+                    ++ (if isCollapsed then "rotate-0" else "rotate-90")
+                )
             , text ("── Global " ++ label ++ " ──")
             ]
         , div

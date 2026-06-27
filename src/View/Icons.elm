@@ -1,4 +1,4 @@
-module View.Icons exposing (factorsIcon, importIcon, seedsIcon, shareIcon, summaryIcon)
+module View.Icons exposing (chevronIcon, factorsIcon, importIcon, seedsIcon, shareIcon, summaryIcon)
 
 import Html exposing (Html)
 import Svg exposing (circle, line, rect, svg)
@@ -15,6 +15,12 @@ baseAttrs cls =
     , SA.strokeLinejoin "round"
     , SA.class cls
     ]
+
+
+chevronIcon : String -> Html msg
+chevronIcon cls =
+    svg (baseAttrs cls)
+        [ Svg.path [ SA.d "M9 6l6 6-6 6" ] [] ]
 
 
 seedsIcon : String -> Html msg
