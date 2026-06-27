@@ -66,6 +66,7 @@ defaultModel =
     , selectedSavingThrow = Nothing
     , targetToAreaShape = Nothing
     , personalToAreaShape = Nothing
+    , boltShape = Nothing
     , seedsPanelOpen = True
     , factorsPanelOpen = True
     , summaryPanelOpen = True
@@ -234,6 +235,8 @@ updateInner msg model =
                     if factorId == TargetToArea then Nothing else model.targetToAreaShape
                 , personalToAreaShape =
                     if factorId == PersonalToArea then Nothing else model.personalToAreaShape
+                , boltShape =
+                    if factorId == ChangeToBolt then Nothing else model.boltShape
               }
             , Cmd.none
             )
@@ -243,6 +246,9 @@ updateInner msg model =
 
         SetPersonalToAreaShape shape ->
             ( { model | personalToAreaShape = Just shape }, Cmd.none )
+
+        SetBoltShape shape ->
+            ( { model | boltShape = Just shape }, Cmd.none )
 
         SetSeedBaseDCOverride iid raw ->
             let
@@ -325,6 +331,7 @@ updateInner msg model =
                         model.primarySeedInstanceId
                         model.targetToAreaShape
                         model.personalToAreaShape
+                        model.boltShape
             in
             ( { model | copySuccess = Nothing, pendingCopy = Just SummaryCopyTarget }, copyToClipboard output )
 
@@ -396,7 +403,7 @@ view model =
             devCosts breakdown.finalDC
 
         sb =
-            statBlock model.seedInstances model.appliedFactors 0 model.primarySeedInstanceId model.selectedSchool model.selectedSavingThrow model.targetToAreaShape model.personalToAreaShape
+            statBlock model.seedInstances model.appliedFactors 0 model.primarySeedInstanceId model.selectedSchool model.selectedSavingThrow model.targetToAreaShape model.personalToAreaShape model.boltShape
     in
     div [ class "flex flex-col h-screen bg-gray-950 text-gray-100 overflow-hidden" ]
         [ viewHeader model

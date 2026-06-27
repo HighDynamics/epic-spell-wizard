@@ -322,6 +322,7 @@ type alias Model =
     , selectedSavingThrow : Maybe SavingThrow
     , targetToAreaShape : Maybe String
     , personalToAreaShape : Maybe String
+    , boltShape : Maybe String
     , seedsPanelOpen : Bool
     , factorsPanelOpen : Bool
     , summaryPanelOpen : Bool
@@ -353,6 +354,7 @@ type Msg
     | SetSavingThrow (Maybe SavingThrow)
     | SetTargetToAreaShape String
     | SetPersonalToAreaShape String
+    | SetBoltShape String
     | SetSeedBaseDCOverride SeedInstanceId String
     | ToggleSeedsPanel
     | ToggleFactorsPanel

@@ -27,6 +27,7 @@ params model =
     , Maybe.map (UB.string "save" << encodeSavingThrow) model.selectedSavingThrow
     , Maybe.map (UB.string "t2a") model.targetToAreaShape
     , Maybe.map (UB.string "p2a") model.personalToAreaShape
+    , Maybe.map (UB.string "bolt") model.boltShape
     , let
         panelsStr =
             boolFlag model.seedsPanelOpen ++ boolFlag model.factorsPanelOpen ++ boolFlag model.summaryPanelOpen
@@ -199,6 +200,7 @@ applyQuery search model =
                 |> Maybe.withDefault model.selectedSavingThrow
         , targetToAreaShape = Dict.get "t2a" query |> Maybe.map Just |> Maybe.withDefault model.targetToAreaShape
         , personalToAreaShape = Dict.get "p2a" query |> Maybe.map Just |> Maybe.withDefault model.personalToAreaShape
+        , boltShape = Dict.get "bolt" query |> Maybe.map Just |> Maybe.withDefault model.boltShape
         , seedsPanelOpen = Dict.get "panels" query |> Maybe.andThen panelFlagAt0 |> Maybe.withDefault model.seedsPanelOpen
         , factorsPanelOpen = Dict.get "panels" query |> Maybe.andThen panelFlagAt1 |> Maybe.withDefault model.factorsPanelOpen
         , summaryPanelOpen = Dict.get "panels" query |> Maybe.andThen panelFlagAt2 |> Maybe.withDefault model.summaryPanelOpen

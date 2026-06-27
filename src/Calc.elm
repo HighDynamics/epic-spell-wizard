@@ -1,6 +1,6 @@
-module Calc exposing (StatBlockData, availableSchools, availableSavingThrows, calculateBreakdown, devCosts, statBlock, targetToAreaShapes, targetToAreaText)
+module Calc exposing (StatBlockData, availableSchools, availableSavingThrows, boltShapes, calculateBreakdown, devCosts, statBlock, targetToAreaShapes, targetToAreaText)
 
-import Dict exposing (Dict)
+import Dict
 import Factors exposing (getFactor)
 import Seeds exposing (getSeed)
 import Types exposing (..)
@@ -227,6 +227,13 @@ targetToAreaShapes =
     ]
 
 
+boltShapes : List String
+boltShapes =
+    [ "Bolt (5 ft. × 300 ft.)"
+    , "Bolt (10 ft. × 150 ft.)"
+    ]
+
+
 targetToAreaText : String -> String
 targetToAreaText label =
     case label of
@@ -282,8 +289,8 @@ availableSavingThrows instances =
             []
 
 
-statBlock : List SeedInstance -> List AppliedFactor -> Int -> Maybe SeedInstanceId -> Maybe String -> Maybe SavingThrow -> Maybe String -> Maybe String -> StatBlockData
-statBlock instances rawFactors saveDCBonus maybePrimaryId maybeSchool maybeSavingThrow maybeTargetToAreaShape maybePersonalToAreaShape =
+statBlock : List SeedInstance -> List AppliedFactor -> Int -> Maybe SeedInstanceId -> Maybe String -> Maybe SavingThrow -> Maybe String -> Maybe String -> Maybe String -> StatBlockData
+statBlock instances rawFactors saveDCBonus maybePrimaryId maybeSchool maybeSavingThrow maybeTargetToAreaShape maybePersonalToAreaShape maybeBoltShape =
     let
         globalFactors =
             rawFactors
@@ -352,11 +359,37 @@ statBlock instances rawFactors saveDCBonus maybePrimaryId maybeSchool maybeSavin
                 |> List.filter (\c -> not (removeS && c == S))
                 |> List.map componentToString
 
+        targetToTouchActive =
+            List.any (\af -> af.factorId == TargetToTouch) globalFactors
+
+        areaToTouchActive =
+            List.any (\af -> af.factorId == AreaToTouch) globalFactors
+
+        areaToTargetActive =
+            List.any (\af -> af.factorId == AreaToTarget) globalFactors
+
+        changeToPersonalActive =
+            List.any (\af -> af.factorId == ChangeToPersonal) globalFactors
+
         castingTime =
             deriveCastingTime globalFactors primarySeed
 
+        rangeBase =
+            if targetToTouchActive then
+                "300 ft."
+
+            else if areaToTouchActive then
+                "25 ft. + 5 ft./2 levels"
+
+            else
+                Maybe.map .range primarySeed |> Maybe.withDefault "—"
+
         range =
-            deriveRange globalFactors primarySeed
+            if changeToPersonalActive then
+                "Personal"
+
+            else
+                deriveRange globalFactors rangeBase
 
         targetToAreaActive =
             List.any (\af -> af.factorId == TargetToArea) globalFactors
@@ -377,6 +410,33 @@ statBlock instances rawFactors saveDCBonus maybePrimaryId maybeSchool maybeSavin
         convertingToArea =
             targetToAreaActive || personalToAreaActive
 
+        -- "Change area to ..." factors set a fixed Area text directly,
+        -- independent of the Target/Personal -> Area conversion picker.
+        areaChangeText =
+            if List.any (\af -> af.factorId == ChangeToBolt) globalFactors then
+                Just (Maybe.withDefault (List.head boltShapes |> Maybe.withDefault "") maybeBoltShape)
+
+            else if List.any (\af -> af.factorId == ChangeToCylinder) globalFactors then
+                Just (targetToAreaText "Cylinder")
+
+            else if List.any (\af -> af.factorId == ChangeToCone) globalFactors then
+                Just (targetToAreaText "40-ft. cone")
+
+            else if List.any (\af -> af.factorId == ChangeToFourCubes) globalFactors then
+                Just (targetToAreaText "Four 10-ft. cubes")
+
+            else if List.any (\af -> af.factorId == ChangeToRadius) globalFactors then
+                Just (targetToAreaText "20-ft. radius")
+
+            else
+                Nothing
+
+        increaseAreaCount =
+            globalFactors
+                |> List.filter (\af -> af.factorId == IncreaseArea)
+                |> List.map .quantity
+                |> List.sum
+
         extraTargets =
             globalFactors
                 |> List.filter (\af -> af.factorId == AddExtraTarget)
@@ -385,7 +445,13 @@ statBlock instances rawFactors saveDCBonus maybePrimaryId maybeSchool maybeSavin
                 |> Maybe.withDefault 0
 
         target =
-            if convertingToArea then
+            if changeToPersonalActive then
+                Just "You"
+
+            else if areaToTargetActive then
+                Just "TBD"
+
+            else if convertingToArea then
                 Nothing
 
             else
@@ -400,15 +466,34 @@ statBlock instances rawFactors saveDCBonus maybePrimaryId maybeSchool maybeSavin
                                 t
                         )
 
-        area =
-            if convertingToArea then
+        areaBeforeIncrease =
+            if changeToPersonalActive || areaToTargetActive || areaToTouchActive then
+                Nothing
+
+            else if convertingToArea then
                 activeToAreaShape |> Maybe.map targetToAreaText
 
             else
-                Maybe.andThen .area primarySeed
+                case areaChangeText of
+                    Just t ->
+                        Just t
+
+                    Nothing ->
+                        Maybe.andThen .area primarySeed
+
+        area =
+            if increaseAreaCount > 0 then
+                Maybe.map (scaleNumbers (increaseAreaCount + 1)) areaBeforeIncrease
+
+            else
+                areaBeforeIncrease
 
         effect =
-            Maybe.andThen .effect primarySeed
+            if targetToTouchActive || areaToTouchActive then
+                Just "Ray"
+
+            else
+                Maybe.andThen .effect primarySeed
 
         duration =
             deriveDuration globalFactors instances
@@ -498,9 +583,15 @@ deriveCastingTime globalFactors primarySeed =
                     |> List.filter (\af -> af.factorId == ReduceCastTime1Round)
                     |> List.map .quantity
                     |> List.sum
+
+            minutesStr n =
+                String.fromInt n ++ (if n == 1 then " minute" else " minutes")
+
+            daysStr n =
+                String.fromInt n ++ (if n == 1 then " day" else " days")
         in
         if dayExtra > 0 then
-            String.fromInt (10 + dayExtra) ++ " minutes + " ++ String.fromInt dayExtra ++ " day(s)"
+            minutesStr (1 + minExtra) ++ " + " ++ daysStr dayExtra
 
         else if roundReductions > 0 then
             let
@@ -515,9 +606,6 @@ deriveCastingTime globalFactors primarySeed =
 
                 resultRounds =
                     modBy 10 afterRounds
-
-                minutesStr n =
-                    String.fromInt n ++ (if n == 1 then " minute" else " minutes")
 
                 roundsStr n =
                     String.fromInt n ++ (if n == 1 then " round" else " rounds")
@@ -596,12 +684,9 @@ scaleRange mult s =
                 String.fromChar c ++ scaleRange mult rest
 
 
-deriveRange : List AppliedFactor -> Maybe Seed -> String
-deriveRange globalFactors primarySeed =
+deriveRange : List AppliedFactor -> String -> String
+deriveRange globalFactors base =
     let
-        base =
-            Maybe.map .range primarySeed |> Maybe.withDefault "—"
-
         doublings =
             globalFactors
                 |> List.filter (\af -> af.factorId == IncreaseRange)
@@ -703,13 +788,13 @@ leadingDigits s =
                 ( "", s )
 
 
--- Scale every number in a duration string by `mult`.
--- Each application of "increase duration 100%" adds one more base value,
+-- Scale every number in a string by `mult`.
+-- Each application of a "increase X 100%" factor adds one more base value,
 -- so n applications → multiplier of (n + 1).
 -- Walks the full string so multiple numeric values (e.g. Conjure's
 -- "8 hours (simple objects last 24 hours)") are all scaled.
-scaleDuration : Int -> String -> String
-scaleDuration mult s =
+scaleNumbers : Int -> String -> String
+scaleNumbers mult s =
     case String.uncons s of
         Nothing ->
             ""
@@ -722,13 +807,18 @@ scaleDuration mult s =
                 in
                 case String.toInt digits of
                     Nothing ->
-                        digits ++ scaleDuration mult remaining
+                        digits ++ scaleNumbers mult remaining
 
                     Just n ->
-                        String.fromInt (n * mult) ++ scaleDuration mult remaining
+                        String.fromInt (n * mult) ++ scaleNumbers mult remaining
 
             else
-                String.fromChar c ++ scaleDuration mult rest
+                String.fromChar c ++ scaleNumbers mult rest
+
+
+scaleDuration : Int -> String -> String
+scaleDuration mult s =
+    scaleNumbers mult s
 
 
 deriveDuration : List AppliedFactor -> List SeedInstance -> String

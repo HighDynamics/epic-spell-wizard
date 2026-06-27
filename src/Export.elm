@@ -353,8 +353,8 @@ formatNum n =
 -- ─── Markdown export ──────────────────────────────────────────────────────────
 
 
-generateMarkdown : String -> String -> List SeedInstance -> List AppliedFactor -> Int -> Maybe SeedInstanceId -> Maybe String -> Maybe String -> String
-generateMarkdown link spellName instances globalFactors casterSaveDCBonus maybePrimaryId maybeTargetToAreaShape maybePersonalToAreaShape =
+generateMarkdown : String -> String -> List SeedInstance -> List AppliedFactor -> Int -> Maybe SeedInstanceId -> Maybe String -> Maybe String -> Maybe String -> String
+generateMarkdown link spellName instances globalFactors casterSaveDCBonus maybePrimaryId maybeTargetToAreaShape maybePersonalToAreaShape maybeBoltShape =
     let
         breakdown =
             calculateBreakdown instances globalFactors
@@ -363,7 +363,7 @@ generateMarkdown link spellName instances globalFactors casterSaveDCBonus maybeP
             devCosts breakdown.finalDC
 
         sb =
-            statBlock instances globalFactors casterSaveDCBonus maybePrimaryId Nothing Nothing maybeTargetToAreaShape maybePersonalToAreaShape
+            statBlock instances globalFactors casterSaveDCBonus maybePrimaryId Nothing Nothing maybeTargetToAreaShape maybePersonalToAreaShape maybeBoltShape
 
         title =
             if String.isEmpty spellName then
@@ -490,8 +490,8 @@ generateMarkdown link spellName instances globalFactors casterSaveDCBonus maybeP
 -- ─── Plain text export ────────────────────────────────────────────────────────
 
 
-generatePlainText : String -> String -> List SeedInstance -> List AppliedFactor -> Int -> Maybe SeedInstanceId -> Maybe String -> Maybe String -> String
-generatePlainText link spellName instances globalFactors casterSaveDCBonus maybePrimaryId maybeTargetToAreaShape maybePersonalToAreaShape =
+generatePlainText : String -> String -> List SeedInstance -> List AppliedFactor -> Int -> Maybe SeedInstanceId -> Maybe String -> Maybe String -> Maybe String -> String
+generatePlainText link spellName instances globalFactors casterSaveDCBonus maybePrimaryId maybeTargetToAreaShape maybePersonalToAreaShape maybeBoltShape =
     let
         breakdown =
             calculateBreakdown instances globalFactors
@@ -500,7 +500,7 @@ generatePlainText link spellName instances globalFactors casterSaveDCBonus maybe
             devCosts breakdown.finalDC
 
         sb =
-            statBlock instances globalFactors casterSaveDCBonus maybePrimaryId Nothing Nothing maybeTargetToAreaShape maybePersonalToAreaShape
+            statBlock instances globalFactors casterSaveDCBonus maybePrimaryId Nothing Nothing maybeTargetToAreaShape maybePersonalToAreaShape maybeBoltShape
 
         title =
             if String.isEmpty spellName then

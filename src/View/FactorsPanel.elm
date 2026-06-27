@@ -1,6 +1,6 @@
 module View.FactorsPanel exposing (viewFactorsPanel)
 
-import Calc exposing (targetToAreaShapes)
+import Calc exposing (boltShapes, targetToAreaShapes)
 import Dict
 import Factors exposing (allFactors)
 import Html exposing (..)
@@ -345,10 +345,13 @@ viewGlobalFactorSection model label category =
 
                             extraRows =
                                 if f.id == TargetToArea && isActive then
-                                    [ viewAreaShapeDropdown model.targetToAreaShape SetTargetToAreaShape ]
+                                    [ viewAreaShapeDropdown model.targetToAreaShape SetTargetToAreaShape targetToAreaShapes ]
 
                                 else if f.id == PersonalToArea && isActive then
-                                    [ viewAreaShapeDropdown model.personalToAreaShape SetPersonalToAreaShape ]
+                                    [ viewAreaShapeDropdown model.personalToAreaShape SetPersonalToAreaShape targetToAreaShapes ]
+
+                                else if f.id == ChangeToBolt && isActive then
+                                    [ viewAreaShapeDropdown model.boltShape SetBoltShape boltShapes ]
 
                                 else
                                     []
@@ -374,8 +377,8 @@ viewFactorSectionHeader sectionName =
         [ text sectionName ]
 
 
-viewAreaShapeDropdown : Maybe String -> (String -> Msg) -> Html Msg
-viewAreaShapeDropdown maybeShape toMsg =
+viewAreaShapeDropdown : Maybe String -> (String -> Msg) -> List String -> Html Msg
+viewAreaShapeDropdown maybeShape toMsg shapes =
     div [ class "flex items-center justify-between py-1 gap-2 pl-4" ]
         [ label [ class "text-xs text-gray-400 shrink-0" ] [ text "Area shape" ]
         , select
@@ -391,7 +394,7 @@ viewAreaShapeDropdown maybeShape toMsg =
                             ]
                             [ text shape ]
                     )
-                    targetToAreaShapes
+                    shapes
             )
         ]
 
