@@ -588,12 +588,18 @@ A special use of the fortify seed grants the target a permanent +1 year to its c
                 [ { id = "fortify_new_plus", name = "Each additional +1", description = "", dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
                 ]
           }
+        , { id = "fortify_damage_reduction"
+          , name = "Damage Reduction"
+          , factors =
+                [ { id = "fortify_dr", name = "Each +1 damage reduction", description = "Any mode: adds DR/magic", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
+                , { id = "fortify_dr_epic", name = "Damage Reduction vs. epic", description = "+15 DC surcharge to make DR bypass epic", dcModifier = 15, kind = SeedToggle, maxQuantity = Just 1 }
+                ]
+          }
         , { id = "fortify_sr"
           , name = "Grant Spell Resistance 25"
           , factors =
                 [ { id = "fortify_sr_plus", name = "Each +1 SR above 25", description = "", dcModifier = 4, kind = SeedStackable, maxQuantity = Nothing }
                 , { id = "fortify_sr_minus", name = "Each –1 SR below 25", description = "", dcModifier = -2, kind = SeedStackable, maxQuantity = Nothing }
-                , { id = "fortify_dr_epic", name = "Damage Reduction vs. epic", description = "+15 DC surcharge to make DR bypass epic", dcModifier = 15, kind = SeedToggle, maxQuantity = Just 1 }
                 ]
           }
         , { id = "fortify_age"
@@ -603,9 +609,7 @@ A special use of the fortify seed grants the target a permanent +1 year to its c
                 ]
           }
         ]
-    , universalFactors =
-        [ { id = "fortify_dr", name = "Each +1 damage reduction", description = "Any mode: adds DR/magic", dcModifier = 2, kind = SeedStackable, maxQuantity = Nothing }
-        ]
+    , universalFactors = []
     , choices = []
     }
 
