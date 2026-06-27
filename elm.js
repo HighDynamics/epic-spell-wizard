@@ -4844,7 +4844,7 @@ var $elm$core$Array$builderToArray = F2(
 			var treeLen = builder.f * $elm$core$Array$branchFactor;
 			var depth = $elm$core$Basics$floor(
 				A2($elm$core$Basics$logBase, $elm$core$Array$branchFactor, treeLen - 1));
-			var correctNodeList = reverseNodeList ? $elm$core$List$reverse(builder.i) : builder.i;
+			var correctNodeList = reverseNodeList ? $elm$core$List$reverse(builder.j) : builder.j;
 			var tree = A2($elm$core$Array$treeFromBuilder, correctNodeList, builder.f);
 			return A4(
 				$elm$core$Array$Array_elm_builtin,
@@ -4864,7 +4864,7 @@ var $elm$core$Array$initializeHelp = F5(
 				return A2(
 					$elm$core$Array$builderToArray,
 					false,
-					{i: nodeList, f: (len / $elm$core$Array$branchFactor) | 0, h: tail});
+					{j: nodeList, f: (len / $elm$core$Array$branchFactor) | 0, h: tail});
 			} else {
 				var leaf = $elm$core$Array$Leaf(
 					A3($elm$core$Elm$JsArray$initialize, $elm$core$Array$branchFactor, fromIndex, fn));
@@ -5339,6 +5339,53 @@ var $author$project$Factors$mitigatingFactors = _List_fromArray(
 		{aL: 1, aj: -19, aW: 43, bx: 1, bA: 1, V: 'Ritual: Epic spell slot', b: 'Ritual', c: '-19 DC per participant', d: 7}
 	]);
 var $author$project$Factors$allFactors = _Utils_ap($author$project$Factors$augmentingFactors, $author$project$Factors$mitigatingFactors);
+var $author$project$UrlState$factorIdCodeTable = _List_fromArray(
+	[
+		_Utils_Tuple2('0', 0),
+		_Utils_Tuple2('1', 1),
+		_Utils_Tuple2('2', 2),
+		_Utils_Tuple2('3', 3),
+		_Utils_Tuple2('4', 4),
+		_Utils_Tuple2('5', 5),
+		_Utils_Tuple2('6', 6),
+		_Utils_Tuple2('7', 7),
+		_Utils_Tuple2('8', 8),
+		_Utils_Tuple2('9', 9),
+		_Utils_Tuple2('a', 10),
+		_Utils_Tuple2('b', 11),
+		_Utils_Tuple2('c', 12),
+		_Utils_Tuple2('d', 13),
+		_Utils_Tuple2('e', 14),
+		_Utils_Tuple2('f', 15),
+		_Utils_Tuple2('g', 16),
+		_Utils_Tuple2('h', 17),
+		_Utils_Tuple2('i', 18),
+		_Utils_Tuple2('j', 19),
+		_Utils_Tuple2('k', 20),
+		_Utils_Tuple2('l', 21),
+		_Utils_Tuple2('m', 22),
+		_Utils_Tuple2('n', 23),
+		_Utils_Tuple2('o', 24),
+		_Utils_Tuple2('p', 25),
+		_Utils_Tuple2('q', 26),
+		_Utils_Tuple2('r', 27),
+		_Utils_Tuple2('s', 28),
+		_Utils_Tuple2('t', 29),
+		_Utils_Tuple2('u', 30),
+		_Utils_Tuple2('v', 31),
+		_Utils_Tuple2('w', 32),
+		_Utils_Tuple2('x', 33),
+		_Utils_Tuple2('y', 34),
+		_Utils_Tuple2('z', 35),
+		_Utils_Tuple2('10', 36),
+		_Utils_Tuple2('11', 37),
+		_Utils_Tuple2('12', 38),
+		_Utils_Tuple2('13', 39),
+		_Utils_Tuple2('14', 40),
+		_Utils_Tuple2('15', 41),
+		_Utils_Tuple2('16', 42),
+		_Utils_Tuple2('17', 43)
+	]);
 var $elm$core$List$filter = F2(
 	function (isGood, list) {
 		return A3(
@@ -5350,6 +5397,42 @@ var $elm$core$List$filter = F2(
 			_List_Nil,
 			list);
 	});
+var $elm$core$List$head = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return $elm$core$Maybe$Just(x);
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $elm$core$Maybe$map = F2(
+	function (f, maybe) {
+		if (!maybe.$) {
+			var value = maybe.a;
+			return $elm$core$Maybe$Just(
+				f(value));
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $elm$core$Tuple$second = function (_v0) {
+	var y = _v0.b;
+	return y;
+};
+var $author$project$UrlState$factorIdFromCode = function (code) {
+	return A2(
+		$elm$core$Maybe$map,
+		$elm$core$Tuple$second,
+		$elm$core$List$head(
+			A2(
+				$elm$core$List$filter,
+				function (_v0) {
+					var c = _v0.a;
+					return _Utils_eq(c, code);
+				},
+				$author$project$UrlState$factorIdCodeTable)));
+};
 var $elm$core$List$maybeCons = F3(
 	function (f, mx, xs) {
 		var _v0 = f(mx);
@@ -5368,14 +5451,14 @@ var $elm$core$List$filterMap = F2(
 			_List_Nil,
 			xs);
 	});
-var $elm$core$List$head = function (list) {
-	if (list.b) {
-		var x = list.a;
-		var xs = list.b;
-		return $elm$core$Maybe$Just(x);
-	} else {
-		return $elm$core$Maybe$Nothing;
-	}
+var $author$project$Factors$getFactor = function (id) {
+	return $elm$core$List$head(
+		A2(
+			$elm$core$List$filter,
+			function (f) {
+				return _Utils_eq(f.aW, id);
+			},
+			$author$project$Factors$allFactors));
 };
 var $elm$core$Maybe$map2 = F3(
 	function (func, ma, mb) {
@@ -5411,21 +5494,33 @@ var $author$project$UrlState$decodeAppliedFactors = function (s) {
 			return A2(
 				$elm$core$Maybe$andThen,
 				function (_v0) {
-					var name = _v0.a;
+					var codeOrName = _v0.a;
 					var qtyStr = _v0.b;
+					var maybeFactor = function () {
+						var _v1 = A2(
+							$elm$core$Maybe$andThen,
+							$author$project$Factors$getFactor,
+							$author$project$UrlState$factorIdFromCode(codeOrName));
+						if (!_v1.$) {
+							var f = _v1.a;
+							return $elm$core$Maybe$Just(f);
+						} else {
+							return $elm$core$List$head(
+								A2(
+									$elm$core$List$filter,
+									function (f) {
+										return _Utils_eq(f.V, codeOrName);
+									},
+									$author$project$Factors$allFactors));
+						}
+					}();
 					return A3(
 						$elm$core$Maybe$map2,
 						F2(
 							function (f, qty) {
 								return {e: f.aW, n: qty};
 							}),
-						$elm$core$List$head(
-							A2(
-								$elm$core$List$filter,
-								function (f) {
-									return _Utils_eq(f.V, name);
-								},
-								$author$project$Factors$allFactors)),
+						maybeFactor,
 						$elm$core$String$toInt(qtyStr));
 				},
 				$author$project$UrlState$splitOnEquals(pair));
@@ -6720,16 +6815,6 @@ var $author$project$Seeds$ward = {
 };
 var $author$project$Seeds$allSeeds = _List_fromArray(
 	[$author$project$Seeds$afflict, $author$project$Seeds$animate, $author$project$Seeds$animateDead, $author$project$Seeds$armor, $author$project$Seeds$banish, $author$project$Seeds$compel, $author$project$Seeds$conceal, $author$project$Seeds$conjure, $author$project$Seeds$contact, $author$project$Seeds$delude, $author$project$Seeds$destroy, $author$project$Seeds$dispel, $author$project$Seeds$energy, $author$project$Seeds$foresee, $author$project$Seeds$fortify, $author$project$Seeds$heal, $author$project$Seeds$life, $author$project$Seeds$reflect, $author$project$Seeds$reveal, $author$project$Seeds$slay, $author$project$Seeds$summon, $author$project$Seeds$transform, $author$project$Seeds$transport, $author$project$Seeds$ward]);
-var $elm$core$Maybe$map = F2(
-	function (f, maybe) {
-		if (!maybe.$) {
-			var value = maybe.a;
-			return $elm$core$Maybe$Just(
-				f(value));
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
-	});
 var $author$project$UrlState$decodeAppliedSeedFactors = function (s) {
 	return $elm$core$String$isEmpty(s) ? _List_Nil : A2(
 		$elm$core$List$filterMap,
@@ -6880,6 +6965,55 @@ var $author$project$UrlState$decodeChoices = function (s) {
 			$author$project$UrlState$splitOnEquals,
 			A2($elm$core$String$split, ',', s)));
 };
+var $author$project$Seeds$getSeed = function (id) {
+	return $elm$core$List$head(
+		A2(
+			$elm$core$List$filter,
+			function (s) {
+				return _Utils_eq(s.aW, id);
+			},
+			$author$project$Seeds$allSeeds));
+};
+var $author$project$UrlState$seedIdCodeTable = _List_fromArray(
+	[
+		_Utils_Tuple2('0', 0),
+		_Utils_Tuple2('1', 1),
+		_Utils_Tuple2('2', 2),
+		_Utils_Tuple2('3', 3),
+		_Utils_Tuple2('4', 4),
+		_Utils_Tuple2('5', 5),
+		_Utils_Tuple2('6', 6),
+		_Utils_Tuple2('7', 7),
+		_Utils_Tuple2('8', 8),
+		_Utils_Tuple2('9', 9),
+		_Utils_Tuple2('a', 10),
+		_Utils_Tuple2('b', 11),
+		_Utils_Tuple2('c', 12),
+		_Utils_Tuple2('d', 13),
+		_Utils_Tuple2('e', 14),
+		_Utils_Tuple2('f', 15),
+		_Utils_Tuple2('g', 16),
+		_Utils_Tuple2('h', 17),
+		_Utils_Tuple2('i', 18),
+		_Utils_Tuple2('j', 19),
+		_Utils_Tuple2('k', 20),
+		_Utils_Tuple2('l', 21),
+		_Utils_Tuple2('m', 22),
+		_Utils_Tuple2('n', 23)
+	]);
+var $author$project$UrlState$seedIdFromCode = function (code) {
+	return A2(
+		$elm$core$Maybe$map,
+		$elm$core$Tuple$second,
+		$elm$core$List$head(
+			A2(
+				$elm$core$List$filter,
+				function (_v0) {
+					var c = _v0.a;
+					return _Utils_eq(c, code);
+				},
+				$author$project$UrlState$seedIdCodeTable)));
+};
 var $author$project$UrlState$decodeSeedInstance = function (raw) {
 	var _v0 = A2($elm$core$String$split, ':', raw);
 	if ((((_v0.b && _v0.b.b) && _v0.b.b.b) && _v0.b.b.b.b) && (!_v0.b.b.b.b.b)) {
@@ -6890,24 +7024,40 @@ var $author$project$UrlState$decodeSeedInstance = function (raw) {
 		var choicesStr = _v2.a;
 		var _v3 = _v2.b;
 		var factorsStr = _v3.a;
-		return A2(
-			$elm$core$Maybe$map,
-			function (seed) {
-				return {
+		var _v4 = A2(
+			$elm$core$Maybe$andThen,
+			$author$project$Seeds$getSeed,
+			$author$project$UrlState$seedIdFromCode(seedNameStr));
+		if (!_v4.$) {
+			var seed = _v4.a;
+			return $elm$core$Maybe$Just(
+				{
 					af: $author$project$UrlState$decodeAppliedSeedFactors(factorsStr),
 					bj: $elm$core$String$toInt(baseDCStr),
 					aN: $author$project$UrlState$decodeChoices(choicesStr),
 					aX: 0,
 					s: seed.aW
-				};
-			},
-			$elm$core$List$head(
-				A2(
-					$elm$core$List$filter,
-					function (s) {
-						return _Utils_eq(s.V, seedNameStr);
-					},
-					$author$project$Seeds$allSeeds)));
+				});
+		} else {
+			return A2(
+				$elm$core$Maybe$map,
+				function (seed) {
+					return {
+						af: $author$project$UrlState$decodeAppliedSeedFactors(factorsStr),
+						bj: $elm$core$String$toInt(baseDCStr),
+						aN: $author$project$UrlState$decodeChoices(choicesStr),
+						aX: 0,
+						s: seed.aW
+					};
+				},
+				$elm$core$List$head(
+					A2(
+						$elm$core$List$filter,
+						function (s) {
+							return _Utils_eq(s.V, seedNameStr);
+						},
+						$author$project$Seeds$allSeeds)));
+		}
 	} else {
 		return $elm$core$Maybe$Nothing;
 	}
@@ -7064,7 +7214,7 @@ var $author$project$UrlState$applyQuery = F2(
 		var query = $author$project$UrlState$parseParams(search);
 		var decodedInstances = A2(
 			$elm$core$Maybe$withDefault,
-			model.k,
+			model.l,
 			A2(
 				$elm$core$Maybe$map,
 				$author$project$UrlState$decodeSeedInstances,
@@ -7087,9 +7237,9 @@ var $author$project$UrlState$applyQuery = F2(
 		return _Utils_update(
 			model,
 			{
-				l: A2(
+				i: A2(
 					$elm$core$Maybe$withDefault,
-					model.l,
+					model.i,
 					A2(
 						$elm$core$Maybe$map,
 						$author$project$UrlState$decodeAppliedFactors,
@@ -7117,7 +7267,7 @@ var $author$project$UrlState$applyQuery = F2(
 						A2($elm$core$Basics$composeL, $elm$core$Maybe$Just, $author$project$UrlState$decodeShapeSlug),
 						A2($elm$core$Dict$get, 'p2a', query))),
 				r: primaryFromIndex,
-				k: decodedInstances,
+				l: decodedInstances,
 				az: A2(
 					$elm$core$Maybe$withDefault,
 					model.az,
@@ -7163,7 +7313,7 @@ var $author$project$Types$PlainTextExport = 1;
 var $author$project$Types$SeedsTab = 0;
 var $elm$core$Set$Set_elm_builtin = $elm$core$Basics$identity;
 var $elm$core$Set$empty = $elm$core$Dict$empty;
-var $author$project$Main$defaultModel = {aJ: 0, l: _List_Nil, v: '', C: $elm$core$Maybe$Nothing, N: $elm$core$Set$empty, O: $elm$core$Set$empty, aa: $elm$core$Maybe$Nothing, P: $elm$core$Set$empty, am: 1, an: true, ac: false, ad: $elm$core$Maybe$Nothing, Q: '', R: false, S: false, W: 0, ar: $elm$core$Maybe$Nothing, F: $elm$core$Maybe$Nothing, r: $elm$core$Maybe$Nothing, au: false, k: _List_Nil, az: true, aA: $elm$core$Maybe$Nothing, aB: $elm$core$Maybe$Nothing, aD: '', aH: true, H: $elm$core$Maybe$Nothing};
+var $author$project$Main$defaultModel = {aJ: 0, i: _List_Nil, v: '', C: $elm$core$Maybe$Nothing, N: $elm$core$Set$empty, O: $elm$core$Set$empty, aa: $elm$core$Maybe$Nothing, P: $elm$core$Set$empty, am: 1, an: true, ac: false, ad: $elm$core$Maybe$Nothing, Q: '', R: false, S: false, W: 0, ar: $elm$core$Maybe$Nothing, F: $elm$core$Maybe$Nothing, r: $elm$core$Maybe$Nothing, au: false, l: _List_Nil, az: true, aA: $elm$core$Maybe$Nothing, aB: $elm$core$Maybe$Nothing, aD: '', aH: true, H: $elm$core$Maybe$Nothing};
 var $elm$core$String$replace = F3(
 	function (before, after, string) {
 		return A2(
@@ -7197,28 +7347,30 @@ var $author$project$UrlState$escapeForSharing = function (s) {
 var $author$project$UrlState$boolFlag = function (b) {
 	return b ? '1' : '0';
 };
-var $author$project$Factors$getFactor = function (id) {
-	return $elm$core$List$head(
+var $author$project$UrlState$factorIdCode = function (factorId) {
+	return A2(
+		$elm$core$Maybe$withDefault,
+		'',
 		A2(
-			$elm$core$List$filter,
-			function (f) {
-				return _Utils_eq(f.aW, id);
-			},
-			$author$project$Factors$allFactors));
+			$elm$core$Maybe$map,
+			$elm$core$Tuple$first,
+			$elm$core$List$head(
+				A2(
+					$elm$core$List$filter,
+					function (_v0) {
+						var f = _v0.b;
+						return _Utils_eq(f, factorId);
+					},
+					$author$project$UrlState$factorIdCodeTable))));
 };
 var $author$project$UrlState$encodeAppliedFactors = function (factors) {
 	return A2(
 		$elm$core$String$join,
 		',',
 		A2(
-			$elm$core$List$filterMap,
+			$elm$core$List$map,
 			function (af) {
-				return A2(
-					$elm$core$Maybe$map,
-					function (f) {
-						return f.V + ('=' + $elm$core$String$fromInt(af.n));
-					},
-					$author$project$Factors$getFactor(af.e));
+				return $author$project$UrlState$factorIdCode(af.e) + ('=' + $elm$core$String$fromInt(af.n));
 			},
 			factors));
 };
@@ -7247,49 +7399,51 @@ var $author$project$UrlState$saveTypeToString = function (st) {
 var $author$project$UrlState$encodeSavingThrow = function (st) {
 	return $author$project$UrlState$saveTypeToString(st.av) + ('|' + ($author$project$UrlState$saveEffectToString(st.ab) + ('|' + $author$project$UrlState$boolFlag(st.bt))));
 };
-var $author$project$Seeds$getSeed = function (id) {
-	return $elm$core$List$head(
+var $author$project$UrlState$seedIdCode = function (seedId) {
+	return A2(
+		$elm$core$Maybe$withDefault,
+		'',
 		A2(
-			$elm$core$List$filter,
-			function (s) {
-				return _Utils_eq(s.aW, id);
-			},
-			$author$project$Seeds$allSeeds));
+			$elm$core$Maybe$map,
+			$elm$core$Tuple$first,
+			$elm$core$List$head(
+				A2(
+					$elm$core$List$filter,
+					function (_v0) {
+						var s = _v0.b;
+						return _Utils_eq(s, seedId);
+					},
+					$author$project$UrlState$seedIdCodeTable))));
 };
 var $author$project$UrlState$encodeSeedInstance = function (inst) {
-	return A2(
-		$elm$core$Maybe$map,
-		function (seed) {
-			return seed.V + (':' + (A2(
-				$elm$core$Maybe$withDefault,
-				'',
-				A2($elm$core$Maybe$map, $elm$core$String$fromInt, inst.bj)) + (':' + (A2(
-				$elm$core$String$join,
-				',',
-				A2(
-					$elm$core$List$map,
-					function (_v0) {
-						var k = _v0.a;
-						var v = _v0.b;
-						return k + ('=' + v);
-					},
-					$elm$core$Dict$toList(inst.aN))) + (':' + A2(
-				$elm$core$String$join,
-				',',
-				A2(
-					$elm$core$List$map,
-					function (af) {
-						return af.e + ('=' + $elm$core$String$fromInt(af.n));
-					},
-					inst.af)))))));
-		},
-		$author$project$Seeds$getSeed(inst.s));
+	return $author$project$UrlState$seedIdCode(inst.s) + (':' + (A2(
+		$elm$core$Maybe$withDefault,
+		'',
+		A2($elm$core$Maybe$map, $elm$core$String$fromInt, inst.bj)) + (':' + (A2(
+		$elm$core$String$join,
+		',',
+		A2(
+			$elm$core$List$map,
+			function (_v0) {
+				var k = _v0.a;
+				var v = _v0.b;
+				return k + ('=' + v);
+			},
+			$elm$core$Dict$toList(inst.aN))) + (':' + A2(
+		$elm$core$String$join,
+		',',
+		A2(
+			$elm$core$List$map,
+			function (af) {
+				return af.e + ('=' + $elm$core$String$fromInt(af.n));
+			},
+			inst.af)))))));
 };
 var $author$project$UrlState$encodeSeedInstances = function (instances) {
 	return A2(
 		$elm$core$String$join,
 		';',
-		A2($elm$core$List$filterMap, $author$project$UrlState$encodeSeedInstance, instances));
+		A2($elm$core$List$map, $author$project$UrlState$encodeSeedInstance, instances));
 };
 var $author$project$UrlState$encodeShapeSlug = function (shape) {
 	switch (shape) {
@@ -7400,19 +7554,19 @@ var $author$project$UrlState$params = function (model) {
 			A2(
 				$elm$core$Maybe$andThen,
 				function (pid) {
-					return A2($author$project$UrlState$indexOfInstance, pid, model.k);
+					return A2($author$project$UrlState$indexOfInstance, pid, model.l);
 				},
 				model.r)),
-			$elm$core$List$isEmpty(model.k) ? $elm$core$Maybe$Nothing : $elm$core$Maybe$Just(
-			A2(
-				$elm$url$Url$Builder$string,
-				'seeds',
-				$author$project$UrlState$encodeSeedInstances(model.k))),
 			$elm$core$List$isEmpty(model.l) ? $elm$core$Maybe$Nothing : $elm$core$Maybe$Just(
 			A2(
 				$elm$url$Url$Builder$string,
+				'seeds',
+				$author$project$UrlState$encodeSeedInstances(model.l))),
+			$elm$core$List$isEmpty(model.i) ? $elm$core$Maybe$Nothing : $elm$core$Maybe$Just(
+			A2(
+				$elm$url$Url$Builder$string,
 				'factors',
-				$author$project$UrlState$encodeAppliedFactors(model.l)))
+				$author$project$UrlState$encodeAppliedFactors(model.i)))
 		]);
 };
 var $elm$url$Url$Builder$toQueryPair = function (_v0) {
@@ -7553,10 +7707,6 @@ var $elm$core$List$member = F2(
 			},
 			xs);
 	});
-var $elm$core$Tuple$second = function (_v0) {
-	var y = _v0.b;
-	return y;
-};
 var $author$project$Calc$seedInstanceFactorDC = function (inst) {
 	var _v0 = $author$project$Seeds$getSeed(inst.s);
 	if (_v0.$ === 1) {
@@ -9363,8 +9513,8 @@ var $author$project$Main$updateInner = F2(
 						{
 							W: model.W + 1,
 							r: newPrimary,
-							k: _Utils_ap(
-								model.k,
+							l: _Utils_ap(
+								model.l,
 								_List_fromArray(
 									[newInstance]))
 						}),
@@ -9376,7 +9526,7 @@ var $author$project$Main$updateInner = F2(
 					function (i) {
 						return !_Utils_eq(i.aX, iid);
 					},
-					model.k);
+					model.l);
 				var newPrimary = _Utils_eq(
 					model.r,
 					$elm$core$Maybe$Just(iid)) ? A2(
@@ -9388,9 +9538,9 @@ var $author$project$Main$updateInner = F2(
 				return _Utils_Tuple2(
 					$elm$core$List$isEmpty(remaining) ? _Utils_update(
 						model,
-						{l: _List_Nil, C: $elm$core$Maybe$Nothing, F: $elm$core$Maybe$Nothing, r: newPrimary, k: remaining, H: $elm$core$Maybe$Nothing}) : _Utils_update(
+						{i: _List_Nil, C: $elm$core$Maybe$Nothing, F: $elm$core$Maybe$Nothing, r: newPrimary, l: remaining, H: $elm$core$Maybe$Nothing}) : _Utils_update(
 						model,
-						{r: newPrimary, k: remaining}),
+						{r: newPrimary, l: remaining}),
 					$elm$core$Platform$Cmd$none);
 			case 8:
 				var iid = msg.a;
@@ -9425,7 +9575,7 @@ var $author$project$Main$updateInner = F2(
 					_Utils_update(
 						model,
 						{
-							k: A2(
+							l: A2(
 								$elm$core$List$map,
 								function (i) {
 									if (_Utils_eq(i.aX, iid)) {
@@ -9448,7 +9598,7 @@ var $author$project$Main$updateInner = F2(
 										return i;
 									}
 								},
-								model.k)
+								model.l)
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 4:
@@ -9459,7 +9609,7 @@ var $author$project$Main$updateInner = F2(
 					_Utils_update(
 						model,
 						{
-							k: A2(
+							l: A2(
 								$elm$core$List$map,
 								function (i) {
 									return _Utils_eq(i.aX, iid) ? _Utils_update(
@@ -9468,7 +9618,7 @@ var $author$project$Main$updateInner = F2(
 											aN: A3($elm$core$Dict$insert, choiceId, value, i.aN)
 										}) : i;
 								},
-								model.k)
+								model.l)
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 5:
@@ -9478,13 +9628,13 @@ var $author$project$Main$updateInner = F2(
 					function (af) {
 						return _Utils_eq(af.e, factorId);
 					},
-					model.l);
+					model.i);
 				return alreadyApplied ? _Utils_Tuple2(model, $elm$core$Platform$Cmd$none) : _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{
-							l: _Utils_ap(
-								model.l,
+							i: _Utils_ap(
+								model.i,
 								_List_fromArray(
 									[
 										{e: factorId, n: 1}
@@ -9497,12 +9647,12 @@ var $author$project$Main$updateInner = F2(
 					_Utils_update(
 						model,
 						{
-							l: A2(
+							i: A2(
 								$elm$core$List$filter,
 								function (af) {
 									return !_Utils_eq(af.e, factorId);
 								},
-								model.l),
+								model.i),
 							C: (factorId === 15) ? $elm$core$Maybe$Nothing : model.C,
 							F: (factorId === 12) ? $elm$core$Maybe$Nothing : model.F,
 							H: (factorId === 11) ? $elm$core$Maybe$Nothing : model.H
@@ -9570,14 +9720,14 @@ var $author$project$Main$updateInner = F2(
 					_Utils_update(
 						model,
 						{
-							k: A2(
+							l: A2(
 								$elm$core$List$map,
 								function (i) {
 									return _Utils_eq(i.aX, iid) ? _Utils_update(
 										i,
 										{bj: parsed}) : i;
 								},
-								model.k)
+								model.l)
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 7:
@@ -9587,27 +9737,43 @@ var $author$project$Main$updateInner = F2(
 					_Utils_update(
 						model,
 						{
-							l: A2(
+							i: A2(
 								$elm$core$List$filter,
 								function (af) {
 									return !_Utils_eq(af.e, factorId);
 								},
-								model.l)
+								model.i)
 						}),
-					$elm$core$Platform$Cmd$none) : _Utils_Tuple2(
+					$elm$core$Platform$Cmd$none) : (A2(
+					$elm$core$List$any,
+					function (af) {
+						return _Utils_eq(af.e, factorId);
+					},
+					model.i) ? _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{
-							l: A2(
+							i: A2(
 								$elm$core$List$map,
 								function (af) {
 									return _Utils_eq(af.e, factorId) ? _Utils_update(
 										af,
 										{n: qty}) : af;
 								},
-								model.l)
+								model.i)
 						}),
-					$elm$core$Platform$Cmd$none);
+					$elm$core$Platform$Cmd$none) : _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							i: _Utils_ap(
+								model.i,
+								_List_fromArray(
+									[
+										{e: factorId, n: qty}
+									]))
+						}),
+					$elm$core$Platform$Cmd$none));
 			case 18:
 				return _Utils_Tuple2(
 					_Utils_update(
@@ -9645,7 +9811,7 @@ var $author$project$Main$updateInner = F2(
 						return $author$project$Export$generatePlainText;
 					}
 				}();
-				var output = A9(generate, link, model.aD, model.k, model.l, 0, model.r, model.H, model.F, model.C);
+				var output = A9(generate, link, model.aD, model.l, model.i, 0, model.r, model.H, model.F, model.C);
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
@@ -10070,7 +10236,29 @@ var $author$project$Types$SetGlobalFactorQty = F2(
 	function (a, b) {
 		return {$: 7, a: a, b: b};
 	});
+var $elm$virtual_dom$VirtualDom$attribute = F2(
+	function (key, value) {
+		return A2(
+			_VirtualDom_attribute,
+			_VirtualDom_noOnOrFormAction(key),
+			_VirtualDom_noJavaScriptOrHtmlUri(value));
+	});
+var $elm$html$Html$Attributes$attribute = $elm$virtual_dom$VirtualDom$attribute;
 var $elm$html$Html$Attributes$checked = $elm$html$Html$Attributes$boolProperty('checked');
+var $elm$core$Basics$min = F2(
+	function (x, y) {
+		return (_Utils_cmp(x, y) < 0) ? x : y;
+	});
+var $author$project$View$FactorsPanel$clampQty = F2(
+	function (maxQuantity, n) {
+		var nonNegative = A2($elm$core$Basics$max, 0, n);
+		if (maxQuantity.$ === 1) {
+			return nonNegative;
+		} else {
+			var mx = maxQuantity.a;
+			return A2($elm$core$Basics$min, mx, nonNegative);
+		}
+	});
 var $elm$html$Html$Attributes$disabled = $elm$html$Html$Attributes$boolProperty('disabled');
 var $elm$html$Html$input = _VirtualDom_node('input');
 var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
@@ -10124,7 +10312,7 @@ var $author$project$View$FactorsPanel$viewGlobalFactorRow = F2(
 										A2(
 											$author$project$Types$SetGlobalFactorQty,
 											factor.aW,
-											A2($elm$core$Basics$max, 0, qty - 1))),
+											A2($author$project$View$FactorsPanel$clampQty, $elm$core$Maybe$Nothing, qty - 1))),
 										$elm$html$Html$Attributes$disabled(!qty)
 									]),
 								_List_fromArray(
@@ -10132,23 +10320,39 @@ var $author$project$View$FactorsPanel$viewGlobalFactorRow = F2(
 										$elm$html$Html$text('−')
 									])),
 								A2(
-								$elm$html$Html$span,
+								$elm$html$Html$input,
 								_List_fromArray(
 									[
-										$elm$html$Html$Attributes$class('text-xs text-gray-300 w-4 text-center tabular-nums')
+										$elm$html$Html$Attributes$type_('text'),
+										A2($elm$html$Html$Attributes$attribute, 'inputmode', 'numeric'),
+										$elm$html$Html$Attributes$value(
+										$elm$core$String$fromInt(qty)),
+										$elm$html$Html$Events$onInput(
+										function (raw) {
+											return A2(
+												$author$project$Types$SetGlobalFactorQty,
+												factor.aW,
+												A2(
+													$author$project$View$FactorsPanel$clampQty,
+													$elm$core$Maybe$Nothing,
+													A2(
+														$elm$core$Maybe$withDefault,
+														0,
+														$elm$core$String$toInt(raw))));
+										}),
+										$elm$html$Html$Attributes$class('w-12 bg-gray-800 border border-gray-600 rounded px-2 py-0.5 text-xs text-gray-100 tabular-nums text-center focus:outline-none focus:border-arcane-400')
 									]),
-								_List_fromArray(
-									[
-										$elm$html$Html$text(
-										$elm$core$String$fromInt(qty))
-									])),
+								_List_Nil),
 								A2(
 								$elm$html$Html$button,
 								_List_fromArray(
 									[
 										$elm$html$Html$Attributes$class('w-5 h-5 rounded bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs flex items-center justify-center'),
 										$elm$html$Html$Events$onClick(
-										isActive ? A2($author$project$Types$SetGlobalFactorQty, factor.aW, qty + 1) : $author$project$Types$AddGlobalFactor(factor.aW))
+										A2(
+											$author$project$Types$SetGlobalFactorQty,
+											factor.aW,
+											A2($author$project$View$FactorsPanel$clampQty, $elm$core$Maybe$Nothing, qty + 1)))
 									]),
 								_List_fromArray(
 									[
@@ -10185,7 +10389,7 @@ var $author$project$View$FactorsPanel$viewGlobalFactorRow = F2(
 			$elm$html$Html$div,
 			_List_fromArray(
 				[
-					$elm$html$Html$Attributes$class('flex items-center justify-between py-1 px-2 -mx-2 gap-2 text-sm h-10' + dimClass)
+					$elm$html$Html$Attributes$class('flex items-start justify-between py-1 px-2 -mx-2 gap-2 text-sm' + dimClass)
 				]),
 			_List_fromArray(
 				[
@@ -10201,7 +10405,7 @@ var $author$project$View$FactorsPanel$viewGlobalFactorRow = F2(
 							$elm$html$Html$div,
 							_List_fromArray(
 								[
-									$elm$html$Html$Attributes$class('text-gray-200 text-xs truncate')
+									$elm$html$Html$Attributes$class('text-gray-200 text-xs break-words')
 								]),
 							_List_fromArray(
 								[
@@ -10211,7 +10415,7 @@ var $author$project$View$FactorsPanel$viewGlobalFactorRow = F2(
 							$elm$html$Html$div,
 							_List_fromArray(
 								[
-									$elm$html$Html$Attributes$class('text-gray-500 text-xs')
+									$elm$html$Html$Attributes$class('text-gray-500 text-xs break-words')
 								]),
 							_List_fromArray(
 								[
@@ -10222,7 +10426,7 @@ var $author$project$View$FactorsPanel$viewGlobalFactorRow = F2(
 					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$class('flex items-center gap-1 shrink-0')
+							$elm$html$Html$Attributes$class('flex items-center gap-1 shrink-0 self-center')
 						]),
 					_List_fromArray(
 						[
@@ -10261,15 +10465,41 @@ var $author$project$View$FactorsPanel$viewGlobalFactorSection = F3(
 					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$class('flex items-center px-4 py-2 bg-gray-900 text-xs text-gray-400 font-semibold uppercase tracking-wider cursor-pointer gap-1.5'),
+							$elm$html$Html$Attributes$class('flex items-start px-4 py-2 bg-gray-900 cursor-pointer'),
 							$elm$html$Html$Events$onClick(
 							$author$project$Types$ToggleGlobalFactorSection(label))
 						]),
 					_List_fromArray(
 						[
-							$author$project$View$Icons$chevronIcon(
-							'w-4 h-4 transition-transform duration-200 ease-in-out ' + (isCollapsed ? 'rotate-0' : 'rotate-90')),
-							$elm$html$Html$text('── Global ' + (label + ' ──'))
+							A2(
+							$elm$html$Html$div,
+							_List_Nil,
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$span,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$class('text-xs text-gray-400 font-semibold uppercase tracking-wider flex items-center gap-1.5')
+										]),
+									_List_fromArray(
+										[
+											$author$project$View$Icons$chevronIcon(
+											'w-4 h-4 transition-transform duration-200 ease-in-out ' + (isCollapsed ? 'rotate-0' : 'rotate-90')),
+											$elm$html$Html$text('── Global ' + (label + ' ──'))
+										])),
+									A2(
+									$elm$html$Html$div,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$class('text-[10px] text-gray-600 normal-case font-normal tracking-normal mt-0.5')
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text(
+											isCollapsed ? 'Click to expand' : 'Click to collapse')
+										]))
+								]))
 						])),
 					A2(
 					$elm$html$Html$div,
@@ -10292,7 +10522,7 @@ var $author$project$View$FactorsPanel$viewGlobalFactorSection = F3(
 									$elm$html$Html$div,
 									_List_fromArray(
 										[
-											$elm$html$Html$Attributes$class('px-4 py-2')
+											$elm$html$Html$Attributes$class('px-4 py-2 space-y-1.5')
 										]),
 									A3(
 										$elm$core$List$foldl,
@@ -10306,7 +10536,7 @@ var $author$project$View$FactorsPanel$viewGlobalFactorSection = F3(
 														function (af) {
 															return _Utils_eq(af.e, f.aW);
 														},
-														model.l));
+														model.i));
 												var isActive = !_Utils_eq(maybeApplied, $elm$core$Maybe$Nothing);
 												var headerRow = (!_Utils_eq(
 													$elm$core$Maybe$Just(f.b),
@@ -10354,14 +10584,6 @@ var $author$project$Types$SetSeedBaseDCOverride = F2(
 var $author$project$Types$ToggleSeedInstanceCollapsed = function (a) {
 	return {$: 15, a: a};
 };
-var $elm$virtual_dom$VirtualDom$attribute = F2(
-	function (key, value) {
-		return A2(
-			_VirtualDom_attribute,
-			_VirtualDom_noOnOrFormAction(key),
-			_VirtualDom_noJavaScriptOrHtmlUri(value));
-	});
-var $elm$html$Html$Attributes$attribute = $elm$virtual_dom$VirtualDom$attribute;
 var $author$project$View$FactorsPanel$onClickStopPropagation = function (msg) {
 	return A2(
 		$elm$html$Html$Events$stopPropagationOn,
@@ -10580,10 +10802,6 @@ var $author$project$Types$SetSeedFactor = F3(
 	function (a, b, c) {
 		return {$: 3, a: a, b: b, c: c};
 	});
-var $elm$core$Basics$min = F2(
-	function (x, y) {
-		return (_Utils_cmp(x, y) < 0) ? x : y;
-	});
 var $author$project$View$FactorsPanel$viewSeedFactor = F2(
 	function (inst, sf) {
 		var currentQty = A2(
@@ -10610,7 +10828,7 @@ var $author$project$View$FactorsPanel$viewSeedFactor = F2(
 			$elm$html$Html$div,
 			_List_fromArray(
 				[
-					$elm$html$Html$Attributes$class('flex items-center justify-between py-1 px-2 -mx-2 gap-2 text-sm' + dimClass)
+					$elm$html$Html$Attributes$class('flex items-start justify-between py-1 px-2 -mx-2 gap-2 text-sm' + dimClass)
 				]),
 			_List_fromArray(
 				[
@@ -10626,7 +10844,7 @@ var $author$project$View$FactorsPanel$viewSeedFactor = F2(
 							$elm$html$Html$div,
 							_List_fromArray(
 								[
-									$elm$html$Html$Attributes$class('text-gray-200 text-xs truncate')
+									$elm$html$Html$Attributes$class('text-gray-200 text-xs break-words')
 								]),
 							_List_fromArray(
 								[
@@ -10636,7 +10854,7 @@ var $author$project$View$FactorsPanel$viewSeedFactor = F2(
 							$elm$html$Html$div,
 							_List_fromArray(
 								[
-									$elm$html$Html$Attributes$class('text-gray-500 text-xs truncate')
+									$elm$html$Html$Attributes$class('text-gray-500 text-xs break-words')
 								]),
 							_List_fromArray(
 								[
@@ -10647,7 +10865,7 @@ var $author$project$View$FactorsPanel$viewSeedFactor = F2(
 					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$class('flex items-center gap-1 shrink-0')
+							$elm$html$Html$Attributes$class('flex items-center gap-1 shrink-0 self-center')
 						]),
 					_List_fromArray(
 						[
@@ -10701,23 +10919,37 @@ var $author$project$View$FactorsPanel$viewSeedFactor = F2(
 														$author$project$Types$SetSeedFactor,
 														inst.aX,
 														sf.aW,
-														A2($elm$core$Basics$max, 0, currentQty - 1)))
+														A2($author$project$View$FactorsPanel$clampQty, sf.a, currentQty - 1)))
 												]),
 											_List_fromArray(
 												[
 													$elm$html$Html$text('−')
 												])),
 											A2(
-											$elm$html$Html$span,
+											$elm$html$Html$input,
 											_List_fromArray(
 												[
-													$elm$html$Html$Attributes$class('text-xs text-gray-300 w-4 text-center tabular-nums')
+													$elm$html$Html$Attributes$type_('text'),
+													A2($elm$html$Html$Attributes$attribute, 'inputmode', 'numeric'),
+													$elm$html$Html$Attributes$value(
+													$elm$core$String$fromInt(currentQty)),
+													$elm$html$Html$Events$onInput(
+													function (raw) {
+														return A3(
+															$author$project$Types$SetSeedFactor,
+															inst.aX,
+															sf.aW,
+															A2(
+																$author$project$View$FactorsPanel$clampQty,
+																sf.a,
+																A2(
+																	$elm$core$Maybe$withDefault,
+																	0,
+																	$elm$core$String$toInt(raw))));
+													}),
+													$elm$html$Html$Attributes$class('w-12 bg-gray-800 border border-gray-600 rounded px-2 py-0.5 text-xs text-gray-100 tabular-nums text-center focus:outline-none focus:border-arcane-400')
 												]),
-											_List_fromArray(
-												[
-													$elm$html$Html$text(
-													$elm$core$String$fromInt(currentQty))
-												])),
+											_List_Nil),
 											A2(
 											$elm$html$Html$button,
 											_List_fromArray(
@@ -10728,15 +10960,7 @@ var $author$project$View$FactorsPanel$viewSeedFactor = F2(
 														$author$project$Types$SetSeedFactor,
 														inst.aX,
 														sf.aW,
-														function () {
-															var _v1 = sf.a;
-															if (_v1.$ === 1) {
-																return currentQty + 1;
-															} else {
-																var mx = _v1.a;
-																return A2($elm$core$Basics$min, mx, currentQty + 1);
-															}
-														}()))
+														A2($author$project$View$FactorsPanel$clampQty, sf.a, currentQty + 1)))
 												]),
 											_List_fromArray(
 												[
@@ -10851,7 +11075,7 @@ var $author$project$View$FactorsPanel$viewSeedInstanceFactors = F3(
 						$elm$html$Html$div,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$class('flex items-center gap-1 shrink-0')
+								$elm$html$Html$Attributes$class('flex items-center gap-1 shrink-0 self-center')
 							]),
 						_List_fromArray(
 							[
@@ -10880,7 +11104,7 @@ var $author$project$View$FactorsPanel$viewSeedInstanceFactors = F3(
 										$elm$core$String$fromInt(currentDC)),
 										$elm$html$Html$Events$onInput(
 										$author$project$Types$SetSeedBaseDCOverride(inst.aX)),
-										$elm$html$Html$Attributes$class('w-10 bg-gray-800 border border-gray-600 rounded px-2 py-0.5 text-xs text-gray-100 tabular-nums text-center focus:outline-none focus:border-arcane-400')
+										$elm$html$Html$Attributes$class('w-12 bg-gray-800 border border-gray-600 rounded px-2 py-0.5 text-xs text-gray-100 tabular-nums text-center focus:outline-none focus:border-arcane-400')
 									]),
 								_List_Nil),
 								A2(
@@ -10912,23 +11136,40 @@ var $author$project$View$FactorsPanel$viewSeedInstanceFactors = F3(
 						$elm$html$Html$div,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$class('flex items-center justify-between px-4 py-2 bg-gray-900 cursor-pointer'),
+								$elm$html$Html$Attributes$class('flex items-start justify-between px-4 py-2 bg-gray-900 cursor-pointer'),
 								$elm$html$Html$Events$onClick(
 								$author$project$Types$ToggleSeedInstanceCollapsed(inst.aX))
 							]),
 						_List_fromArray(
 							[
 								A2(
-								$elm$html$Html$span,
+								$elm$html$Html$div,
+								_List_Nil,
 								_List_fromArray(
 									[
-										$elm$html$Html$Attributes$class('text-xs text-arcane-400 font-semibold uppercase tracking-wider flex items-center gap-1.5')
-									]),
-								_List_fromArray(
-									[
-										$author$project$View$Icons$chevronIcon(
-										'w-4 h-4 transition-transform duration-200 ease-in-out ' + (isCollapsed ? 'rotate-0' : 'rotate-90')),
-										$elm$html$Html$text('── ' + (label + ' ──'))
+										A2(
+										$elm$html$Html$span,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$class('text-xs text-arcane-400 font-semibold uppercase tracking-wider flex items-center gap-1.5')
+											]),
+										_List_fromArray(
+											[
+												$author$project$View$Icons$chevronIcon(
+												'w-4 h-4 transition-transform duration-200 ease-in-out ' + (isCollapsed ? 'rotate-0' : 'rotate-90')),
+												$elm$html$Html$text('── ' + (label + ' ──'))
+											])),
+										A2(
+										$elm$html$Html$div,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$class('text-[10px] text-gray-600 normal-case font-normal tracking-normal mt-0.5')
+											]),
+										_List_fromArray(
+											[
+												$elm$html$Html$text(
+												isCollapsed ? 'Click to expand' : 'Click to collapse')
+											]))
 									])),
 								A2(
 								$elm$html$Html$div,
@@ -10938,7 +11179,7 @@ var $author$project$View$FactorsPanel$viewSeedInstanceFactors = F3(
 									]),
 								_List_fromArray(
 									[
-										($elm$core$List$length(model.k) > 1) ? (_Utils_eq(
+										($elm$core$List$length(model.l) > 1) ? (_Utils_eq(
 										model.r,
 										$elm$core$Maybe$Just(inst.aX)) ? A2(
 										$elm$html$Html$span,
@@ -10997,7 +11238,7 @@ var $author$project$View$FactorsPanel$viewSeedInstanceFactors = F3(
 										$elm$html$Html$div,
 										_List_fromArray(
 											[
-												$elm$html$Html$Attributes$class('px-4 py-2')
+												$elm$html$Html$Attributes$class('px-4 py-2 space-y-1.5')
 											]),
 										A2(
 											$elm$core$List$cons,
@@ -11056,7 +11297,7 @@ var $author$project$View$FactorsPanel$viewFactorsPanel = F2(
 									]))
 							])),
 						function () {
-						if ($elm$core$List$isEmpty(model.k)) {
+						if ($elm$core$List$isEmpty(model.l)) {
 							return A2(
 								$elm$html$Html$div,
 								_List_fromArray(
@@ -11077,7 +11318,7 @@ var $author$project$View$FactorsPanel$viewFactorsPanel = F2(
 											]))
 									]));
 						} else {
-							var sortedInstances = $author$project$Calc$sortByName(model.k);
+							var sortedInstances = $author$project$Calc$sortByName(model.l);
 							return A2(
 								$elm$html$Html$div,
 								_List_Nil,
@@ -11100,13 +11341,13 @@ var $author$project$View$FactorsPanel$viewFactorsPanel = F2(
 					}()
 					]));
 		} else {
-			var totalFactors = $elm$core$List$length(model.l) + $elm$core$List$sum(
+			var totalFactors = $elm$core$List$length(model.i) + $elm$core$List$sum(
 				A2(
 					$elm$core$List$map,
 					function (i) {
 						return $elm$core$List$length(i.af);
 					},
-					model.k));
+					model.l));
 			return A2(
 				$elm$html$Html$div,
 				_List_fromArray(
@@ -11754,7 +11995,7 @@ var $author$project$View$SeedsPanel$viewSeedsPanel = function (model) {
 					]),
 				A2(
 					$elm$core$List$map,
-					$author$project$View$SeedsPanel$viewSeedCard(model.k),
+					$author$project$View$SeedsPanel$viewSeedCard(model.l),
 					$author$project$Seeds$allSeeds))
 			])) : A2(
 		$elm$html$Html$div,
@@ -11779,7 +12020,7 @@ var $author$project$View$SeedsPanel$viewSeedsPanel = function (model) {
 					[
 						$elm$html$Html$text(
 						'SEEDS (' + ($elm$core$String$fromInt(
-							$elm$core$List$length(model.k)) + ')'))
+							$elm$core$List$length(model.l)) + ')'))
 					]))
 			]));
 };
@@ -12098,7 +12339,7 @@ var $author$project$View$SummaryPanel$viewGlobalFactorList = F3(
 							},
 							$author$project$Factors$allFactors)));
 			},
-			model.l);
+			model.i);
 		return A2(
 			$elm$html$Html$div,
 			_List_Nil,
@@ -12147,7 +12388,7 @@ var $author$project$View$SummaryPanel$viewGlobalFactorList = F3(
 				]));
 	});
 var $author$project$View$SummaryPanel$viewSeedFactorsBySeed = function (model) {
-	var labels = $author$project$Calc$seedInstanceLabels(model.k);
+	var labels = $author$project$Calc$seedInstanceLabels(model.l);
 	var blocks = A2(
 		$elm$core$List$sortBy,
 		$elm$core$Tuple$first,
@@ -12243,7 +12484,7 @@ var $author$project$View$SummaryPanel$viewSeedFactorsBySeed = function (model) {
 						_Utils_Tuple2(label, lines));
 				}
 			},
-			model.k));
+			model.l));
 	return A2(
 		$elm$html$Html$div,
 		_List_Nil,
@@ -12329,23 +12570,23 @@ var $author$project$View$SummaryPanel$resolvePrimaryInstanceId = function (model
 			function (i) {
 				return _Utils_eq(i.aX, pid);
 			},
-			model.k) ? $elm$core$Maybe$Just(pid) : A2(
+			model.l) ? $elm$core$Maybe$Just(pid) : A2(
 			$elm$core$Maybe$map,
 			function ($) {
 				return $.aX;
 			},
-			$elm$core$List$head(model.k));
+			$elm$core$List$head(model.l));
 	} else {
 		return A2(
 			$elm$core$Maybe$map,
 			function ($) {
 				return $.aX;
 			},
-			$elm$core$List$head(model.k));
+			$elm$core$List$head(model.l));
 	}
 };
 var $author$project$View$SummaryPanel$viewSeedsUsed = function (model) {
-	var showPrimaryTag = $elm$core$List$length(model.k) > 1;
+	var showPrimaryTag = $elm$core$List$length(model.l) > 1;
 	var primaryId = $author$project$View$SummaryPanel$resolvePrimaryInstanceId(model);
 	var names = A2(
 		$elm$core$List$filterMap,
@@ -12360,7 +12601,7 @@ var $author$project$View$SummaryPanel$viewSeedsUsed = function (model) {
 				},
 				$author$project$Seeds$getSeed(inst.s));
 		},
-		$author$project$Calc$sortByName(model.k));
+		$author$project$Calc$sortByName(model.l));
 	return A2(
 		$elm$html$Html$div,
 		_List_Nil,
@@ -12514,13 +12755,14 @@ var $author$project$View$SummaryPanel$viewSpellNameSection = function (model) {
 						$elm$html$Html$button,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$class('shrink-0 text-arcane-400 opacity-60 hover:opacity-100'),
+								$elm$html$Html$Attributes$class('shrink-0 flex items-center gap-1 text-xs font-medium whitespace-nowrap text-arcane-400 opacity-60 hover:opacity-100'),
 								$elm$html$Html$Events$onClick($author$project$Types$CopyShareLink),
 								$elm$html$Html$Attributes$title('Copy shareable link')
 							]),
 						_List_fromArray(
 							[
-								$author$project$View$Icons$shareIcon('w-4 h-4')
+								$author$project$View$Icons$shareIcon('w-4 h-4'),
+								$elm$html$Html$text('Share this spell')
 							]))
 					])),
 				A2(
@@ -12594,7 +12836,7 @@ var $author$project$View$SummaryPanel$saveTypeLabel = function (st) {
 };
 var $author$project$View$SummaryPanel$viewStatBlock = F3(
 	function (model, breakdown, sb) {
-		var schools = $author$project$Calc$availableSchools(model.k);
+		var schools = $author$project$Calc$availableSchools(model.l);
 		var rowEl = F2(
 			function (label, el) {
 				return A2(
@@ -12743,7 +12985,7 @@ var $author$project$View$SummaryPanel$viewStatBlock = F3(
 				}
 			}
 		}();
-		var availableSaves = $author$project$Calc$availableSavingThrows(model.k);
+		var availableSaves = $author$project$Calc$availableSavingThrows(model.l);
 		var savingThrowEl = function () {
 			if (!availableSaves.b) {
 				return A2(
@@ -13045,8 +13287,8 @@ var $author$project$View$SummaryPanel$viewSummaryPanel = F4(
 				]));
 	});
 var $author$project$Main$view = function (model) {
-	var sb = A9($author$project$Calc$statBlock, model.k, model.l, 0, model.r, model.aB, model.aA, model.H, model.F, model.C);
-	var breakdown = A2($author$project$Calc$calculateBreakdown, model.k, model.l);
+	var sb = A9($author$project$Calc$statBlock, model.l, model.i, 0, model.r, model.aB, model.aA, model.H, model.F, model.C);
+	var breakdown = A2($author$project$Calc$calculateBreakdown, model.l, model.i);
 	var costs = $author$project$Calc$devCosts(breakdown.br);
 	return A2(
 		$elm$html$Html$div,
