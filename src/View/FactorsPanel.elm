@@ -1,6 +1,6 @@
 module View.FactorsPanel exposing (viewFactorsPanel)
 
-import Calc exposing (boltShapes, seedInstanceLabels, targetToAreaShapes)
+import Calc exposing (boltShapes, seedInstanceLabels, sortByName, targetToAreaShapes)
 import Dict exposing (Dict)
 import Factors exposing (allFactors)
 import Html exposing (..)
@@ -49,9 +49,13 @@ viewFactorsPanel model _ =
                     [ p [ class "text-gray-500 text-xs italic px-4 py-3" ] [ text "Select seeds before adding factors" ] ]
 
               else
+                let
+                    sortedInstances =
+                        sortByName model.seedInstances
+                in
                 div []
                     [ -- Per-instance seed factor sub-panels
-                      div [] (List.map (viewSeedInstanceFactors model (seedInstanceLabels model.seedInstances)) model.seedInstances)
+                      div [] (List.map (viewSeedInstanceFactors model (seedInstanceLabels sortedInstances)) sortedInstances)
                     , -- Global augmenting factors
                       viewGlobalFactorSection model "Augmenting" Augmenting
                     , -- Global mitigating factors

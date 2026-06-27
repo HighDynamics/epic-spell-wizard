@@ -1,6 +1,6 @@
 module View.SummaryPanel exposing (viewSummaryPanel)
 
-import Calc exposing (StatBlockData, availableSavingThrows, availableSchools, seedInstanceLabels)
+import Calc exposing (StatBlockData, availableSavingThrows, availableSchools, seedInstanceLabels, sortByName)
 import Dict
 import Factors exposing (allFactors)
 import Html exposing (..)
@@ -137,7 +137,7 @@ viewSeedsUsed model =
             List.length model.seedInstances > 1
 
         names =
-            model.seedInstances
+            sortByName model.seedInstances
                 |> List.filterMap
                     (\inst ->
                         getSeed inst.seedId

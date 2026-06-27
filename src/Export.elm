@@ -1,6 +1,6 @@
 module Export exposing (generateMarkdown, generatePlainText)
 
-import Calc exposing (StatBlockData, calculateBreakdown, devCosts, statBlock)
+import Calc exposing (StatBlockData, calculateBreakdown, devCosts, sortByName, statBlock)
 import Dict
 import Factors exposing (getFactor)
 import Seeds exposing (getSeed, isSpecialSeedFactor)
@@ -303,7 +303,7 @@ seedListLine maybePrimaryId instances =
         showPrimaryTag =
             List.length instances > 1
     in
-    instances
+    sortByName instances
         |> List.filterMap
             (\inst ->
                 getSeed inst.seedId

@@ -1,4 +1,4 @@
-module Calc exposing (StatBlockData, availableSchools, availableSavingThrows, boltShapes, calculateBreakdown, devCosts, seedInstanceLabels, statBlock, targetToAreaShapes, targetToAreaText)
+module Calc exposing (StatBlockData, availableSchools, availableSavingThrows, boltShapes, calculateBreakdown, devCosts, seedInstanceLabels, sortByName, statBlock, targetToAreaShapes, targetToAreaText)
 
 import Dict exposing (Dict)
 import Factors exposing (getFactor)
@@ -265,6 +265,14 @@ type alias StatBlockData =
     , savingThrow : String -- fully formatted, e.g. "Will negates (DC 26)"
     , spellResistance : String
     }
+
+
+-- Orders seed instances alphabetically by their seed's name. Stable, so
+-- duplicate instances of the same seed keep their original relative order.
+sortByName : List SeedInstance -> List SeedInstance
+sortByName instances =
+    instances
+        |> List.sortBy (\inst -> getSeed inst.seedId |> Maybe.map .name |> Maybe.withDefault "")
 
 
 availableSchools : List SeedInstance -> List String
