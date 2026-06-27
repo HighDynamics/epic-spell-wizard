@@ -147,7 +147,7 @@ viewSeedInstanceFactors model labels inst =
                                 , attribute "inputmode" "numeric"
                                 , value (String.fromInt currentDC)
                                 , onInput (SetSeedBaseDCOverride inst.instanceId)
-                                , class "w-12 bg-gray-800 border border-gray-600 rounded px-2 py-0.5 text-xs text-gray-100 tabular-nums text-center focus:outline-none focus:border-arcane-400"
+                                , class "w-12 bg-gray-800 border border-gray-600 rounded px-2 py-0.5 text-base md:text-xs text-gray-100 tabular-nums text-center focus:outline-none focus:border-arcane-400"
                                 ]
                                 []
                             , button
@@ -307,7 +307,7 @@ viewChoiceDropdown inst choice =
     div [ class "mb-2" ]
         [ label [ class "text-xs text-gray-500 mb-1 block" ] [ text (choice.label ++ currentDcLabel) ]
         , select
-            [ class "w-full bg-gray-800 text-gray-200 text-xs rounded px-2 py-1 border border-gray-700"
+            [ class "w-full bg-gray-800 text-gray-200 text-base md:text-xs rounded px-2 py-1 border border-gray-700"
             , onInput (SetChoice inst.instanceId choice.id)
             ]
             (List.map
@@ -430,7 +430,7 @@ viewSeedFactor inst sf =
                                 (\raw ->
                                     SetSeedFactor inst.instanceId sf.id (clampQty sf.maxQuantity (String.toInt raw |> Maybe.withDefault 0))
                                 )
-                            , class "w-12 bg-gray-800 border border-gray-600 rounded px-2 py-0.5 text-xs text-gray-100 tabular-nums text-center focus:outline-none focus:border-arcane-400"
+                            , class "w-12 bg-gray-800 border border-gray-600 rounded px-2 py-0.5 text-base md:text-xs text-gray-100 tabular-nums text-center focus:outline-none focus:border-arcane-400"
                             ]
                             []
                         , button
@@ -532,7 +532,7 @@ viewAreaShapeDropdown maybeShape toMsg shapes =
     div [ class "flex items-center justify-between py-1 gap-2 pl-4" ]
         [ label [ class "text-xs text-gray-400 shrink-0" ] [ text "Area shape" ]
         , select
-            [ class "flex-1 bg-gray-800 text-gray-200 text-xs rounded px-2 py-1 border border-gray-700"
+            [ class "flex-1 bg-gray-800 text-gray-200 text-base md:text-xs rounded px-2 py-1 border border-gray-700"
             , onInput toMsg
             ]
             (option [ value "", Html.Attributes.selected (maybeShape == Nothing) ] [ text "— select —" ]
@@ -617,7 +617,7 @@ viewGlobalFactorRow factor maybeApplied =
                             , attribute "inputmode" "numeric"
                             , value (String.fromInt qty)
                             , onInput (\raw -> SetGlobalFactorQty factor.id (clampQty Nothing (String.toInt raw |> Maybe.withDefault 0)))
-                            , class "w-12 bg-gray-800 border border-gray-600 rounded px-2 py-0.5 text-xs text-gray-100 tabular-nums text-center focus:outline-none focus:border-arcane-400"
+                            , class "w-12 bg-gray-800 border border-gray-600 rounded px-2 py-0.5 text-base md:text-xs text-gray-100 tabular-nums text-center focus:outline-none focus:border-arcane-400"
                             ]
                             []
                         , button

@@ -70,7 +70,7 @@ viewSpellNameSection model =
         [ div [ class "flex items-start justify-between gap-2" ]
             [ if model.renamingSpell then
                 input
-                    [ class "flex-1 min-w-0 bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm font-semibold text-gray-100 outline-none focus:border-arcane-400"
+                    [ class "flex-1 min-w-0 bg-gray-800 border border-gray-600 rounded px-2 py-1 text-base md:text-sm font-semibold text-gray-100 outline-none focus:border-arcane-400"
                     , value model.spellName
                     , onInput SetSpellName
                     , onBlur ToggleRenameSpell

@@ -21,7 +21,7 @@ viewImportLinkModal model =
             , p [ class "text-sm text-gray-400 leading-relaxed" ]
                 [ text "Paste a shared Epic Spell Wizard link (or just its query string) below to load that spell here, replacing whatever you're currently building." ]
             , textarea
-                [ class "w-full bg-gray-800 border border-gray-600 rounded px-3 py-2 text-sm text-gray-100 outline-none focus:border-arcane-400"
+                [ class "w-full bg-gray-800 border border-gray-600 rounded px-3 py-2 text-base md:text-sm text-gray-100 outline-none focus:border-arcane-400"
                 , rows 4
                 , placeholder "https://.../epic-spell-wizard/?name=..."
                 , value model.importInput
