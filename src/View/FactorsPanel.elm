@@ -374,7 +374,7 @@ viewSeedFactor inst sf =
             else
                 String.fromInt (sf.dcModifier * Basics.max 1 currentQty) ++ " DC"
     in
-    div [ class ("flex items-start justify-between py-1 px-2 -mx-2 gap-2 text-sm" ++ dimClass) ]
+    div [ class ("flex items-center justify-between py-1 px-2 -mx-2 gap-2 text-sm" ++ dimClass) ]
         [ div [ class "flex-1 min-w-0" ]
             [ div [ class "text-gray-200 text-xs break-words" ] [ text sf.name ]
             , if String.isEmpty sf.description then
@@ -657,7 +657,7 @@ viewGlobalFactorRow factor maybeApplied =
                         ]
                         []
     in
-    div [ class ("flex items-start justify-between py-1 px-2 -mx-2 gap-2 text-sm" ++ dimClass) ]
+    div [ class ("flex items-center justify-between py-1 px-2 -mx-2 gap-2 text-sm" ++ dimClass) ]
         [ div [ class "flex-1 min-w-0" ]
             [ div [ class "text-gray-200 text-xs break-words" ] [ text factor.name ]
             , div [ class "text-gray-500 text-xs break-words" ] [ text factor.shortDesc ]
