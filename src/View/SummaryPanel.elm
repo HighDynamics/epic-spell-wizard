@@ -83,11 +83,11 @@ viewSpellNameSection model =
                 span [ class "flex-1 min-w-0 text-sm font-semibold text-gray-200 break-words" ]
                     [ text (if String.isEmpty model.spellName then "Unnamed Spell" else model.spellName) ]
             , button
-                [ class "shrink-0 text-arcane-400 opacity-60 hover:opacity-100"
+                [ class "shrink-0 flex items-center gap-1 text-xs font-medium whitespace-nowrap text-arcane-400 opacity-60 hover:opacity-100"
                 , onClick CopyShareLink
                 , title "Copy shareable link"
                 ]
-                [ shareIcon "w-4 h-4" ]
+                [ shareIcon "w-4 h-4", text "Share this spell" ]
             ]
         , button
             [ class "mt-1 text-xs text-gray-500 hover:text-gray-300 underline"
