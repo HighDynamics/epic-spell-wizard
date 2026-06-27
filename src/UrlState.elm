@@ -25,9 +25,9 @@ params model =
         Just (UB.string "name" model.spellName)
     , Maybe.map (UB.string "school") model.selectedSchool
     , Maybe.map (UB.string "save" << encodeSavingThrow) model.selectedSavingThrow
-    , Maybe.map (UB.string "t2a") model.targetToAreaShape
-    , Maybe.map (UB.string "p2a") model.personalToAreaShape
-    , Maybe.map (UB.string "bolt") model.boltShape
+    , Maybe.map (UB.string "t2a" << encodeShapeSlug) model.targetToAreaShape
+    , Maybe.map (UB.string "p2a" << encodeShapeSlug) model.personalToAreaShape
+    , Maybe.map (UB.string "bolt" << encodeShapeSlug) model.boltShape
     , let
         panelsStr =
             boolFlag model.seedsPanelOpen ++ boolFlag model.factorsPanelOpen ++ boolFlag model.summaryPanelOpen
@@ -51,6 +51,61 @@ params model =
       else
         Just (UB.string "factors" (encodeAppliedFactors model.appliedFactors))
     ]
+
+
+-- The Target/Personal -> Area and bolt shape pickers store the full display
+-- label (e.g. "Bolt (5 ft. × 300 ft.)") as the selected value. Parentheses
+-- and "×" are legal but unescaped by percent-encoding, which some link
+-- handlers (chat apps, markdown auto-linkers) mishandle. Use plain ASCII
+-- slugs in the URL instead, translating back to the display label on load.
+encodeShapeSlug : String -> String
+encodeShapeSlug shape =
+    case shape of
+        "Bolt (5 ft. × 300 ft.)" ->
+            "bolt-5x300"
+
+        "Bolt (10 ft. × 150 ft.)" ->
+            "bolt-10x150"
+
+        "Cylinder" ->
+            "cylinder"
+
+        "40-ft. cone" ->
+            "cone"
+
+        "Four 10-ft. cubes" ->
+            "cubes"
+
+        "20-ft. radius" ->
+            "radius"
+
+        other ->
+            other
+
+
+decodeShapeSlug : String -> String
+decodeShapeSlug slug =
+    case slug of
+        "bolt-5x300" ->
+            "Bolt (5 ft. × 300 ft.)"
+
+        "bolt-10x150" ->
+            "Bolt (10 ft. × 150 ft.)"
+
+        "cylinder" ->
+            "Cylinder"
+
+        "cone" ->
+            "40-ft. cone"
+
+        "cubes" ->
+            "Four 10-ft. cubes"
+
+        "radius" ->
+            "20-ft. radius"
+
+        other ->
+            other
 
 
 boolFlag : Bool -> String
@@ -198,9 +253,9 @@ applyQuery search model =
             Dict.get "save" query
                 |> Maybe.map decodeSavingThrow
                 |> Maybe.withDefault model.selectedSavingThrow
-        , targetToAreaShape = Dict.get "t2a" query |> Maybe.map Just |> Maybe.withDefault model.targetToAreaShape
-        , personalToAreaShape = Dict.get "p2a" query |> Maybe.map Just |> Maybe.withDefault model.personalToAreaShape
-        , boltShape = Dict.get "bolt" query |> Maybe.map Just |> Maybe.withDefault model.boltShape
+        , targetToAreaShape = Dict.get "t2a" query |> Maybe.map (Just << decodeShapeSlug) |> Maybe.withDefault model.targetToAreaShape
+        , personalToAreaShape = Dict.get "p2a" query |> Maybe.map (Just << decodeShapeSlug) |> Maybe.withDefault model.personalToAreaShape
+        , boltShape = Dict.get "bolt" query |> Maybe.map (Just << decodeShapeSlug) |> Maybe.withDefault model.boltShape
         , seedsPanelOpen = Dict.get "panels" query |> Maybe.andThen panelFlagAt0 |> Maybe.withDefault model.seedsPanelOpen
         , factorsPanelOpen = Dict.get "panels" query |> Maybe.andThen panelFlagAt1 |> Maybe.withDefault model.factorsPanelOpen
         , summaryPanelOpen = Dict.get "panels" query |> Maybe.andThen panelFlagAt2 |> Maybe.withDefault model.summaryPanelOpen
