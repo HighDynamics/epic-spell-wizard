@@ -136,7 +136,7 @@ viewSeedInstanceFactors model labels inst =
                             [ div [ class "text-gray-200 text-xs" ] [ text "Base DC" ]
                             , div [ class "text-gray-500 text-xs" ] [ text ("default: " ++ String.fromInt seed.baseDC) ]
                             ]
-                        , div [ class "flex items-center gap-1 shrink-0" ]
+                        , div [ class "flex items-center gap-1 shrink-0 self-center" ]
                             [ button
                                 [ class "w-5 h-5 rounded bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs flex items-center justify-center"
                                 , onClick (SetSeedBaseDCOverride inst.instanceId (String.fromInt (currentDC - 1)))
@@ -147,7 +147,7 @@ viewSeedInstanceFactors model labels inst =
                                 , attribute "inputmode" "numeric"
                                 , value (String.fromInt currentDC)
                                 , onInput (SetSeedBaseDCOverride inst.instanceId)
-                                , class "w-10 bg-gray-800 border border-gray-600 rounded px-2 py-0.5 text-xs text-gray-100 tabular-nums text-center focus:outline-none focus:border-arcane-400"
+                                , class "w-12 bg-gray-800 border border-gray-600 rounded px-2 py-0.5 text-xs text-gray-100 tabular-nums text-center focus:outline-none focus:border-arcane-400"
                                 ]
                                 []
                             , button
@@ -160,15 +160,19 @@ viewSeedInstanceFactors model labels inst =
             in
             div [ class "border-b border-gray-800" ]
                 [ div
-                    [ class "flex items-center justify-between px-4 py-2 bg-gray-900 cursor-pointer"
+                    [ class "flex items-start justify-between px-4 py-2 bg-gray-900 cursor-pointer"
                     , onClick (ToggleSeedInstanceCollapsed inst.instanceId)
                     ]
-                    [ span [ class "text-xs text-arcane-400 font-semibold uppercase tracking-wider flex items-center gap-1.5" ]
-                        [ chevronIcon
-                            ("w-4 h-4 transition-transform duration-200 ease-in-out "
-                                ++ (if isCollapsed then "rotate-0" else "rotate-90")
-                            )
-                        , text ("── " ++ label ++ " ──")
+                    [ div []
+                        [ span [ class "text-xs text-arcane-400 font-semibold uppercase tracking-wider flex items-center gap-1.5" ]
+                            [ chevronIcon
+                                ("w-4 h-4 transition-transform duration-200 ease-in-out "
+                                    ++ (if isCollapsed then "rotate-0" else "rotate-90")
+                                )
+                            , text ("── " ++ label ++ " ──")
+                            ]
+                        , div [ class "text-[10px] text-gray-600 normal-case font-normal tracking-normal mt-0.5" ]
+                            [ text (if isCollapsed then "Click to expand" else "Click to collapse") ]
                         ]
                     , div [ class "flex items-center gap-2" ]
                         [ if List.length model.seedInstances > 1 then
@@ -200,7 +204,7 @@ viewSeedInstanceFactors model labels inst =
                         )
                     ]
                     [ div [ class "overflow-hidden" ]
-                        [ div [ class "px-4 py-2" ]
+                        [ div [ class "px-4 py-2 space-y-1.5" ]
                             (viewSeedDescriptionQuote inst.instanceId isDescriptionExpanded seed :: baseDCRow :: choiceRows ++ factorRows)
                         ]
                     ]
@@ -315,6 +319,22 @@ viewChoiceDropdown inst choice =
         ]
 
 
+-- Clamps a quantity to >= 0 and, if given, <= maxQuantity. Shared by the
+-- +/- buttons and the manual-entry input for stackable factor counters.
+clampQty : Maybe Int -> Int -> Int
+clampQty maxQuantity n =
+    let
+        nonNegative =
+            Basics.max 0 n
+    in
+    case maxQuantity of
+        Nothing ->
+            nonNegative
+
+        Just mx ->
+            Basics.min mx nonNegative
+
+
 showSign : Int -> String
 showSign n =
     if n >= 0 then
@@ -354,16 +374,16 @@ viewSeedFactor inst sf =
             else
                 String.fromInt (sf.dcModifier * Basics.max 1 currentQty) ++ " DC"
     in
-    div [ class ("flex items-center justify-between py-1 px-2 -mx-2 gap-2 text-sm" ++ dimClass) ]
+    div [ class ("flex items-start justify-between py-1 px-2 -mx-2 gap-2 text-sm" ++ dimClass) ]
         [ div [ class "flex-1 min-w-0" ]
-            [ div [ class "text-gray-200 text-xs truncate" ] [ text sf.name ]
+            [ div [ class "text-gray-200 text-xs break-words" ] [ text sf.name ]
             , if String.isEmpty sf.description then
                 text ""
 
               else
-                div [ class "text-gray-500 text-xs truncate" ] [ text sf.description ]
+                div [ class "text-gray-500 text-xs break-words" ] [ text sf.description ]
             ]
-        , div [ class "flex items-center gap-1 shrink-0" ]
+        , div [ class "flex items-center gap-1 shrink-0 self-center" ]
             [ span [ class "text-gray-500 text-xs w-16 text-right" ] [ text dcLabel ]
             , case sf.kind of
                 SeedToggle ->
@@ -399,24 +419,23 @@ viewSeedFactor inst sf =
                     div [ class "flex items-center gap-1" ]
                         [ button
                             [ class "w-5 h-5 rounded bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs flex items-center justify-center"
-                            , onClick (SetSeedFactor inst.instanceId sf.id (Basics.max 0 (currentQty - 1)))
+                            , onClick (SetSeedFactor inst.instanceId sf.id (clampQty sf.maxQuantity (currentQty - 1)))
                             ]
                             [ text "−" ]
-                        , span [ class "text-xs text-gray-300 w-4 text-center tabular-nums" ]
-                            [ text (String.fromInt currentQty) ]
+                        , input
+                            [ type_ "text"
+                            , attribute "inputmode" "numeric"
+                            , value (String.fromInt currentQty)
+                            , onInput
+                                (\raw ->
+                                    SetSeedFactor inst.instanceId sf.id (clampQty sf.maxQuantity (String.toInt raw |> Maybe.withDefault 0))
+                                )
+                            , class "w-12 bg-gray-800 border border-gray-600 rounded px-2 py-0.5 text-xs text-gray-100 tabular-nums text-center focus:outline-none focus:border-arcane-400"
+                            ]
+                            []
                         , button
                             [ class "w-5 h-5 rounded bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs flex items-center justify-center"
-                            , onClick
-                                (SetSeedFactor inst.instanceId
-                                    sf.id
-                                    (case sf.maxQuantity of
-                                        Nothing ->
-                                            currentQty + 1
-
-                                        Just mx ->
-                                            Basics.min mx (currentQty + 1)
-                                    )
-                                )
+                            , onClick (SetSeedFactor inst.instanceId sf.id (clampQty sf.maxQuantity (currentQty + 1)))
                             ]
                             [ text "+" ]
                         ]
@@ -439,14 +458,20 @@ viewGlobalFactorSection model label category =
     in
     div [ class "border-b border-gray-800" ]
         [ div
-            [ class "flex items-center px-4 py-2 bg-gray-900 text-xs text-gray-400 font-semibold uppercase tracking-wider cursor-pointer gap-1.5"
+            [ class "flex items-start px-4 py-2 bg-gray-900 cursor-pointer"
             , onClick (ToggleGlobalFactorSection label)
             ]
-            [ chevronIcon
-                ("w-4 h-4 transition-transform duration-200 ease-in-out "
-                    ++ (if isCollapsed then "rotate-0" else "rotate-90")
-                )
-            , text ("── Global " ++ label ++ " ──")
+            [ div []
+                [ span [ class "text-xs text-gray-400 font-semibold uppercase tracking-wider flex items-center gap-1.5" ]
+                    [ chevronIcon
+                        ("w-4 h-4 transition-transform duration-200 ease-in-out "
+                            ++ (if isCollapsed then "rotate-0" else "rotate-90")
+                        )
+                    , text ("── Global " ++ label ++ " ──")
+                    ]
+                , div [ class "text-[10px] text-gray-600 normal-case font-normal tracking-normal mt-0.5" ]
+                    [ text (if isCollapsed then "Click to expand" else "Click to collapse") ]
+                ]
             ]
         , div
             [ class
@@ -455,7 +480,7 @@ viewGlobalFactorSection model label category =
                 )
             ]
             [ div [ class "overflow-hidden" ]
-                [ div [ class "px-4 py-2" ]
+                [ div [ class "px-4 py-2 space-y-1.5" ]
                     (categoryFactors
                         |> List.foldl
                             (\f ( lastSection, rows ) ->
@@ -583,21 +608,21 @@ viewGlobalFactorRow factor maybeApplied =
                     div [ class "flex items-center gap-1" ]
                         [ button
                             [ class "w-5 h-5 rounded bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
-                            , onClick (SetGlobalFactorQty factor.id (Basics.max 0 (qty - 1)))
+                            , onClick (SetGlobalFactorQty factor.id (clampQty Nothing (qty - 1)))
                             , disabled (qty == 0)
                             ]
                             [ text "−" ]
-                        , span [ class "text-xs text-gray-300 w-4 text-center tabular-nums" ]
-                            [ text (String.fromInt qty) ]
+                        , input
+                            [ type_ "text"
+                            , attribute "inputmode" "numeric"
+                            , value (String.fromInt qty)
+                            , onInput (\raw -> SetGlobalFactorQty factor.id (clampQty Nothing (String.toInt raw |> Maybe.withDefault 0)))
+                            , class "w-12 bg-gray-800 border border-gray-600 rounded px-2 py-0.5 text-xs text-gray-100 tabular-nums text-center focus:outline-none focus:border-arcane-400"
+                            ]
+                            []
                         , button
                             [ class "w-5 h-5 rounded bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs flex items-center justify-center"
-                            , onClick
-                                (if isActive then
-                                    SetGlobalFactorQty factor.id (qty + 1)
-
-                                 else
-                                    AddGlobalFactor factor.id
-                                )
+                            , onClick (SetGlobalFactorQty factor.id (clampQty Nothing (qty + 1)))
                             ]
                             [ text "+" ]
                         ]
@@ -632,12 +657,12 @@ viewGlobalFactorRow factor maybeApplied =
                         ]
                         []
     in
-    div [ class ("flex items-center justify-between py-1 px-2 -mx-2 gap-2 text-sm h-10" ++ dimClass) ]
+    div [ class ("flex items-start justify-between py-1 px-2 -mx-2 gap-2 text-sm" ++ dimClass) ]
         [ div [ class "flex-1 min-w-0" ]
-            [ div [ class "text-gray-200 text-xs truncate" ] [ text factor.name ]
-            , div [ class "text-gray-500 text-xs" ] [ text factor.shortDesc ]
+            [ div [ class "text-gray-200 text-xs break-words" ] [ text factor.name ]
+            , div [ class "text-gray-500 text-xs break-words" ] [ text factor.shortDesc ]
             ]
-        , div [ class "flex items-center gap-1 shrink-0" ]
+        , div [ class "flex items-center gap-1 shrink-0 self-center" ]
             [ span [ class "text-gray-500 text-xs w-16 text-right" ] [ text dcDisplay ]
             , controls
             ]

@@ -331,7 +331,7 @@ updateInner msg model =
                 , Cmd.none
                 )
 
-            else
+            else if List.any (\af -> af.factorId == factorId) model.appliedFactors then
                 ( { model
                     | appliedFactors =
                         List.map
@@ -344,6 +344,11 @@ updateInner msg model =
                             )
                             model.appliedFactors
                   }
+                , Cmd.none
+                )
+
+            else
+                ( { model | appliedFactors = model.appliedFactors ++ [ { factorId = factorId, quantity = qty } ] }
                 , Cmd.none
                 )
 
