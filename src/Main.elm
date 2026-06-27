@@ -160,10 +160,21 @@ updateInner msg model =
                     else
                         model.primarySeedInstanceId
             in
-            ( { model
-                | seedInstances = remaining
-                , primarySeedInstanceId = newPrimary
-              }
+            ( if List.isEmpty remaining then
+                { model
+                    | seedInstances = remaining
+                    , primarySeedInstanceId = newPrimary
+                    , appliedFactors = []
+                    , targetToAreaShape = Nothing
+                    , personalToAreaShape = Nothing
+                    , boltShape = Nothing
+                }
+
+              else
+                { model
+                    | seedInstances = remaining
+                    , primarySeedInstanceId = newPrimary
+                }
             , Cmd.none
             )
 
