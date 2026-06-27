@@ -214,33 +214,155 @@ saveEffectFromString s =
             Nothing
 
 
+-- Stable, all-alphanumeric codes for FactorId/SeedId, used in place of the
+-- human-readable .name strings in the URL. Plain escaping isn't durable —
+-- some link handlers (chat apps, markdown auto-linkers) decode percent
+-- escapes back into the original characters before re-processing a pasted
+-- link, reintroducing the same literal-parens problem.
+--
+-- Each entry's code is fixed at the table row itself, not derived from its
+-- position — so reordering, regrouping, or inserting rows is always safe.
+-- The only rule: never change or reuse a code that's already assigned to a
+-- constructor; always give a new constructor a fresh, never-before-used
+-- code, and append its row anywhere in the table.
+--
+-- Decode falls back to matching against .name for links generated before
+-- this scheme existed.
+factorIdCodeTable : List ( String, FactorId )
+factorIdCodeTable =
+    [ ( "0", ReduceCastTime1Round )
+    , ( "1", OneActionCastTime )
+    , ( "2", QuickenedSpell )
+    , ( "3", Contingent )
+    , ( "4", NoVerbal )
+    , ( "5", NoSomatic )
+    , ( "6", IncreaseDuration )
+    , ( "7", PermanentDuration )
+    , ( "8", Dismissible )
+    , ( "9", IncreaseRange )
+    , ( "a", AddExtraTarget )
+    , ( "b", TargetToArea )
+    , ( "c", PersonalToArea )
+    , ( "d", TargetToTouch )
+    , ( "e", TouchToTarget )
+    , ( "f", ChangeToBolt )
+    , ( "g", ChangeToCylinder )
+    , ( "h", ChangeToCone )
+    , ( "i", ChangeToFourCubes )
+    , ( "j", ChangeToRadius )
+    , ( "k", AreaToTarget )
+    , ( "l", AreaToTouch )
+    , ( "m", IncreaseArea )
+    , ( "n", IncreaseSaveDC )
+    , ( "o", IncreaseSRCheck )
+    , ( "p", IncreaseVsDispel )
+    , ( "q", StoneTablet )
+    , ( "r", IncreaseDamageDie )
+    , ( "s", Backlash )
+    , ( "t", XPBurn )
+    , ( "u", IncreaseCastTime1Min )
+    , ( "v", IncreaseCastTime1Day )
+    , ( "w", ChangeToPersonal )
+    , ( "x", DecreaseDamageDie )
+    , ( "y", RitualSlot1 )
+    , ( "z", RitualSlot2 )
+    , ( "10", RitualSlot3 )
+    , ( "11", RitualSlot4 )
+    , ( "12", RitualSlot5 )
+    , ( "13", RitualSlot6 )
+    , ( "14", RitualSlot7 )
+    , ( "15", RitualSlot8 )
+    , ( "16", RitualSlot9 )
+    , ( "17", RitualSlotEpic )
+    ]
+
+
+seedIdCodeTable : List ( String, SeedId )
+seedIdCodeTable =
+    [ ( "0", Afflict )
+    , ( "1", Animate )
+    , ( "2", AnimateDead )
+    , ( "3", Armor )
+    , ( "4", Banish )
+    , ( "5", Compel )
+    , ( "6", Conceal )
+    , ( "7", Conjure )
+    , ( "8", Contact )
+    , ( "9", Delude )
+    , ( "a", Destroy )
+    , ( "b", Dispel )
+    , ( "c", Energy )
+    , ( "d", Foresee )
+    , ( "e", Fortify )
+    , ( "f", Heal )
+    , ( "g", Life )
+    , ( "h", Reflect )
+    , ( "i", Reveal )
+    , ( "j", Slay )
+    , ( "k", Summon )
+    , ( "l", Transform )
+    , ( "m", Transport )
+    , ( "n", Ward )
+    ]
+
+
+factorIdCode : FactorId -> String
+factorIdCode factorId =
+    factorIdCodeTable
+        |> List.filter (\( _, f ) -> f == factorId)
+        |> List.head
+        |> Maybe.map Tuple.first
+        |> Maybe.withDefault ""
+
+
+factorIdFromCode : String -> Maybe FactorId
+factorIdFromCode code =
+    factorIdCodeTable
+        |> List.filter (\( c, _ ) -> c == code)
+        |> List.head
+        |> Maybe.map Tuple.second
+
+
+seedIdCode : SeedId -> String
+seedIdCode seedId =
+    seedIdCodeTable
+        |> List.filter (\( _, s ) -> s == seedId)
+        |> List.head
+        |> Maybe.map Tuple.first
+        |> Maybe.withDefault ""
+
+
+seedIdFromCode : String -> Maybe SeedId
+seedIdFromCode code =
+    seedIdCodeTable
+        |> List.filter (\( c, _ ) -> c == code)
+        |> List.head
+        |> Maybe.map Tuple.second
+
+
 encodeSeedInstances : List SeedInstance -> String
 encodeSeedInstances instances =
     instances
-        |> List.filterMap encodeSeedInstance
+        |> List.map encodeSeedInstance
         |> String.join ";"
 
 
-encodeSeedInstance : SeedInstance -> Maybe String
+encodeSeedInstance : SeedInstance -> String
 encodeSeedInstance inst =
-    getSeed inst.seedId
-        |> Maybe.map
-            (\seed ->
-                seed.name
-                    ++ ":"
-                    ++ (inst.baseDCOverride |> Maybe.map String.fromInt |> Maybe.withDefault "")
-                    ++ ":"
-                    ++ (Dict.toList inst.choices |> List.map (\( k, v ) -> k ++ "=" ++ v) |> String.join ",")
-                    ++ ":"
-                    ++ (inst.appliedSeedFactors |> List.map (\af -> af.factorId ++ "=" ++ String.fromInt af.quantity) |> String.join ",")
-            )
+    seedIdCode inst.seedId
+        ++ ":"
+        ++ (inst.baseDCOverride |> Maybe.map String.fromInt |> Maybe.withDefault "")
+        ++ ":"
+        ++ (Dict.toList inst.choices |> List.map (\( k, v ) -> k ++ "=" ++ v) |> String.join ",")
+        ++ ":"
+        ++ (inst.appliedSeedFactors |> List.map (\af -> af.factorId ++ "=" ++ String.fromInt af.quantity) |> String.join ",")
 
 
 encodeAppliedFactors : List AppliedFactor -> String
 encodeAppliedFactors factors =
     factors
-        |> List.filterMap
-            (\af -> getFactor af.factorId |> Maybe.map (\f -> f.name ++ "=" ++ String.fromInt af.quantity))
+        |> List.map
+            (\af -> factorIdCode af.factorId ++ "=" ++ String.fromInt af.quantity)
         |> String.join ","
 
 
@@ -382,18 +504,31 @@ decodeSeedInstance : String -> Maybe SeedInstance
 decodeSeedInstance raw =
     case String.split ":" raw of
         [ seedNameStr, baseDCStr, choicesStr, factorsStr ] ->
-            allSeeds
-                |> List.filter (\s -> s.name == seedNameStr)
-                |> List.head
-                |> Maybe.map
-                    (\seed ->
+            -- New-style links carry the SeedId's stable code; old-style
+            -- links carry the seed's display name (e.g. "Animate Dead").
+            case seedIdFromCode seedNameStr |> Maybe.andThen getSeed of
+                Just seed ->
+                    Just
                         { instanceId = 0
                         , seedId = seed.id
                         , appliedSeedFactors = decodeAppliedSeedFactors factorsStr
                         , choices = decodeChoices choicesStr
                         , baseDCOverride = String.toInt baseDCStr
                         }
-                    )
+
+                Nothing ->
+                    allSeeds
+                        |> List.filter (\s -> s.name == seedNameStr)
+                        |> List.head
+                        |> Maybe.map
+                            (\seed ->
+                                { instanceId = 0
+                                , seedId = seed.id
+                                , appliedSeedFactors = decodeAppliedSeedFactors factorsStr
+                                , choices = decodeChoices choicesStr
+                                , baseDCOverride = String.toInt baseDCStr
+                                }
+                            )
 
         _ ->
             Nothing
@@ -441,9 +576,22 @@ decodeAppliedFactors s =
                 (\pair ->
                     splitOnEquals pair
                         |> Maybe.andThen
-                            (\( name, qtyStr ) ->
+                            (\( codeOrName, qtyStr ) ->
+                                let
+                                    -- New-style links carry the FactorId's stable
+                                    -- code; old-style links carry the factor's
+                                    -- display name (e.g. "Backlash (1d6 per die
+                                    -- to caster)").
+                                    maybeFactor =
+                                        case factorIdFromCode codeOrName |> Maybe.andThen getFactor of
+                                            Just f ->
+                                                Just f
+
+                                            Nothing ->
+                                                allFactors |> List.filter (\f -> f.name == codeOrName) |> List.head
+                                in
                                 Maybe.map2 (\f qty -> { factorId = f.id, quantity = qty })
-                                    (allFactors |> List.filter (\f -> f.name == name) |> List.head)
+                                    maybeFactor
                                     (String.toInt qtyStr)
                             )
                 )
