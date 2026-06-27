@@ -186,8 +186,9 @@ viewSeedInstanceFactors model labels inst =
                           else
                             text ""
                         , button
-                            [ class "text-gray-600 hover:text-red-400 text-xs"
+                            [ class "w-8 h-8 flex items-center justify-center rounded text-base text-red-500/70 hover:text-red-400 hover:bg-red-500/10 active:bg-red-500/20"
                             , onClickStopPropagation (RemoveSeedInstance inst.instanceId)
+                            , title "Remove this seed"
                             ]
                             [ text "✕" ]
                         ]
