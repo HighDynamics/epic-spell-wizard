@@ -4,6 +4,7 @@ import Browser
 import Calc exposing (calculateBreakdown, devCosts, statBlock)
 import Dict exposing (Dict)
 import Export
+import Set
 import Html exposing (..)
 import Html.Attributes exposing (class)
 import Types exposing (..)
@@ -67,6 +68,9 @@ defaultModel =
     , targetToAreaShape = Nothing
     , personalToAreaShape = Nothing
     , boltShape = Nothing
+    , expandedSeedDescriptions = Set.empty
+    , collapsedSeedInstances = Set.empty
+    , collapsedGlobalFactorSections = Set.empty
     , seedsPanelOpen = True
     , factorsPanelOpen = True
     , summaryPanelOpen = True
@@ -249,6 +253,42 @@ updateInner msg model =
 
         SetBoltShape shape ->
             ( { model | boltShape = Just shape }, Cmd.none )
+
+        ToggleSeedDescription instanceId ->
+            ( { model
+                | expandedSeedDescriptions =
+                    if Set.member instanceId model.expandedSeedDescriptions then
+                        Set.remove instanceId model.expandedSeedDescriptions
+
+                    else
+                        Set.insert instanceId model.expandedSeedDescriptions
+              }
+            , Cmd.none
+            )
+
+        ToggleSeedInstanceCollapsed instanceId ->
+            ( { model
+                | collapsedSeedInstances =
+                    if Set.member instanceId model.collapsedSeedInstances then
+                        Set.remove instanceId model.collapsedSeedInstances
+
+                    else
+                        Set.insert instanceId model.collapsedSeedInstances
+              }
+            , Cmd.none
+            )
+
+        ToggleGlobalFactorSection label ->
+            ( { model
+                | collapsedGlobalFactorSections =
+                    if Set.member label model.collapsedGlobalFactorSections then
+                        Set.remove label model.collapsedGlobalFactorSections
+
+                    else
+                        Set.insert label model.collapsedGlobalFactorSections
+              }
+            , Cmd.none
+            )
 
         SetSeedBaseDCOverride iid raw ->
             let

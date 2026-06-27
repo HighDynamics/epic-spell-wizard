@@ -1,6 +1,6 @@
 module View.SummaryPanel exposing (viewSummaryPanel)
 
-import Calc exposing (StatBlockData, availableSavingThrows, availableSchools)
+import Calc exposing (StatBlockData, availableSavingThrows, availableSchools, seedInstanceLabels)
 import Dict
 import Factors exposing (allFactors)
 import Html exposing (..)
@@ -466,25 +466,21 @@ viewGlobalFactorList model label category =
 viewSeedFactorsBySeed : Model -> Html Msg
 viewSeedFactorsBySeed model =
     let
+        labels =
+            seedInstanceLabels model.seedInstances
+
         blocks =
             model.seedInstances
-                |> List.foldl
-                    (\inst ( seenCounts, acc ) ->
+                |> List.filterMap
+                    (\inst ->
                         case getSeed inst.seedId of
                             Nothing ->
-                                ( seenCounts, acc )
+                                Nothing
 
                             Just seed ->
                                 let
-                                    priorCount =
-                                        Dict.get seed.name seenCounts |> Maybe.withDefault 0
-
                                     label =
-                                        if priorCount == 0 then
-                                            seed.name
-
-                                        else
-                                            seed.name ++ " (" ++ String.fromInt (priorCount + 1) ++ ")"
+                                        Dict.get inst.instanceId labels |> Maybe.withDefault seed.name
 
                                     choiceLines =
                                         seed.choices
@@ -542,15 +538,11 @@ viewSeedFactorsBySeed model =
                                         choiceLines ++ overrideLines ++ factorLines
                                 in
                                 if List.isEmpty lines then
-                                    ( Dict.insert seed.name (priorCount + 1) seenCounts, acc )
+                                    Nothing
 
                                 else
-                                    ( Dict.insert seed.name (priorCount + 1) seenCounts
-                                    , acc ++ [ ( label, lines ) ]
-                                    )
+                                    Just ( label, lines )
                     )
-                    ( Dict.empty, [] )
-                |> Tuple.second
                 |> List.sortBy Tuple.first
     in
     div []

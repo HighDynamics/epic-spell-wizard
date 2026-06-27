@@ -1,14 +1,23 @@
 module View.FactorsPanel exposing (viewFactorsPanel)
 
-import Calc exposing (boltShapes, targetToAreaShapes)
-import Dict
+import Calc exposing (boltShapes, seedInstanceLabels, targetToAreaShapes)
+import Dict exposing (Dict)
 import Factors exposing (allFactors)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
+import Json.Decode as Decode
 import Seeds exposing (getSeed, isSpecialSeedFactor)
+import Set
 import Types exposing (..)
 import View.Icons exposing (factorsIcon)
+
+
+-- Like onClick, but stops the event from bubbling up to an ancestor's own
+-- onClick (e.g. a button nested inside an accordion header).
+onClickStopPropagation : Msg -> Attribute Msg
+onClickStopPropagation msg =
+    Html.Events.stopPropagationOn "click" (Decode.succeed ( msg, True ))
 
 
 mobileVis : Model -> String
@@ -35,12 +44,19 @@ viewFactorsPanel model _ =
                     ]
                     [ text "◀" ]
                 ]
-            , -- Per-instance seed factor sub-panels
-              div [] (List.map (viewSeedInstanceFactors model) model.seedInstances)
-            , -- Global augmenting factors
-              viewGlobalFactorSection model "Augmenting" Augmenting
-            , -- Global mitigating factors
-              viewGlobalFactorSection model "Mitigating" Mitigating
+            , if List.isEmpty model.seedInstances then
+                div [ class "flex-1 flex items-center justify-center" ]
+                    [ p [ class "text-gray-500 text-xs italic px-4 py-3" ] [ text "Select seeds before adding factors" ] ]
+
+              else
+                div []
+                    [ -- Per-instance seed factor sub-panels
+                      div [] (List.map (viewSeedInstanceFactors model (seedInstanceLabels model.seedInstances)) model.seedInstances)
+                    , -- Global augmenting factors
+                      viewGlobalFactorSection model "Augmenting" Augmenting
+                    , -- Global mitigating factors
+                      viewGlobalFactorSection model "Mitigating" Mitigating
+                    ]
             ]
 
     else
@@ -67,14 +83,23 @@ viewFactorsPanel model _ =
 -- ─── Per-seed factor sub-panel ────────────────────────────────────────────────
 
 
-viewSeedInstanceFactors : Model -> SeedInstance -> Html Msg
-viewSeedInstanceFactors model inst =
+viewSeedInstanceFactors : Model -> Dict SeedInstanceId String -> SeedInstance -> Html Msg
+viewSeedInstanceFactors model labels inst =
     case getSeed inst.seedId of
         Nothing ->
             text ""
 
         Just seed ->
             let
+                label =
+                    Dict.get inst.instanceId labels |> Maybe.withDefault seed.name
+
+                isCollapsed =
+                    Set.member inst.instanceId model.collapsedSeedInstances
+
+                isDescriptionExpanded =
+                    Set.member inst.instanceId model.expandedSeedDescriptions
+
                 choiceRows =
                     List.map (viewChoiceDropdown inst) seed.choices
 
@@ -130,9 +155,20 @@ viewSeedInstanceFactors model inst =
                         ]
             in
             div [ class "border-b border-gray-800" ]
-                [ div [ class "flex items-center justify-between px-4 py-2 bg-gray-900" ]
-                    [ span [ class "text-xs text-arcane-400 font-semibold uppercase tracking-wider" ]
-                        [ text ("── " ++ seed.name ++ " ──") ]
+                [ div
+                    [ class "flex items-center justify-between px-4 py-2 bg-gray-900 cursor-pointer"
+                    , onClick (ToggleSeedInstanceCollapsed inst.instanceId)
+                    ]
+                    [ span [ class "text-xs text-arcane-400 font-semibold uppercase tracking-wider flex items-center gap-1.5" ]
+                        [ span
+                            [ class
+                                ("inline-block transition-transform duration-200 ease-in-out "
+                                    ++ (if isCollapsed then "rotate-0" else "rotate-90")
+                                )
+                            ]
+                            [ text "▸" ]
+                        , text ("── " ++ label ++ " ──")
+                        ]
                     , div [ class "flex items-center gap-2" ]
                         [ if List.length model.seedInstances > 1 then
                             if model.primarySeedInstanceId == Just inst.instanceId then
@@ -142,7 +178,7 @@ viewSeedInstanceFactors model inst =
                             else
                                 button
                                     [ class "text-xs text-gray-600 hover:text-gray-300 px-1.5 py-0.5 rounded border border-gray-800 hover:border-gray-600"
-                                    , onClick (SetPrimarySeed inst.instanceId)
+                                    , onClickStopPropagation (SetPrimarySeed inst.instanceId)
                                     ]
                                     [ text "Make primary" ]
 
@@ -150,21 +186,88 @@ viewSeedInstanceFactors model inst =
                             text ""
                         , button
                             [ class "text-gray-600 hover:text-red-400 text-xs"
-                            , onClick (RemoveSeedInstance inst.instanceId)
+                            , onClickStopPropagation (RemoveSeedInstance inst.instanceId)
                             ]
                             [ text "✕" ]
                         ]
                     ]
-                , div [ class "px-4 py-2" ]
-                    (viewSeedDescriptionQuote seed :: baseDCRow :: choiceRows ++ factorRows)
+                , div
+                    [ class
+                        ("grid transition-[grid-template-rows] duration-200 ease-in-out "
+                            ++ (if isCollapsed then "grid-rows-[0fr]" else "grid-rows-[1fr]")
+                        )
+                    ]
+                    [ div [ class "overflow-hidden" ]
+                        [ div [ class "px-4 py-2" ]
+                            (viewSeedDescriptionQuote inst.instanceId isDescriptionExpanded seed :: baseDCRow :: choiceRows ++ factorRows)
+                        ]
+                    ]
                 ]
 
 
-viewSeedDescriptionQuote : Seed -> Html Msg
-viewSeedDescriptionQuote seed =
+-- Splits at the last word boundary at or before `maxLen`, so the teaser
+-- never cuts a word in half.
+splitAtWordBoundary : Int -> String -> ( String, String )
+splitAtWordBoundary maxLen full =
+    if String.length full <= maxLen then
+        ( full, "" )
+
+    else
+        let
+            raw =
+                String.left maxLen full
+
+            cutAt =
+                String.indices " " raw |> List.reverse |> List.head
+        in
+        case cutAt of
+            Just idx ->
+                ( String.left idx raw, String.dropLeft (idx + 1) full )
+
+            Nothing ->
+                ( raw, String.dropLeft maxLen full )
+
+
+viewSeedDescriptionQuote : SeedInstanceId -> Bool -> Seed -> Html Msg
+viewSeedDescriptionQuote instanceId isExpanded seed =
+    let
+        ( teaser, rest ) =
+            splitAtWordBoundary 75 seed.description
+
+        hasMore =
+            not (String.isEmpty rest)
+    in
     blockquote
         [ class "border-l-2 border-gray-700 pl-3 mb-3 text-gray-400 text-xs italic leading-relaxed" ]
-        [ text seed.description ]
+        [ span [ class "font-semibold not-italic text-gray-300" ] [ text "Seed Description: " ]
+        , span [ class "whitespace-pre-line" ]
+            [ text (teaser ++ (if hasMore && not isExpanded then "…" else "")) ]
+        , if hasMore then
+            div
+                [ class
+                    ("grid transition-[grid-template-rows] duration-200 ease-in-out "
+                        ++ (if isExpanded then "grid-rows-[1fr]" else "grid-rows-[0fr]")
+                    )
+                ]
+                [ div [ class "overflow-hidden" ]
+                    [ span [ class "whitespace-pre-line" ] [ text rest ] ]
+                ]
+
+          else
+            text ""
+        , if hasMore then
+            span []
+                [ text " "
+                , button
+                    [ class "not-italic text-arcane-400 hover:text-arcane-300 font-semibold"
+                    , onClick (ToggleSeedDescription instanceId)
+                    ]
+                    [ text (if isExpanded then "Show less" else "Show more") ]
+                ]
+
+          else
+            text ""
+        ]
 
 
 viewChoiceDropdown : SeedInstance -> SeedChoice -> Html Msg
@@ -328,46 +431,69 @@ viewGlobalFactorSection model label category =
     let
         categoryFactors =
             List.filter (\f -> f.category == category) allFactors
+
+        isCollapsed =
+            Set.member label model.collapsedGlobalFactorSections
     in
     div [ class "border-b border-gray-800" ]
-        [ div [ class "px-4 py-2 bg-gray-900 text-xs text-gray-400 font-semibold uppercase tracking-wider" ]
-            [ text ("── Global " ++ label ++ " ──") ]
-        , div [ class "px-4 py-2" ]
-            (categoryFactors
-                |> List.foldl
-                    (\f ( lastSection, rows ) ->
-                        let
-                            maybeApplied =
-                                List.head (List.filter (\af -> af.factorId == f.id) model.appliedFactors)
-
-                            isActive =
-                                maybeApplied /= Nothing
-
-                            extraRows =
-                                if f.id == TargetToArea && isActive then
-                                    [ viewAreaShapeDropdown model.targetToAreaShape SetTargetToAreaShape targetToAreaShapes ]
-
-                                else if f.id == PersonalToArea && isActive then
-                                    [ viewAreaShapeDropdown model.personalToAreaShape SetPersonalToAreaShape targetToAreaShapes ]
-
-                                else if f.id == ChangeToBolt && isActive then
-                                    [ viewAreaShapeDropdown model.boltShape SetBoltShape boltShapes ]
-
-                                else
-                                    []
-
-                            headerRow =
-                                if Just f.section /= lastSection then
-                                    [ viewFactorSectionHeader f.section ]
-
-                                else
-                                    []
-                        in
-                        ( Just f.section, rows ++ headerRow ++ (viewGlobalFactorRow f maybeApplied :: extraRows) )
+        [ div
+            [ class "flex items-center px-4 py-2 bg-gray-900 text-xs text-gray-400 font-semibold uppercase tracking-wider cursor-pointer gap-1.5"
+            , onClick (ToggleGlobalFactorSection label)
+            ]
+            [ span
+                [ class
+                    ("inline-block transition-transform duration-200 ease-in-out "
+                        ++ (if isCollapsed then "rotate-0" else "rotate-90")
                     )
-                    ( Nothing, [] )
-                |> Tuple.second
-            )
+                ]
+                [ text "▸" ]
+            , text ("── Global " ++ label ++ " ──")
+            ]
+        , div
+            [ class
+                ("grid transition-[grid-template-rows] duration-200 ease-in-out "
+                    ++ (if isCollapsed then "grid-rows-[0fr]" else "grid-rows-[1fr]")
+                )
+            ]
+            [ div [ class "overflow-hidden" ]
+                [ div [ class "px-4 py-2" ]
+                    (categoryFactors
+                        |> List.foldl
+                            (\f ( lastSection, rows ) ->
+                                let
+                                    maybeApplied =
+                                        List.head (List.filter (\af -> af.factorId == f.id) model.appliedFactors)
+
+                                    isActive =
+                                        maybeApplied /= Nothing
+
+                                    extraRows =
+                                        if f.id == TargetToArea && isActive then
+                                            [ viewAreaShapeDropdown model.targetToAreaShape SetTargetToAreaShape targetToAreaShapes ]
+
+                                        else if f.id == PersonalToArea && isActive then
+                                            [ viewAreaShapeDropdown model.personalToAreaShape SetPersonalToAreaShape targetToAreaShapes ]
+
+                                        else if f.id == ChangeToBolt && isActive then
+                                            [ viewAreaShapeDropdown model.boltShape SetBoltShape boltShapes ]
+
+                                        else
+                                            []
+
+                                    headerRow =
+                                        if Just f.section /= lastSection then
+                                            [ viewFactorSectionHeader f.section ]
+
+                                        else
+                                            []
+                                in
+                                ( Just f.section, rows ++ headerRow ++ (viewGlobalFactorRow f maybeApplied :: extraRows) )
+                            )
+                            ( Nothing, [] )
+                        |> Tuple.second
+                    )
+                ]
+            ]
         ]
 
 

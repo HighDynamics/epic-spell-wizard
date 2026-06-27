@@ -1,6 +1,7 @@
 module Types exposing (..)
 
 import Dict exposing (Dict)
+import Set exposing (Set)
 
 
 
@@ -323,6 +324,9 @@ type alias Model =
     , targetToAreaShape : Maybe String
     , personalToAreaShape : Maybe String
     , boltShape : Maybe String
+    , expandedSeedDescriptions : Set SeedInstanceId
+    , collapsedSeedInstances : Set SeedInstanceId
+    , collapsedGlobalFactorSections : Set String
     , seedsPanelOpen : Bool
     , factorsPanelOpen : Bool
     , summaryPanelOpen : Bool
@@ -355,6 +359,9 @@ type Msg
     | SetTargetToAreaShape String
     | SetPersonalToAreaShape String
     | SetBoltShape String
+    | ToggleSeedDescription SeedInstanceId
+    | ToggleSeedInstanceCollapsed SeedInstanceId
+    | ToggleGlobalFactorSection String
     | SetSeedBaseDCOverride SeedInstanceId String
     | ToggleSeedsPanel
     | ToggleFactorsPanel

@@ -1,6 +1,6 @@
-module Calc exposing (StatBlockData, availableSchools, availableSavingThrows, boltShapes, calculateBreakdown, devCosts, statBlock, targetToAreaShapes, targetToAreaText)
+module Calc exposing (StatBlockData, availableSchools, availableSavingThrows, boltShapes, calculateBreakdown, devCosts, seedInstanceLabels, statBlock, targetToAreaShapes, targetToAreaText)
 
-import Dict
+import Dict exposing (Dict)
 import Factors exposing (getFactor)
 import Seeds exposing (getSeed)
 import Types exposing (..)
@@ -272,6 +272,37 @@ availableSchools instances =
     instances
         |> List.filterMap (\inst -> getSeed inst.seedId |> Maybe.map .school)
         |> List.foldl (\s acc -> if List.member s acc then acc else acc ++ [ s ]) []
+
+
+-- Labels duplicate seeds the same way across the Factors panel and the
+-- Summary panel's Seed Factors section: "Afflict", "Afflict (2)", "Afflict (3)", ...
+seedInstanceLabels : List SeedInstance -> Dict SeedInstanceId String
+seedInstanceLabels instances =
+    instances
+        |> List.foldl
+            (\inst ( seenCounts, acc ) ->
+                case getSeed inst.seedId of
+                    Nothing ->
+                        ( seenCounts, acc )
+
+                    Just seed ->
+                        let
+                            priorCount =
+                                Dict.get seed.name seenCounts |> Maybe.withDefault 0
+
+                            label =
+                                if priorCount == 0 then
+                                    seed.name
+
+                                else
+                                    seed.name ++ " (" ++ String.fromInt (priorCount + 1) ++ ")"
+                        in
+                        ( Dict.insert seed.name (priorCount + 1) seenCounts
+                        , Dict.insert inst.instanceId label acc
+                        )
+            )
+            ( Dict.empty, Dict.empty )
+        |> Tuple.second
 
 
 availableSavingThrows : List SeedInstance -> List SavingThrow
