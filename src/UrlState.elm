@@ -14,6 +14,25 @@ import Url.Builder as UB
 encode : Model -> String
 encode model =
     UB.toQuery (List.filterMap identity (params model))
+        |> escapeForSharing
+
+
+-- Url.Builder's percent-encoding (JS encodeURIComponent under the hood)
+-- deliberately leaves ( ) ! * ' ~ unescaped, since they're legal in a URI.
+-- But several factor/seed names contain literal parens (e.g. "Backlash
+-- (1d6 per die to caster)"), and the spell name is free text that could
+-- contain any of these — and plenty of real-world link handlers (chat
+-- apps, markdown auto-linkers) mis-truncate URLs with literal parens in
+-- them. Escape them too; decoding is unaffected either way.
+escapeForSharing : String -> String
+escapeForSharing s =
+    s
+        |> String.replace "(" "%28"
+        |> String.replace ")" "%29"
+        |> String.replace "!" "%21"
+        |> String.replace "*" "%2A"
+        |> String.replace "'" "%27"
+        |> String.replace "~" "%7E"
 
 
 params : Model -> List (Maybe UB.QueryParameter)
