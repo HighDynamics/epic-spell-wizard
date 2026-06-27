@@ -107,8 +107,21 @@ init flags =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     let
-        ( newModel, cmd ) =
+        ( updatedModel, cmd ) =
             updateInner msg model
+
+        -- Clear a stale "Link copied!"/"Copied!" banner as soon as the spell
+        -- itself changes, so it can't linger and look like it's describing
+        -- the current state. The copy flow's own messages manage
+        -- copySuccess/pendingCopy themselves and must not be stomped on
+        -- here; pure UI navigation (panel/section toggles, mobile tab, etc.)
+        -- isn't a spell edit, so it's left alone too.
+        newModel =
+            if preservesCopyFeedback msg then
+                updatedModel
+
+            else
+                { updatedModel | copySuccess = Nothing, pendingCopy = Nothing }
     in
     case msg of
         SetSpellName _ ->
@@ -118,6 +131,27 @@ update msg model =
 
         _ ->
             ( newModel, Cmd.batch [ cmd, pushUrl (UrlState.encode newModel) ] )
+
+
+preservesCopyFeedback : Msg -> Bool
+preservesCopyFeedback msg =
+    case msg of
+        CopySpellSummary -> True
+        CopyResult _ -> True
+        CopyShareLink -> True
+        ToggleSeedsPanel -> True
+        ToggleFactorsPanel -> True
+        ToggleSummaryPanel -> True
+        ToggleSeedDescription _ -> True
+        ToggleSeedInstanceCollapsed _ -> True
+        ToggleGlobalFactorSection _ -> True
+        ToggleHelpModal -> True
+        SetMobileTab _ -> True
+        ToggleImportModal -> True
+        SetImportInput _ -> True
+        ToggleRenameSpell -> True
+        SetExportFormat _ -> True
+        _ -> False
 
 
 updateInner : Msg -> Model -> ( Model, Cmd Msg )
