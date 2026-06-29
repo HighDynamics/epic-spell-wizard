@@ -14,7 +14,7 @@ viewHeader model =
         , div [ class "flex items-center gap-2" ]
             ((if model.isStandalone then
                 [ button
-                    [ class "flex items-center gap-1.5 px-3 py-1.5 rounded border border-arcane-600 text-arcane-400 text-sm hover:bg-arcane-900"
+                    [ class "hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded border border-arcane-600 text-arcane-400 text-sm hover:bg-arcane-900"
                     , onClick ToggleImportModal
                     ]
                     [ importIcon "w-4 h-4", text "Import Spell" ]
