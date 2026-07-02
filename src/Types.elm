@@ -313,6 +313,25 @@ type MobileTab
 -- ─── App state ───────────────────────────────────────────────────────────────
 
 
+-- The subset of Model that "Clear Spell" wipes and "Undo" restores —
+-- the spell's own content, not app-shell/UI-preference state.
+type alias SpellSnapshot =
+    { spellName : String
+    , seedInstances : List SeedInstance
+    , nextInstanceId : SeedInstanceId
+    , primarySeedInstanceId : Maybe SeedInstanceId
+    , appliedFactors : List AppliedFactor
+    , selectedSchool : Maybe String
+    , selectedSavingThrow : Maybe SavingThrow
+    , targetToAreaShape : Maybe String
+    , personalToAreaShape : Maybe String
+    , boltShape : Maybe String
+    , expandedSeedDescriptions : Set SeedInstanceId
+    , collapsedSeedInstances : Set SeedInstanceId
+    , collapsedGlobalFactorSections : Set String
+    }
+
+
 type alias Model =
     { spellName : String
     , seedInstances : List SeedInstance
@@ -341,6 +360,7 @@ type alias Model =
     , importInput : String
     , importError : Maybe String
     , isStandalone : Bool
+    , clearSpellUndo : Maybe SpellSnapshot
     }
 
 
@@ -376,3 +396,5 @@ type Msg
     | ToggleImportModal
     | SetImportInput String
     | LoadImportedLink
+    | ClearSpell
+    | UndoClearSpell

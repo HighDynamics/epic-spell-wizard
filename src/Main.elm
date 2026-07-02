@@ -85,6 +85,7 @@ defaultModel =
     , importInput = ""
     , importError = Nothing
     , isStandalone = False
+    , clearSpellUndo = Nothing
     }
 
 
@@ -110,18 +111,26 @@ update msg model =
         ( updatedModel, cmd ) =
             updateInner msg model
 
-        -- Clear a stale "Link copied!"/"Copied!" banner as soon as the spell
-        -- itself changes, so it can't linger and look like it's describing
-        -- the current state. The copy flow's own messages manage
-        -- copySuccess/pendingCopy themselves and must not be stomped on
-        -- here; pure UI navigation (panel/section toggles, mobile tab, etc.)
-        -- isn't a spell edit, so it's left alone too.
-        newModel =
+        -- Clear stale UI feedback on any real spell edit.
+        -- ClearSpell/UndoClearSpell manage these fields themselves in
+        -- updateInner; all other spell-editing messages get them cleared here
+        -- so they can't linger past their relevant moment.
+        afterCopyFeedback =
             if preservesCopyFeedback msg then
                 updatedModel
 
             else
                 { updatedModel | copySuccess = Nothing, pendingCopy = Nothing }
+
+        -- Once the user takes any action beyond clearing (or undoing), the
+        -- undo snapshot is discarded. ClearSpell and UndoClearSpell set
+        -- clearSpellUndo in updateInner directly, so skip them here.
+        newModel =
+            if preservesUndoSnapshot msg then
+                afterCopyFeedback
+
+            else
+                { afterCopyFeedback | clearSpellUndo = Nothing }
     in
     case msg of
         SetSpellName _ ->
@@ -152,6 +161,18 @@ preservesCopyFeedback msg =
         ToggleRenameSpell -> True
         SetExportFormat _ -> True
         _ -> False
+
+
+-- ClearSpell and UndoClearSpell set clearSpellUndo themselves in updateInner,
+-- so exempt them here. Everything else that isn't pure UI navigation will
+-- discard the undo snapshot — meaning Undo is only available as the very
+-- next action after clearing.
+preservesUndoSnapshot : Msg -> Bool
+preservesUndoSnapshot msg =
+    case msg of
+        ClearSpell -> True
+        UndoClearSpell -> True
+        _ -> preservesCopyFeedback msg
 
 
 updateInner : Msg -> Model -> ( Model, Cmd Msg )
@@ -477,6 +498,71 @@ updateInner msg model =
                   }
                 , Cmd.none
                 )
+
+        ClearSpell ->
+            let
+                snapshot =
+                    { spellName = model.spellName
+                    , seedInstances = model.seedInstances
+                    , nextInstanceId = model.nextInstanceId
+                    , primarySeedInstanceId = model.primarySeedInstanceId
+                    , appliedFactors = model.appliedFactors
+                    , selectedSchool = model.selectedSchool
+                    , selectedSavingThrow = model.selectedSavingThrow
+                    , targetToAreaShape = model.targetToAreaShape
+                    , personalToAreaShape = model.personalToAreaShape
+                    , boltShape = model.boltShape
+                    , expandedSeedDescriptions = model.expandedSeedDescriptions
+                    , collapsedSeedInstances = model.collapsedSeedInstances
+                    , collapsedGlobalFactorSections = model.collapsedGlobalFactorSections
+                    }
+
+            in
+            ( { model
+                | spellName = ""
+                , seedInstances = []
+                , nextInstanceId = 0
+                , primarySeedInstanceId = Nothing
+                , appliedFactors = []
+                , selectedSchool = Nothing
+                , selectedSavingThrow = Nothing
+                , targetToAreaShape = Nothing
+                , personalToAreaShape = Nothing
+                , boltShape = Nothing
+                , expandedSeedDescriptions = Set.empty
+                , collapsedSeedInstances = Set.empty
+                , collapsedGlobalFactorSections = Set.empty
+                , renamingSpell = False
+                , clearSpellUndo = Just snapshot
+              }
+            , Cmd.none
+            )
+
+        UndoClearSpell ->
+            case model.clearSpellUndo of
+                Nothing ->
+                    ( model, Cmd.none )
+
+                Just snapshot ->
+                    ( { model
+                        | spellName = snapshot.spellName
+                        , seedInstances = snapshot.seedInstances
+                        , nextInstanceId = snapshot.nextInstanceId
+                        , primarySeedInstanceId = snapshot.primarySeedInstanceId
+                        , appliedFactors = snapshot.appliedFactors
+                        , selectedSchool = snapshot.selectedSchool
+                        , selectedSavingThrow = snapshot.selectedSavingThrow
+                        , targetToAreaShape = snapshot.targetToAreaShape
+                        , personalToAreaShape = snapshot.personalToAreaShape
+                        , boltShape = snapshot.boltShape
+                        , expandedSeedDescriptions = snapshot.expandedSeedDescriptions
+                        , collapsedSeedInstances = snapshot.collapsedSeedInstances
+                        , collapsedGlobalFactorSections = snapshot.collapsedGlobalFactorSections
+                        , clearSpellUndo = Nothing
+                      }
+                    , Cmd.none
+                    )
+
 
 
 
