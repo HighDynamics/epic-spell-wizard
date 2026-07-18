@@ -238,41 +238,43 @@ viewSeedDescriptionQuote : SeedInstanceId -> Bool -> Seed -> Html Msg
 viewSeedDescriptionQuote instanceId isExpanded seed =
     let
         ( teaser, rest ) =
-            splitAtWordBoundary 75 seed.description
+            splitAtWordBoundary 90 seed.description
 
         hasMore =
             not (String.isEmpty rest)
     in
-    blockquote
-        [ class "border-l-2 border-gray-700 pl-3 mb-3 text-gray-400 text-xs italic leading-relaxed" ]
-        [ span [ class "font-semibold not-italic text-gray-300" ] [ text "Seed Description: " ]
-        , span [ class "whitespace-pre-line" ]
-            [ text (teaser ++ (if hasMore && not isExpanded then "…" else "")) ]
-        , if hasMore then
-            div
-                [ class
-                    ("grid transition-[grid-template-rows] duration-200 ease-in-out "
-                        ++ (if isExpanded then "grid-rows-[1fr]" else "grid-rows-[0fr]")
-                    )
-                ]
-                [ div [ class "overflow-hidden" ]
-                    [ span [ class "whitespace-pre-line" ] [ text rest ] ]
-                ]
-
-          else
-            text ""
-        , if hasMore then
-            span []
-                [ text " "
-                , button
-                    [ class "not-italic text-arcane-400 hover:text-arcane-300 font-semibold"
-                    , onClick (ToggleSeedDescription instanceId)
+    div [ class "mb-3" ]
+        [ div [ class "font-semibold text-gray-300 text-xs mb-1" ] [ text "Seed Description:" ]
+        , blockquote
+            [ class "border-l-2 border-gray-700 pl-3 text-gray-400 text-xs leading-relaxed max-w-[75ch]" ]
+            [ span [ class "whitespace-pre-line" ]
+                [ text (teaser ++ (if hasMore && not isExpanded then "…" else "")) ]
+            , if hasMore then
+                div
+                    [ class
+                        ("grid transition-[grid-template-rows] duration-200 ease-in-out "
+                            ++ (if isExpanded then "grid-rows-[1fr]" else "grid-rows-[0fr]")
+                        )
                     ]
-                    [ text (if isExpanded then "Show less" else "Show more") ]
-                ]
+                    [ div [ class "overflow-hidden" ]
+                        [ span [ class "whitespace-pre-line" ] [ text rest ] ]
+                    ]
 
-          else
-            text ""
+              else
+                text ""
+            , if hasMore then
+                span []
+                    [ text " "
+                    , button
+                        [ class "not-italic text-arcane-400 hover:text-arcane-300 font-semibold"
+                        , onClick (ToggleSeedDescription instanceId)
+                        ]
+                        [ text (if isExpanded then "Show less" else "Show more") ]
+                    ]
+
+              else
+                text ""
+            ]
         ]
 
 
