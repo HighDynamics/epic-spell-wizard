@@ -11645,8 +11645,7 @@ var $author$project$View$HelpModal$viewOpenGameContentNotice = A2(
 					_List_fromArray(
 						[
 							$elm$html$Html$text('Open Game License v1.0a')
-						])),
-					$elm$html$Html$text('.')
+						]))
 				]))
 		]));
 var $author$project$View$HelpModal$viewSection = F2(
