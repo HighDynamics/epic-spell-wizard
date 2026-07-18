@@ -554,10 +554,10 @@ fortify =
     , spellResistance = True
     , description = """Spells using the fortify seed grant a +1 enhancement bonus to whichever one of the following the caster chooses:
 
-Any one ability score.
-Any one kind of saving throw.
-Spell resistance.
-Natural armor.
+· Any one ability score.
+· Any one kind of saving throw.
+· Spell resistance.
+· Natural armor.
 The fortify seed can also grant energy resistance 1 for one energy type or 1 temporary hit point. For each additional +1 bonus, point of energy resistance, or hit point, increase the Spellcraft DC by +2.
 
 The fortify seed has a base Spellcraft DC of 23 if it grants a +1 bonus of a type other than enhancement. For each additional +1 bonus of a type other than enhancement, increase the Spellcraft DC by +6. If the caster applies a factor to make the duration permanent, the bonus must be an inherent bonus, and the maximum inherent bonus allowed is +5.
