@@ -90,11 +90,9 @@ viewOpenGameContentNotice =
         [ h3 [ class "text-sm font-semibold text-gray-200 mb-1" ] [ text "Open Game Content" ]
         , p [ class "text-sm text-gray-400 leading-relaxed" ]
             [ text "The seed names, descriptions, DCs, and factor mechanics used in this app are Open Game Content, used under the "
-            , a
-                [ href "OGL.txt"
-                , target "_blank"
-                , rel "noopener noreferrer"
-                , class "text-arcane-400 hover:text-arcane-500 underline"
+            , button
+                [ class "text-arcane-400 hover:text-arcane-500 underline"
+                , onClick ToggleLicenseModal
                 ]
                 [ text "Open Game License v1.0a" ]
             ]

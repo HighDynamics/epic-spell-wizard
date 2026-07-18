@@ -12,6 +12,7 @@ import UrlState
 import View.FactorsPanel exposing (viewFactorsPanel)
 import View.Header exposing (viewHeader)
 import View.HelpModal exposing (viewHelpModal)
+import View.LicenseModal exposing (viewLicenseModal)
 import View.ImportLinkModal exposing (viewImportLinkModal)
 import View.MobileNav exposing (viewMobileNav)
 import View.SeedsPanel exposing (viewSeedsPanel)
@@ -80,6 +81,7 @@ defaultModel =
     , baseUrl = ""
     , renamingSpell = False
     , helpModalOpen = False
+    , licenseModalOpen = False
     , activeMobileTab = SeedsTab
     , importModalOpen = False
     , importInput = ""
@@ -155,6 +157,7 @@ preservesCopyFeedback msg =
         ToggleSeedInstanceCollapsed _ -> True
         ToggleGlobalFactorSection _ -> True
         ToggleHelpModal -> True
+        ToggleLicenseModal -> True
         SetMobileTab _ -> True
         ToggleImportModal -> True
         SetImportInput _ -> True
@@ -460,6 +463,9 @@ updateInner msg model =
         ToggleHelpModal ->
             ( { model | helpModalOpen = not model.helpModalOpen }, Cmd.none )
 
+        ToggleLicenseModal ->
+            ( { model | licenseModalOpen = not model.licenseModalOpen }, Cmd.none )
+
         SetMobileTab tab ->
             ( { model | activeMobileTab = tab }, Cmd.none )
 
@@ -591,6 +597,11 @@ view model =
         , viewMobileNav model
         , if model.helpModalOpen then
             viewHelpModal
+
+          else
+            text ""
+        , if model.licenseModalOpen then
+            viewLicenseModal
 
           else
             text ""

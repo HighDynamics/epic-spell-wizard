@@ -355,6 +355,7 @@ type alias Model =
     , baseUrl : String
     , renamingSpell : Bool
     , helpModalOpen : Bool
+    , licenseModalOpen : Bool
     , activeMobileTab : MobileTab
     , importModalOpen : Bool
     , importInput : String
@@ -392,6 +393,7 @@ type Msg
     | ToggleRenameSpell
     | CopyShareLink
     | ToggleHelpModal
+    | ToggleLicenseModal
     | SetMobileTab MobileTab
     | ToggleImportModal
     | SetImportInput String
