@@ -1,10 +1,11 @@
-var CACHE_NAME = 'esw-cache-v2';
+var CACHE_NAME = 'esw-cache-v3';
 
 var ASSETS = [
     './',
     'index.html',
     'elm.js',
     'manifest.webmanifest',
+    'OGL.txt',
     'icons/icon-192.png',
     'icons/icon-512.png',
     'icons/icon-512-maskable.png',

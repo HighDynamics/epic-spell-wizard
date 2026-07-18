@@ -25,7 +25,7 @@ jobs:
         run: |
           mkdir dist
           elm make src/Main.elm --optimize --output=dist/elm.js
-          cp index.html manifest.webmanifest sw.js dist/
+          cp index.html manifest.webmanifest sw.js OGL.txt dist/
           cp -r icons dist/
 
       - name: Deploy

@@ -45,6 +45,7 @@ viewHelpModal =
                     ++ "development is a collaborative process — any spell you develop here "
                     ++ "still needs your Dungeon Master's approval."
                 )
+            , viewOpenGameContentNotice
             , button
                 [ class "w-full py-2 rounded bg-arcane-500 hover:bg-arcane-400 text-white text-sm font-semibold"
                 , onClick ToggleHelpModal
@@ -79,6 +80,23 @@ viewSuggestedReading =
                     ]
                     [ text "Developing Epic Spells" ]
                 ]
+            ]
+        ]
+
+
+viewOpenGameContentNotice : Html Msg
+viewOpenGameContentNotice =
+    div []
+        [ h3 [ class "text-sm font-semibold text-gray-200 mb-1" ] [ text "Open Game Content" ]
+        , p [ class "text-sm text-gray-400 leading-relaxed" ]
+            [ text "The seed names, descriptions, DCs, and factor mechanics used in this app are Open Game Content, used under the "
+            , a
+                [ href "OGL.txt"
+                , target "_blank"
+                , rel "noopener noreferrer"
+                , class "text-arcane-400 hover:text-arcane-500 underline"
+                ]
+                [ text "Open Game License v1.0a" ]
             ]
         ]
 
