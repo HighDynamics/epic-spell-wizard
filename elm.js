@@ -6174,7 +6174,7 @@ var $author$project$Seeds$fortify = {
 	aO: _List_Nil,
 	ao: _List_fromArray(
 		[0, 1]),
-	aR: 'Spells using the fortify seed grant a +1 enhancement bonus to whichever one of the following the caster chooses:\n\nAny one ability score.\nAny one kind of saving throw.\nSpell resistance.\nNatural armor.\nThe fortify seed can also grant energy resistance 1 for one energy type or 1 temporary hit point. For each additional +1 bonus, point of energy resistance, or hit point, increase the Spellcraft DC by +2.\n\nThe fortify seed has a base Spellcraft DC of 23 if it grants a +1 bonus of a type other than enhancement. For each additional +1 bonus of a type other than enhancement, increase the Spellcraft DC by +6. If the caster applies a factor to make the duration permanent, the bonus must be an inherent bonus, and the maximum inherent bonus allowed is +5.\n\nThe fortify seed has a base Spellcraft DC of 27 if it grants a creature a +1 bonus to an ability score or other statistic it does not possess. For each additional +1 bonus, increase the Spellcraft DC by +4. If a spell with the fortify seed grants an inanimate object an ability score it would not normally possess (such as Intelligence), the spell must also incorporate the life seed.\n\nGranting Spell Resistance to a creature that doesn\'t already have it is a special case; the base Spellcraft DC of 27 grants Spell Resistance 25, and each additional point of Spell Resistance increases the Spellcraft DC by +4 (each -1 to Spell Resistance reduces the Spellcraft DC by -2).\n\nThe fortify seed can also grant damage reduction 1/magic. For each additional point of damage reduction, increase the Spellcraft DC by +2. To increase the damage reduction value to epic, increase the Spellcraft DC by +15.\n\nA special use of the fortify seed grants the target a permanent +1 year to its current age category. For each additional +1 year added to the creature\'s current age category, increase the Spellcraft DC by +2. Incremental adjustments to a creature\'s maximum age do not stack; they overlap. When a spell increases a creature\'s current age category, all higher age categories are also adjusted accordingly.',
+	aR: 'Spells using the fortify seed grant a +1 enhancement bonus to whichever one of the following the caster chooses:\n\n· Any one ability score.\n· Any one kind of saving throw.\n· Spell resistance.\n· Natural armor.\nThe fortify seed can also grant energy resistance 1 for one energy type or 1 temporary hit point. For each additional +1 bonus, point of energy resistance, or hit point, increase the Spellcraft DC by +2.\n\nThe fortify seed has a base Spellcraft DC of 23 if it grants a +1 bonus of a type other than enhancement. For each additional +1 bonus of a type other than enhancement, increase the Spellcraft DC by +6. If the caster applies a factor to make the duration permanent, the bonus must be an inherent bonus, and the maximum inherent bonus allowed is +5.\n\nThe fortify seed has a base Spellcraft DC of 27 if it grants a creature a +1 bonus to an ability score or other statistic it does not possess. For each additional +1 bonus, increase the Spellcraft DC by +4. If a spell with the fortify seed grants an inanimate object an ability score it would not normally possess (such as Intelligence), the spell must also incorporate the life seed.\n\nGranting Spell Resistance to a creature that doesn\'t already have it is a special case; the base Spellcraft DC of 27 grants Spell Resistance 25, and each additional point of Spell Resistance increases the Spellcraft DC by +4 (each -1 to Spell Resistance reduces the Spellcraft DC by -2).\n\nThe fortify seed can also grant damage reduction 1/magic. For each additional point of damage reduction, increase the Spellcraft DC by +2. To increase the damage reduction value to epic, increase the Spellcraft DC by +15.\n\nA special use of the fortify seed grants the target a permanent +1 year to its current age category. For each additional +1 year added to the creature\'s current age category, increase the Spellcraft DC by +2. Incremental adjustments to a creature\'s maximum age do not stack; they overlap. When a spell increases a creature\'s current age category, all higher age categories are also adjusted accordingly.',
 	aq: _List_Nil,
 	ar: '20 hours',
 	af: $elm$core$Maybe$Nothing,
@@ -10799,90 +10799,99 @@ var $author$project$View$FactorsPanel$splitAtWordBoundary = F2(
 	});
 var $author$project$View$FactorsPanel$viewSeedDescriptionQuote = F3(
 	function (instanceId, isExpanded, seed) {
-		var _v0 = A2($author$project$View$FactorsPanel$splitAtWordBoundary, 75, seed.aR);
+		var _v0 = A2($author$project$View$FactorsPanel$splitAtWordBoundary, 90, seed.aR);
 		var teaser = _v0.a;
 		var rest = _v0.b;
 		var hasMore = !$elm$core$String$isEmpty(rest);
 		return A2(
-			$elm$html$Html$blockquote,
+			$elm$html$Html$div,
 			_List_fromArray(
 				[
-					$elm$html$Html$Attributes$class('border-l-2 border-gray-700 pl-3 mb-3 text-gray-400 text-xs italic leading-relaxed')
+					$elm$html$Html$Attributes$class('mb-3')
 				]),
 			_List_fromArray(
 				[
 					A2(
-					$elm$html$Html$span,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$class('font-semibold not-italic text-gray-300')
-						]),
-					_List_fromArray(
-						[
-							$elm$html$Html$text('Seed Description: ')
-						])),
-					A2(
-					$elm$html$Html$span,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$class('whitespace-pre-line')
-						]),
-					_List_fromArray(
-						[
-							$elm$html$Html$text(
-							_Utils_ap(
-								teaser,
-								(hasMore && (!isExpanded)) ? '…' : ''))
-						])),
-					hasMore ? A2(
 					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$class(
-							'grid transition-[grid-template-rows] duration-200 ease-in-out ' + (isExpanded ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'))
+							$elm$html$Html$Attributes$class('font-semibold text-gray-300 text-xs mb-1')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Seed Description:')
+						])),
+					A2(
+					$elm$html$Html$blockquote,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('border-l-2 border-gray-700 pl-3 text-gray-400 text-xs leading-relaxed max-w-[75ch]')
 						]),
 					_List_fromArray(
 						[
 							A2(
-							$elm$html$Html$div,
+							$elm$html$Html$span,
 							_List_fromArray(
 								[
-									$elm$html$Html$Attributes$class('overflow-hidden')
-								]),
-							_List_fromArray(
-								[
-									A2(
-									$elm$html$Html$span,
-									_List_fromArray(
-										[
-											$elm$html$Html$Attributes$class('whitespace-pre-line')
-										]),
-									_List_fromArray(
-										[
-											$elm$html$Html$text(rest)
-										]))
-								]))
-						])) : $elm$html$Html$text(''),
-					hasMore ? A2(
-					$elm$html$Html$span,
-					_List_Nil,
-					_List_fromArray(
-						[
-							$elm$html$Html$text(' '),
-							A2(
-							$elm$html$Html$button,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$class('not-italic text-arcane-400 hover:text-arcane-300 font-semibold'),
-									$elm$html$Html$Events$onClick(
-									$author$project$Types$ToggleSeedDescription(instanceId))
+									$elm$html$Html$Attributes$class('whitespace-pre-line')
 								]),
 							_List_fromArray(
 								[
 									$elm$html$Html$text(
-									isExpanded ? 'Show less' : 'Show more')
-								]))
-						])) : $elm$html$Html$text('')
+									_Utils_ap(
+										teaser,
+										(hasMore && (!isExpanded)) ? '…' : ''))
+								])),
+							hasMore ? A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class(
+									'grid transition-[grid-template-rows] duration-200 ease-in-out ' + (isExpanded ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'))
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$div,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$class('overflow-hidden')
+										]),
+									_List_fromArray(
+										[
+											A2(
+											$elm$html$Html$span,
+											_List_fromArray(
+												[
+													$elm$html$Html$Attributes$class('whitespace-pre-line')
+												]),
+											_List_fromArray(
+												[
+													$elm$html$Html$text(rest)
+												]))
+										]))
+								])) : $elm$html$Html$text(''),
+							hasMore ? A2(
+							$elm$html$Html$span,
+							_List_Nil,
+							_List_fromArray(
+								[
+									$elm$html$Html$text(' '),
+									A2(
+									$elm$html$Html$button,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$class('not-italic text-arcane-400 hover:text-arcane-300 font-semibold'),
+											$elm$html$Html$Events$onClick(
+											$author$project$Types$ToggleSeedDescription(instanceId))
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text(
+											isExpanded ? 'Show less' : 'Show more')
+										]))
+								])) : $elm$html$Html$text('')
+						]))
 				]));
 	});
 var $author$project$Types$SetSeedFactor = F3(
@@ -11592,7 +11601,56 @@ var $author$project$View$Header$viewHeader = function (model) {
 			]));
 };
 var $elm$html$Html$h2 = _VirtualDom_node('h2');
+var $elm$html$Html$a = _VirtualDom_node('a');
 var $elm$html$Html$h3 = _VirtualDom_node('h3');
+var $elm$html$Html$Attributes$href = function (url) {
+	return A2(
+		$elm$html$Html$Attributes$stringProperty,
+		'href',
+		_VirtualDom_noJavaScriptUri(url));
+};
+var $elm$html$Html$Attributes$rel = _VirtualDom_attribute('rel');
+var $elm$html$Html$Attributes$target = $elm$html$Html$Attributes$stringProperty('target');
+var $author$project$View$HelpModal$viewOpenGameContentNotice = A2(
+	$elm$html$Html$div,
+	_List_Nil,
+	_List_fromArray(
+		[
+			A2(
+			$elm$html$Html$h3,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('text-sm font-semibold text-gray-200 mb-1')
+				]),
+			_List_fromArray(
+				[
+					$elm$html$Html$text('Open Game Content')
+				])),
+			A2(
+			$elm$html$Html$p,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('text-sm text-gray-400 leading-relaxed')
+				]),
+			_List_fromArray(
+				[
+					$elm$html$Html$text('The seed names, descriptions, DCs, and factor mechanics used in this app are Open Game Content, used under the '),
+					A2(
+					$elm$html$Html$a,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$href('OGL.txt'),
+							$elm$html$Html$Attributes$target('_blank'),
+							$elm$html$Html$Attributes$rel('noopener noreferrer'),
+							$elm$html$Html$Attributes$class('text-arcane-400 hover:text-arcane-500 underline')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Open Game License v1.0a')
+						])),
+					$elm$html$Html$text('.')
+				]))
+		]));
 var $author$project$View$HelpModal$viewSection = F2(
 	function (heading, body) {
 		return A2(
@@ -11622,16 +11680,7 @@ var $author$project$View$HelpModal$viewSection = F2(
 						]))
 				]));
 	});
-var $elm$html$Html$a = _VirtualDom_node('a');
-var $elm$html$Html$Attributes$href = function (url) {
-	return A2(
-		$elm$html$Html$Attributes$stringProperty,
-		'href',
-		_VirtualDom_noJavaScriptUri(url));
-};
 var $elm$html$Html$li = _VirtualDom_node('li');
-var $elm$html$Html$Attributes$rel = _VirtualDom_attribute('rel');
-var $elm$html$Html$Attributes$target = $elm$html$Html$Attributes$stringProperty('target');
 var $elm$html$Html$ul = _VirtualDom_node('ul');
 var $author$project$View$HelpModal$viewSuggestedReading = A2(
 	$elm$html$Html$div,
@@ -11757,6 +11806,7 @@ var $author$project$View$HelpModal$viewHelpModal = A2(
 					A2($author$project$View$HelpModal$viewSection, 'The link is your save', 'The address bar updates live as you work — it always reflects the exact ' + ('spell you\'re building. Copying the URL, using the Share button next to ' + ('the spell name, or just bookmarking the page at any point is how you ' + ('\"save\" — reopening that link rebuilds the spell exactly as you left it. ' + ('The \"Epic Spell Wizard Link\" at the top of a copied spell summary is ' + 'the same link.'))))),
 					A2($author$project$View$HelpModal$viewSection, 'Nothing here is prohibited', 'Epic spell development is meant to be flexible, so this tool doesn\'t stop ' + ('you from combining factors or mitigations that don\'t really make sense ' + ('together. If you and your DM have worked out some unusual combination, ' + ('go for it — it\'s on you to make sure the choices you select are ' + 'actually applicable to what you\'re building.')))),
 					A2($author$project$View$HelpModal$viewSection, 'This isn\'t the final word', 'This tool is a calculator and organizer, not a rules authority. Epic spell ' + ('development is a collaborative process — any spell you develop here ' + 'still needs your Dungeon Master\'s approval.')),
+					$author$project$View$HelpModal$viewOpenGameContentNotice,
 					A2(
 					$elm$html$Html$button,
 					_List_fromArray(
