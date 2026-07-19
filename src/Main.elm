@@ -39,6 +39,7 @@ port pushUrl : String -> Cmd msg
 type alias Flags =
     { baseUrl : String
     , search : String
+    , lastQuery : String
     , isStandalone : Bool
     }
 
@@ -94,8 +95,15 @@ defaultModel =
 init : Flags -> ( Model, Cmd Msg )
 init flags =
     let
+        searchToUse =
+            if String.isEmpty flags.search then
+                flags.lastQuery
+
+            else
+                flags.search
+
         decoded =
-            UrlState.applyQuery flags.search defaultModel
+            UrlState.applyQuery searchToUse defaultModel
 
         model =
             { decoded | baseUrl = flags.baseUrl, isStandalone = flags.isStandalone }

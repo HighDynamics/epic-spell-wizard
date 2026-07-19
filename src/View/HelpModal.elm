@@ -31,7 +31,9 @@ viewHelpModal =
                     ++ "the spell name, or just bookmarking the page at any point is how you "
                     ++ "\"save\" — reopening that link rebuilds the spell exactly as you left it. "
                     ++ "The \"Epic Spell Wizard Link\" at the top of a copied spell summary is "
-                    ++ "the same link."
+                    ++ "the same link. Your browser will also try to remember where you left off "
+                    ++ "if you just close the tab and come back — but that's not guaranteed, so "
+                    ++ "the link is still what you should rely on."
                 )
             , viewSection "Nothing here is prohibited"
                 ("Epic spell development is meant to be flexible, so this tool doesn't stop "

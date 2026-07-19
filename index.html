@@ -36,11 +36,18 @@
         var isStandalone = window.matchMedia('(display-mode: standalone)').matches
             || window.navigator.standalone === true;
 
+        var LAST_QUERY_KEY = 'esw-last-query';
+        var lastQuery = '';
+        try {
+            lastQuery = localStorage.getItem(LAST_QUERY_KEY) || '';
+        } catch (e) {}
+
         var app = Elm.Main.init({
             node: document.getElementById('elm-app'),
             flags: {
                 baseUrl: location.origin + location.pathname,
                 search: location.search,
+                lastQuery: lastQuery,
                 isStandalone: isStandalone
             }
         });
@@ -56,10 +63,15 @@
             });
         }
 
-        // URL sync port — keeps the address bar in sync with app state
+        // URL sync port — keeps the address bar in sync with app state, and
+        // mirrors it to localStorage so a bare relaunch (e.g. the home-screen
+        // icon) can resume the last session.
         if (app.ports && app.ports.pushUrl) {
             app.ports.pushUrl.subscribe(function(query) {
                 history.replaceState(null, '', location.pathname + query);
+                try {
+                    localStorage.setItem(LAST_QUERY_KEY, query);
+                } catch (e) {}
             });
         }
 
