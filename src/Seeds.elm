@@ -123,8 +123,11 @@ animate =
     }
 
 
+
 -- Per-type Spellcraft DC modifier for the Animate Dead seed's "Undead Type"
 -- choice (SRD table: more powerful undead raise the DC, weaker ones lower it).
+
+
 undeadTypeDcModifiers : List ( String, Int )
 undeadTypeDcModifiers =
     [ ( "Skeleton", -12 )

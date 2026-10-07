@@ -1,4 +1,4 @@
-module Calc exposing (StatBlockData, availableSchools, availableSavingThrows, boltShapes, calculateBreakdown, devCosts, seedInstanceLabels, sortByName, statBlock, targetToAreaShapes, targetToAreaText)
+module Calc exposing (StatBlockData, availableSavingThrows, availableSchools, boltShapes, calculateBreakdown, devCosts, seedInstanceLabels, sortByName, statBlock, targetToAreaShapes, targetToAreaText)
 
 import Dict exposing (Dict)
 import Factors exposing (getFactor)
@@ -267,8 +267,11 @@ type alias StatBlockData =
     }
 
 
+
 -- Orders seed instances alphabetically by their seed's name. Stable, so
 -- duplicate instances of the same seed keep their original relative order.
+
+
 sortByName : List SeedInstance -> List SeedInstance
 sortByName instances =
     instances
@@ -279,11 +282,22 @@ availableSchools : List SeedInstance -> List String
 availableSchools instances =
     instances
         |> List.filterMap (\inst -> getSeed inst.seedId |> Maybe.map .school)
-        |> List.foldl (\s acc -> if List.member s acc then acc else acc ++ [ s ]) []
+        |> List.foldl
+            (\s acc ->
+                if List.member s acc then
+                    acc
+
+                else
+                    acc ++ [ s ]
+            )
+            []
+
 
 
 -- Labels duplicate seeds the same way across the Factors panel and the
 -- Summary panel's Seed Factors section: "Afflict", "Afflict (2)", "Afflict (3)", ...
+
+
 seedInstanceLabels : List SeedInstance -> Dict SeedInstanceId String
 seedInstanceLabels instances =
     instances
@@ -499,7 +513,14 @@ statBlock instances rawFactors saveDCBonus maybePrimaryId maybeSchool maybeSavin
                     |> Maybe.map
                         (\t ->
                             if extraTargets > 0 then
-                                t ++ " (+" ++ String.fromInt extraTargets ++ " additional " ++ (if extraTargets == 1 then "target" else "targets") ++ ")"
+                                t ++ " (+" ++ String.fromInt extraTargets ++ " additional "
+                                    ++ (if extraTargets == 1 then
+                                            "target"
+
+                                        else
+                                            "targets"
+                                       )
+                                    ++ ")"
 
                             else
                                 t
@@ -624,10 +645,22 @@ deriveCastingTime globalFactors primarySeed =
                     |> List.sum
 
             minutesStr n =
-                String.fromInt n ++ (if n == 1 then " minute" else " minutes")
+                String.fromInt n
+                    ++ (if n == 1 then
+                            " minute"
+
+                        else
+                            " minutes"
+                       )
 
             daysStr n =
-                String.fromInt n ++ (if n == 1 then " day" else " days")
+                String.fromInt n
+                    ++ (if n == 1 then
+                            " day"
+
+                        else
+                            " days"
+                       )
         in
         if dayExtra > 0 then
             minutesStr (1 + minExtra) ++ " + " ++ daysStr dayExtra
@@ -647,7 +680,13 @@ deriveCastingTime globalFactors primarySeed =
                     modBy 10 afterRounds
 
                 roundsStr n =
-                    String.fromInt n ++ (if n == 1 then " round" else " rounds")
+                    String.fromInt n
+                        ++ (if n == 1 then
+                                " round"
+
+                            else
+                                " rounds"
+                           )
             in
             if resultMinutes > 0 && resultRounds > 0 then
                 minutesStr resultMinutes ++ " + " ++ roundsStr resultRounds
@@ -674,9 +713,12 @@ formatLargeInt n =
         String.fromInt n
 
 
+
 -- Scale only distance values (numbers followed by " ft.") in a range string.
 -- Comma-formatted thousands ("12,000 ft.") are handled as a unit.
 -- Non-distance numbers like weights ("2,000 lb.") are passed through unchanged.
+
+
 scaleRange : Int -> String -> String
 scaleRange mult s =
     case String.uncons s of
@@ -808,7 +850,10 @@ instanceDuration inst =
             seed.duration
 
 
+
 -- Extract the leading run of digit characters from a string.
+
+
 leadingDigits : String -> ( String, String )
 leadingDigits s =
     case String.uncons s of
@@ -827,11 +872,14 @@ leadingDigits s =
                 ( "", s )
 
 
+
 -- Scale every number in a string by `mult`.
 -- Each application of a "increase X 100%" factor adds one more base value,
 -- so n applications → multiplier of (n + 1).
 -- Walks the full string so multiple numeric values (e.g. Conjure's
 -- "8 hours (simple objects last 24 hours)") are all scaled.
+
+
 scaleNumbers : Int -> String -> String
 scaleNumbers mult s =
     case String.uncons s of

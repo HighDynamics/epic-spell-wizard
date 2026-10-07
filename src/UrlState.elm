@@ -8,6 +8,7 @@ import Url
 import Url.Builder as UB
 
 
+
 -- ─── Encode ───────────────────────────────────────────────────────────────────
 
 
@@ -17,6 +18,7 @@ encode model =
         |> escapeForSharing
 
 
+
 -- Url.Builder's percent-encoding (JS encodeURIComponent under the hood)
 -- deliberately leaves ( ) ! * ' ~ unescaped, since they're legal in a URI.
 -- But several factor/seed names contain literal parens (e.g. "Backlash
@@ -24,6 +26,8 @@ encode model =
 -- contain any of these — and plenty of real-world link handlers (chat
 -- apps, markdown auto-linkers) mis-truncate URLs with literal parens in
 -- them. Escape them too; decoding is unaffected either way.
+
+
 escapeForSharing : String -> String
 escapeForSharing s =
     s
@@ -72,11 +76,14 @@ params model =
     ]
 
 
+
 -- The Target/Personal -> Area and bolt shape pickers store the full display
 -- label (e.g. "Bolt (5 ft. × 300 ft.)") as the selected value. Parentheses
 -- and "×" are legal but unescaped by percent-encoding, which some link
 -- handlers (chat apps, markdown auto-linkers) mishandle. Use plain ASCII
 -- slugs in the URL instead, translating back to the display label on load.
+
+
 encodeShapeSlug : String -> String
 encodeShapeSlug shape =
     case shape of
@@ -214,6 +221,7 @@ saveEffectFromString s =
             Nothing
 
 
+
 -- Stable, all-alphanumeric codes for FactorId/SeedId, used in place of the
 -- human-readable .name strings in the URL. Plain escaping isn't durable —
 -- some link handlers (chat apps, markdown auto-linkers) decode percent
@@ -228,6 +236,8 @@ saveEffectFromString s =
 --
 -- Decode falls back to matching against .name for links generated before
 -- this scheme existed.
+
+
 factorIdCodeTable : List ( String, FactorId )
 factorIdCodeTable =
     [ ( "0", ReduceCastTime1Round )
@@ -410,9 +420,12 @@ applyQuery search model =
     }
 
 
+
 -- Accepts a pasted full URL ("https://host/path?name=...") or a bare
 -- query string ("?name=..." or "name=...") and returns the query portion
 -- suitable for `applyQuery`.
+
+
 extractQuery : String -> String
 extractQuery input =
     let
@@ -542,7 +555,7 @@ decodeChoices s =
     else
         s
             |> String.split ","
-            |> List.filterMap (splitOnEquals)
+            |> List.filterMap splitOnEquals
             |> Dict.fromList
 
 

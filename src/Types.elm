@@ -311,10 +311,10 @@ type MobileTab
 
 
 -- ─── App state ───────────────────────────────────────────────────────────────
-
-
 -- The subset of Model that "Clear Spell" wipes and "Undo" restores —
 -- the spell's own content, not app-shell/UI-preference state.
+
+
 type alias SpellSnapshot =
     { spellName : String
     , seedInstances : List SeedInstance
