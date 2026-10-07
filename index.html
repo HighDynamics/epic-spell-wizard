@@ -40,7 +40,9 @@
         var lastQuery = '';
         try {
             lastQuery = localStorage.getItem(LAST_QUERY_KEY) || '';
-        } catch (e) {}
+        } catch {
+            // localStorage unavailable (private mode, blocked storage): start fresh.
+        }
 
         var app = Elm.Main.init({
             node: document.getElementById('elm-app'),
@@ -71,7 +73,9 @@
                 history.replaceState(null, '', location.pathname + query);
                 try {
                     localStorage.setItem(LAST_QUERY_KEY, query);
-                } catch (e) {}
+                } catch {
+                    // localStorage unavailable: the URL still carries the state.
+                }
             });
         }
 
