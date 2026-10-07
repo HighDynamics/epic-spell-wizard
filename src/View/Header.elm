@@ -7,18 +7,26 @@ import Types exposing (..)
 import View.Icons exposing (importIcon)
 
 
+
 -- True if the spell has any content worth clearing — i.e. anything beyond
 -- a freshly-started, blank spell.
+
+
 hasSpellContent : Model -> Bool
 hasSpellContent model =
     not (String.isEmpty model.spellName)
         || not (List.isEmpty model.seedInstances)
         || not (List.isEmpty model.appliedFactors)
-        || model.selectedSchool /= Nothing
-        || model.selectedSavingThrow /= Nothing
-        || model.targetToAreaShape /= Nothing
-        || model.personalToAreaShape /= Nothing
-        || model.boltShape /= Nothing
+        || model.selectedSchool
+        /= Nothing
+        || model.selectedSavingThrow
+        /= Nothing
+        || model.targetToAreaShape
+        /= Nothing
+        || model.personalToAreaShape
+        /= Nothing
+        || model.boltShape
+        /= Nothing
 
 
 viewHeader : Model -> Html Msg

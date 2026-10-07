@@ -2,18 +2,18 @@ port module Main exposing (main)
 
 import Browser
 import Calc exposing (calculateBreakdown, devCosts, statBlock)
-import Dict exposing (Dict)
+import Dict
 import Export
-import Set
 import Html exposing (..)
 import Html.Attributes exposing (class)
+import Set
 import Types exposing (..)
 import UrlState
 import View.FactorsPanel exposing (viewFactorsPanel)
 import View.Header exposing (viewHeader)
 import View.HelpModal exposing (viewHelpModal)
-import View.LicenseModal exposing (viewLicenseModal)
 import View.ImportLinkModal exposing (viewImportLinkModal)
+import View.LicenseModal exposing (viewLicenseModal)
 import View.MobileNav exposing (viewMobileNav)
 import View.SeedsPanel exposing (viewSeedsPanel)
 import View.SummaryPanel exposing (viewSummaryPanel)
@@ -155,35 +155,76 @@ update msg model =
 preservesCopyFeedback : Msg -> Bool
 preservesCopyFeedback msg =
     case msg of
-        CopySpellSummary -> True
-        CopyResult _ -> True
-        CopyShareLink -> True
-        ToggleSeedsPanel -> True
-        ToggleFactorsPanel -> True
-        ToggleSummaryPanel -> True
-        ToggleSeedDescription _ -> True
-        ToggleSeedInstanceCollapsed _ -> True
-        ToggleGlobalFactorSection _ -> True
-        ToggleHelpModal -> True
-        ToggleLicenseModal -> True
-        SetMobileTab _ -> True
-        ToggleImportModal -> True
-        SetImportInput _ -> True
-        ToggleRenameSpell -> True
-        SetExportFormat _ -> True
-        _ -> False
+        CopySpellSummary ->
+            True
+
+        CopyResult _ ->
+            True
+
+        CopyShareLink ->
+            True
+
+        ToggleSeedsPanel ->
+            True
+
+        ToggleFactorsPanel ->
+            True
+
+        ToggleSummaryPanel ->
+            True
+
+        ToggleSeedDescription _ ->
+            True
+
+        ToggleSeedInstanceCollapsed _ ->
+            True
+
+        ToggleGlobalFactorSection _ ->
+            True
+
+        ToggleHelpModal ->
+            True
+
+        ToggleLicenseModal ->
+            True
+
+        SetMobileTab _ ->
+            True
+
+        ToggleImportModal ->
+            True
+
+        SetImportInput _ ->
+            True
+
+        ToggleRenameSpell ->
+            True
+
+        SetExportFormat _ ->
+            True
+
+        _ ->
+            False
+
 
 
 -- ClearSpell and UndoClearSpell set clearSpellUndo themselves in updateInner,
 -- so exempt them here. Everything else that isn't pure UI navigation will
 -- discard the undo snapshot — meaning Undo is only available as the very
 -- next action after clearing.
+
+
 preservesUndoSnapshot : Msg -> Bool
 preservesUndoSnapshot msg =
     case msg of
-        ClearSpell -> True
-        UndoClearSpell -> True
-        _ -> preservesCopyFeedback msg
+        ClearSpell ->
+            True
+
+        UndoClearSpell ->
+            True
+
+        _ ->
+            preservesCopyFeedback msg
 
 
 updateInner : Msg -> Model -> ( Model, Cmd Msg )
@@ -204,8 +245,11 @@ updateInner msg model =
 
                 newPrimary =
                     case model.primarySeedInstanceId of
-                        Nothing -> Just model.nextInstanceId
-                        Just _ -> model.primarySeedInstanceId
+                        Nothing ->
+                            Just model.nextInstanceId
+
+                        Just _ ->
+                            model.primarySeedInstanceId
             in
             ( { model
                 | seedInstances = model.seedInstances ++ [ newInstance ]
@@ -223,6 +267,7 @@ updateInner msg model =
                 newPrimary =
                     if model.primarySeedInstanceId == Just iid then
                         List.head remaining |> Maybe.map .instanceId
+
                     else
                         model.primarySeedInstanceId
             in
@@ -313,11 +358,23 @@ updateInner msg model =
             ( { model
                 | appliedFactors = List.filter (\af -> af.factorId /= factorId) model.appliedFactors
                 , targetToAreaShape =
-                    if factorId == TargetToArea then Nothing else model.targetToAreaShape
+                    if factorId == TargetToArea then
+                        Nothing
+
+                    else
+                        model.targetToAreaShape
                 , personalToAreaShape =
-                    if factorId == PersonalToArea then Nothing else model.personalToAreaShape
+                    if factorId == PersonalToArea then
+                        Nothing
+
+                    else
+                        model.personalToAreaShape
                 , boltShape =
-                    if factorId == ChangeToBolt then Nothing else model.boltShape
+                    if factorId == ChangeToBolt then
+                        Nothing
+
+                    else
+                        model.boltShape
               }
             , Cmd.none
             )
@@ -530,7 +587,6 @@ updateInner msg model =
                     , collapsedSeedInstances = model.collapsedSeedInstances
                     , collapsedGlobalFactorSections = model.collapsedGlobalFactorSections
                     }
-
             in
             ( { model
                 | spellName = ""
@@ -579,7 +635,6 @@ updateInner msg model =
 
 
 
-
 -- ─── View ────────────────────────────────────────────────────────────────────
 
 
@@ -599,7 +654,7 @@ view model =
         [ viewHeader model
         , div [ class "flex flex-1 overflow-hidden pb-14 md:pb-0" ]
             [ viewSeedsPanel model
-            , viewFactorsPanel model breakdown
+            , viewFactorsPanel model
             , viewSummaryPanel model breakdown costs sb
             ]
         , viewMobileNav model

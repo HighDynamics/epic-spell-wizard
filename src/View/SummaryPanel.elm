@@ -81,7 +81,14 @@ viewSpellNameSection model =
 
               else
                 span [ class "flex-1 min-w-0 text-sm font-semibold text-gray-200 break-words" ]
-                    [ text (if String.isEmpty model.spellName then "Unnamed Spell" else model.spellName) ]
+                    [ text
+                        (if String.isEmpty model.spellName then
+                            "Unnamed Spell"
+
+                         else
+                            model.spellName
+                        )
+                    ]
             , button
                 [ class "shrink-0 flex items-center gap-1 text-xs font-medium whitespace-nowrap text-arcane-400 opacity-60 hover:opacity-100"
                 , onClick CopyShareLink
@@ -159,7 +166,14 @@ viewSeedsUsed model =
     div []
         [ div [ class "text-xs font-bold uppercase tracking-widest text-gray-400 mb-2" ] [ text "Seeds Used" ]
         , div [ class "text-xs text-gray-200" ]
-            [ text (if List.isEmpty names then "None" else String.join ", " names) ]
+            [ text
+                (if List.isEmpty names then
+                    "None"
+
+                 else
+                    String.join ", " names
+                )
+            ]
         ]
 
 
@@ -363,10 +377,17 @@ viewStatBlock model breakdown sb =
                                 Just first ->
                                     if List.all (\e -> e == first) effects then
                                         case first of
-                                            Negates -> "negates"
-                                            Half -> "half"
-                                            Partial -> "partial"
-                                            SeeText -> "(see text)"
+                                            Negates ->
+                                                "negates"
+
+                                            Half ->
+                                                "half"
+
+                                            Partial ->
+                                                "partial"
+
+                                            SeeText ->
+                                                "(see text)"
 
                                     else
                                         "(see text)"
@@ -410,7 +431,14 @@ viewStatBlock model breakdown sb =
     div []
         [ div [ class "text-xs font-bold uppercase tracking-widest text-gray-400 mb-2" ] [ text "Stat Block" ]
         , div [ class "space-y-1" ]
-            ([ rowEl (if List.length schools > 1 then "School (pick)" else "School") schoolEl
+            ([ rowEl
+                (if List.length schools > 1 then
+                    "School (pick)"
+
+                 else
+                    "School"
+                )
+                schoolEl
              , row "Spellcraft DC" (String.fromInt breakdown.finalDC)
              , row "Components" (String.join ", " sb.components)
              , row "Casting Time" sb.castingTime
@@ -442,7 +470,12 @@ viewGlobalFactorList model label category =
                             |> Maybe.map
                                 (\f ->
                                     f.name
-                                        ++ (if af.quantity > 1 then " ×" ++ String.fromInt af.quantity else "")
+                                        ++ (if af.quantity > 1 then
+                                                " ×" ++ String.fromInt af.quantity
+
+                                            else
+                                                ""
+                                           )
                                         ++ (if f.kind == DcMultiplier then
                                                 " (×" ++ String.fromInt f.multiplierValue ++ ")"
 
@@ -479,9 +512,6 @@ viewSeedFactorsBySeed model =
 
                             Just seed ->
                                 let
-                                    label =
-                                        Dict.get inst.instanceId labels |> Maybe.withDefault seed.name
-
                                     choiceLines =
                                         seed.choices
                                             |> List.map
@@ -524,7 +554,12 @@ viewSeedFactorsBySeed model =
                                                         |> Maybe.map
                                                             (\sf ->
                                                                 sf.name
-                                                                    ++ (if asf.quantity > 1 then " ×" ++ String.fromInt asf.quantity else "")
+                                                                    ++ (if asf.quantity > 1 then
+                                                                            " ×" ++ String.fromInt asf.quantity
+
+                                                                        else
+                                                                            ""
+                                                                       )
                                                                     ++ (if isSpecialSeedFactor sf.id then
                                                                             " (special)"
 
@@ -541,6 +576,10 @@ viewSeedFactorsBySeed model =
                                     Nothing
 
                                 else
+                                    let
+                                        label =
+                                            Dict.get inst.instanceId labels |> Maybe.withDefault seed.name
+                                    in
                                     Just ( label, lines )
                     )
                 |> List.sortBy Tuple.first

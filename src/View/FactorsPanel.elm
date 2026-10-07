@@ -13,8 +13,11 @@ import Types exposing (..)
 import View.Icons exposing (chevronIcon, factorsIcon)
 
 
+
 -- Like onClick, but stops the event from bubbling up to an ancestor's own
 -- onClick (e.g. a button nested inside an accordion header).
+
+
 onClickStopPropagation : Msg -> Attribute Msg
 onClickStopPropagation msg =
     Html.Events.stopPropagationOn "click" (Decode.succeed ( msg, True ))
@@ -29,8 +32,8 @@ mobileVis model =
         "hidden"
 
 
-viewFactorsPanel : Model -> DcBreakdown -> Html Msg
-viewFactorsPanel model _ =
+viewFactorsPanel : Model -> Html Msg
+viewFactorsPanel model =
     if model.factorsPanelOpen then
         div [ class (mobileVis model ++ " flex-col flex-1 md:flex bg-gray-950 border-r border-gray-700 overflow-y-auto min-w-0") ]
             [ -- Panel header
@@ -167,12 +170,24 @@ viewSeedInstanceFactors model labels inst =
                         [ span [ class "text-xs text-arcane-400 font-semibold uppercase tracking-wider flex items-center gap-1.5" ]
                             [ chevronIcon
                                 ("w-4 h-4 transition-transform duration-200 ease-in-out "
-                                    ++ (if isCollapsed then "rotate-0" else "rotate-90")
+                                    ++ (if isCollapsed then
+                                            "rotate-0"
+
+                                        else
+                                            "rotate-90"
+                                       )
                                 )
                             , text ("── " ++ label ++ " ──")
                             ]
                         , div [ class "text-[10px] text-gray-600 normal-case font-normal tracking-normal mt-0.5" ]
-                            [ text (if isCollapsed then "Click to expand" else "Click to collapse") ]
+                            [ text
+                                (if isCollapsed then
+                                    "Click to expand"
+
+                                 else
+                                    "Click to collapse"
+                                )
+                            ]
                         ]
                     , div [ class "flex items-center gap-2" ]
                         [ if List.length model.seedInstances > 1 then
@@ -200,7 +215,12 @@ viewSeedInstanceFactors model labels inst =
                 , div
                     [ class
                         ("grid transition-[grid-template-rows] duration-200 ease-in-out "
-                            ++ (if isCollapsed then "grid-rows-[0fr]" else "grid-rows-[1fr]")
+                            ++ (if isCollapsed then
+                                    "grid-rows-[0fr]"
+
+                                else
+                                    "grid-rows-[1fr]"
+                               )
                         )
                     ]
                     [ div [ class "overflow-hidden" ]
@@ -211,8 +231,11 @@ viewSeedInstanceFactors model labels inst =
                 ]
 
 
+
 -- Splits at the last word boundary at or before `maxLen`, so the teaser
 -- never cuts a word in half.
+
+
 splitAtWordBoundary : Int -> String -> ( String, String )
 splitAtWordBoundary maxLen full =
     if String.length full <= maxLen then
@@ -248,12 +271,26 @@ viewSeedDescriptionQuote instanceId isExpanded seed =
         , blockquote
             [ class "border-l-2 border-gray-700 pl-3 text-gray-400 text-xs leading-relaxed max-w-[75ch]" ]
             [ span [ class "whitespace-pre-line" ]
-                [ text (teaser ++ (if hasMore && not isExpanded then "…" else "")) ]
+                [ text
+                    (teaser
+                        ++ (if hasMore && not isExpanded then
+                                "…"
+
+                            else
+                                ""
+                           )
+                    )
+                ]
             , if hasMore then
                 div
                     [ class
                         ("grid transition-[grid-template-rows] duration-200 ease-in-out "
-                            ++ (if isExpanded then "grid-rows-[1fr]" else "grid-rows-[0fr]")
+                            ++ (if isExpanded then
+                                    "grid-rows-[1fr]"
+
+                                else
+                                    "grid-rows-[0fr]"
+                               )
                         )
                     ]
                     [ div [ class "overflow-hidden" ]
@@ -269,7 +306,14 @@ viewSeedDescriptionQuote instanceId isExpanded seed =
                         [ class "not-italic text-arcane-400 hover:text-arcane-300 font-semibold"
                         , onClick (ToggleSeedDescription instanceId)
                         ]
-                        [ text (if isExpanded then "Show less" else "Show more") ]
+                        [ text
+                            (if isExpanded then
+                                "Show less"
+
+                             else
+                                "Show more"
+                            )
+                        ]
                     ]
 
               else
@@ -321,8 +365,11 @@ viewChoiceDropdown inst choice =
         ]
 
 
+
 -- Clamps a quantity to >= 0 and, if given, <= maxQuantity. Shared by the
 -- +/- buttons and the manual-entry input for stackable factor counters.
+
+
 clampQty : Maybe Int -> Int -> Int
 clampQty maxQuantity n =
     let
@@ -467,18 +514,35 @@ viewGlobalFactorSection model label category =
                 [ span [ class "text-xs text-gray-400 font-semibold uppercase tracking-wider flex items-center gap-1.5" ]
                     [ chevronIcon
                         ("w-4 h-4 transition-transform duration-200 ease-in-out "
-                            ++ (if isCollapsed then "rotate-0" else "rotate-90")
+                            ++ (if isCollapsed then
+                                    "rotate-0"
+
+                                else
+                                    "rotate-90"
+                               )
                         )
                     , text ("── Global " ++ label ++ " ──")
                     ]
                 , div [ class "text-[10px] text-gray-600 normal-case font-normal tracking-normal mt-0.5" ]
-                    [ text (if isCollapsed then "Click to expand" else "Click to collapse") ]
+                    [ text
+                        (if isCollapsed then
+                            "Click to expand"
+
+                         else
+                            "Click to collapse"
+                        )
+                    ]
                 ]
             ]
         , div
             [ class
                 ("grid transition-[grid-template-rows] duration-200 ease-in-out "
-                    ++ (if isCollapsed then "grid-rows-[0fr]" else "grid-rows-[1fr]")
+                    ++ (if isCollapsed then
+                            "grid-rows-[0fr]"
+
+                        else
+                            "grid-rows-[1fr]"
+                       )
                 )
             ]
             [ div [ class "overflow-hidden" ]

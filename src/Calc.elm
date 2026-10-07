@@ -1,4 +1,4 @@
-module Calc exposing (StatBlockData, availableSchools, availableSavingThrows, boltShapes, calculateBreakdown, devCosts, seedInstanceLabels, sortByName, statBlock, targetToAreaShapes, targetToAreaText)
+module Calc exposing (StatBlockData, availableSavingThrows, availableSchools, boltShapes, calculateBreakdown, devCosts, seedInstanceLabels, sortByName, statBlock, targetToAreaShapes)
 
 import Dict exposing (Dict)
 import Factors exposing (getFactor)
@@ -267,8 +267,11 @@ type alias StatBlockData =
     }
 
 
+
 -- Orders seed instances alphabetically by their seed's name. Stable, so
 -- duplicate instances of the same seed keep their original relative order.
+
+
 sortByName : List SeedInstance -> List SeedInstance
 sortByName instances =
     instances
@@ -279,11 +282,22 @@ availableSchools : List SeedInstance -> List String
 availableSchools instances =
     instances
         |> List.filterMap (\inst -> getSeed inst.seedId |> Maybe.map .school)
-        |> List.foldl (\s acc -> if List.member s acc then acc else acc ++ [ s ]) []
+        |> List.foldl
+            (\s acc ->
+                if List.member s acc then
+                    acc
+
+                else
+                    acc ++ [ s ]
+            )
+            []
+
 
 
 -- Labels duplicate seeds the same way across the Factors panel and the
 -- Summary panel's Seed Factors section: "Afflict", "Afflict (2)", "Afflict (3)", ...
+
+
 seedInstanceLabels : List SeedInstance -> Dict SeedInstanceId String
 seedInstanceLabels instances =
     instances
@@ -413,21 +427,22 @@ statBlock instances rawFactors saveDCBonus maybePrimaryId maybeSchool maybeSavin
         castingTime =
             deriveCastingTime globalFactors primarySeed
 
-        rangeBase =
-            if targetToTouchActive then
-                "300 ft."
-
-            else if areaToTouchActive then
-                "25 ft. + 5 ft./2 levels"
-
-            else
-                Maybe.map .range primarySeed |> Maybe.withDefault "—"
-
         range =
             if changeToPersonalActive then
                 "Personal"
 
             else
+                let
+                    rangeBase =
+                        if targetToTouchActive then
+                            "300 ft."
+
+                        else if areaToTouchActive then
+                            "25 ft. + 5 ft./2 levels"
+
+                        else
+                            Maybe.map .range primarySeed |> Maybe.withDefault "—"
+                in
                 deriveRange globalFactors rangeBase
 
         targetToAreaActive =
@@ -436,52 +451,14 @@ statBlock instances rawFactors saveDCBonus maybePrimaryId maybeSchool maybeSavin
         personalToAreaActive =
             List.any (\af -> af.factorId == PersonalToArea) globalFactors
 
-        activeToAreaShape =
-            if targetToAreaActive then
-                maybeTargetToAreaShape
-
-            else if personalToAreaActive then
-                maybePersonalToAreaShape
-
-            else
-                Nothing
-
         convertingToArea =
             targetToAreaActive || personalToAreaActive
-
-        -- "Change area to ..." factors set a fixed Area text directly,
-        -- independent of the Target/Personal -> Area conversion picker.
-        areaChangeText =
-            if List.any (\af -> af.factorId == ChangeToBolt) globalFactors then
-                Just (Maybe.withDefault (List.head boltShapes |> Maybe.withDefault "") maybeBoltShape)
-
-            else if List.any (\af -> af.factorId == ChangeToCylinder) globalFactors then
-                Just (targetToAreaText "Cylinder")
-
-            else if List.any (\af -> af.factorId == ChangeToCone) globalFactors then
-                Just (targetToAreaText "40-ft. cone")
-
-            else if List.any (\af -> af.factorId == ChangeToFourCubes) globalFactors then
-                Just (targetToAreaText "Four 10-ft. cubes")
-
-            else if List.any (\af -> af.factorId == ChangeToRadius) globalFactors then
-                Just (targetToAreaText "20-ft. radius")
-
-            else
-                Nothing
 
         increaseAreaCount =
             globalFactors
                 |> List.filter (\af -> af.factorId == IncreaseArea)
                 |> List.map .quantity
                 |> List.sum
-
-        extraTargets =
-            globalFactors
-                |> List.filter (\af -> af.factorId == AddExtraTarget)
-                |> List.head
-                |> Maybe.map .quantity
-                |> Maybe.withDefault 0
 
         target =
             if changeToPersonalActive then
@@ -498,8 +475,26 @@ statBlock instances rawFactors saveDCBonus maybePrimaryId maybeSchool maybeSavin
                     |> Maybe.andThen .target
                     |> Maybe.map
                         (\t ->
+                            let
+                                extraTargets =
+                                    globalFactors
+                                        |> List.filter (\af -> af.factorId == AddExtraTarget)
+                                        |> List.head
+                                        |> Maybe.map .quantity
+                                        |> Maybe.withDefault 0
+                            in
                             if extraTargets > 0 then
-                                t ++ " (+" ++ String.fromInt extraTargets ++ " additional " ++ (if extraTargets == 1 then "target" else "targets") ++ ")"
+                                t
+                                    ++ " (+"
+                                    ++ String.fromInt extraTargets
+                                    ++ " additional "
+                                    ++ (if extraTargets == 1 then
+                                            "target"
+
+                                        else
+                                            "targets"
+                                       )
+                                    ++ ")"
 
                             else
                                 t
@@ -510,9 +505,42 @@ statBlock instances rawFactors saveDCBonus maybePrimaryId maybeSchool maybeSavin
                 Nothing
 
             else if convertingToArea then
+                let
+                    activeToAreaShape =
+                        if targetToAreaActive then
+                            maybeTargetToAreaShape
+
+                        else if personalToAreaActive then
+                            maybePersonalToAreaShape
+
+                        else
+                            Nothing
+                in
                 activeToAreaShape |> Maybe.map targetToAreaText
 
             else
+                let
+                    -- "Change area to ..." factors set a fixed Area text directly,
+                    -- independent of the Target/Personal -> Area conversion picker.
+                    areaChangeText =
+                        if List.any (\af -> af.factorId == ChangeToBolt) globalFactors then
+                            Just (Maybe.withDefault (List.head boltShapes |> Maybe.withDefault "") maybeBoltShape)
+
+                        else if List.any (\af -> af.factorId == ChangeToCylinder) globalFactors then
+                            Just (targetToAreaText "Cylinder")
+
+                        else if List.any (\af -> af.factorId == ChangeToCone) globalFactors then
+                            Just (targetToAreaText "40-ft. cone")
+
+                        else if List.any (\af -> af.factorId == ChangeToFourCubes) globalFactors then
+                            Just (targetToAreaText "Four 10-ft. cubes")
+
+                        else if List.any (\af -> af.factorId == ChangeToRadius) globalFactors then
+                            Just (targetToAreaText "20-ft. radius")
+
+                        else
+                            Nothing
+                in
                 case areaChangeText of
                     Just t ->
                         Just t
@@ -593,10 +621,6 @@ componentToString c =
 
 deriveCastingTime : List AppliedFactor -> Maybe Seed -> String
 deriveCastingTime globalFactors primarySeed =
-    let
-        base =
-            Maybe.map .castingTime primarySeed |> Maybe.withDefault "1 minute"
-    in
     if List.any (\af -> af.factorId == QuickenedSpell) globalFactors then
         "Free action (quickened)"
 
@@ -617,52 +641,76 @@ deriveCastingTime globalFactors primarySeed =
                     |> List.map .quantity
                     |> List.sum
 
-            roundReductions =
-                globalFactors
-                    |> List.filter (\af -> af.factorId == ReduceCastTime1Round)
-                    |> List.map .quantity
-                    |> List.sum
-
             minutesStr n =
-                String.fromInt n ++ (if n == 1 then " minute" else " minutes")
+                String.fromInt n
+                    ++ (if n == 1 then
+                            " minute"
+
+                        else
+                            " minutes"
+                       )
 
             daysStr n =
-                String.fromInt n ++ (if n == 1 then " day" else " days")
+                String.fromInt n
+                    ++ (if n == 1 then
+                            " day"
+
+                        else
+                            " days"
+                       )
         in
         if dayExtra > 0 then
             minutesStr (1 + minExtra) ++ " + " ++ daysStr dayExtra
 
-        else if roundReductions > 0 then
+        else
             let
-                totalRounds =
-                    (1 + minExtra) * 10
-
-                afterRounds =
-                    max (totalRounds - roundReductions) 1
-
-                resultMinutes =
-                    afterRounds // 10
-
-                resultRounds =
-                    modBy 10 afterRounds
-
-                roundsStr n =
-                    String.fromInt n ++ (if n == 1 then " round" else " rounds")
+                roundReductions =
+                    globalFactors
+                        |> List.filter (\af -> af.factorId == ReduceCastTime1Round)
+                        |> List.map .quantity
+                        |> List.sum
             in
-            if resultMinutes > 0 && resultRounds > 0 then
-                minutesStr resultMinutes ++ " + " ++ roundsStr resultRounds
+            if roundReductions > 0 then
+                let
+                    totalRounds =
+                        (1 + minExtra) * 10
 
-            else if resultMinutes > 0 then
-                minutesStr resultMinutes
+                    afterRounds =
+                        max (totalRounds - roundReductions) 1
+
+                    resultMinutes =
+                        afterRounds // 10
+
+                    resultRounds =
+                        modBy 10 afterRounds
+
+                    roundsStr n =
+                        String.fromInt n
+                            ++ (if n == 1 then
+                                    " round"
+
+                                else
+                                    " rounds"
+                               )
+                in
+                if resultMinutes > 0 && resultRounds > 0 then
+                    minutesStr resultMinutes ++ " + " ++ roundsStr resultRounds
+
+                else if resultMinutes > 0 then
+                    minutesStr resultMinutes
+
+                else
+                    roundsStr resultRounds
+
+            else if minExtra > 0 then
+                String.fromInt (1 + minExtra) ++ " minutes"
 
             else
-                roundsStr resultRounds
-
-        else if minExtra > 0 then
-            String.fromInt (1 + minExtra) ++ " minutes"
-
-        else
-            base
+                let
+                    base =
+                        Maybe.map .castingTime primarySeed |> Maybe.withDefault "1 minute"
+                in
+                base
 
 
 formatLargeInt : Int -> String
@@ -674,9 +722,12 @@ formatLargeInt n =
         String.fromInt n
 
 
+
 -- Scale only distance values (numbers followed by " ft.") in a range string.
 -- Comma-formatted thousands ("12,000 ft.") are handled as a unit.
 -- Non-distance numbers like weights ("2,000 lb.") are passed through unchanged.
+
+
 scaleRange : Int -> String -> String
 scaleRange mult s =
     case String.uncons s of
@@ -808,7 +859,10 @@ instanceDuration inst =
             seed.duration
 
 
+
 -- Extract the leading run of digit characters from a string.
+
+
 leadingDigits : String -> ( String, String )
 leadingDigits s =
     case String.uncons s of
@@ -827,11 +881,14 @@ leadingDigits s =
                 ( "", s )
 
 
+
 -- Scale every number in a string by `mult`.
 -- Each application of a "increase X 100%" factor adds one more base value,
 -- so n applications → multiplier of (n + 1).
 -- Walks the full string so multiple numeric values (e.g. Conjure's
 -- "8 hours (simple objects last 24 hours)") are all scaled.
+
+
 scaleNumbers : Int -> String -> String
 scaleNumbers mult s =
     case String.uncons s of
@@ -863,21 +920,8 @@ scaleDuration mult s =
 deriveDuration : List AppliedFactor -> List SeedInstance -> String
 deriveDuration globalFactors instances =
     let
-        base =
-            instances
-                |> List.map instanceDuration
-                |> List.sortBy durationRank
-                |> List.head
-                |> Maybe.withDefault "—"
-
         isPermanent =
             List.any (\af -> af.factorId == PermanentDuration) globalFactors
-
-        doublings =
-            globalFactors
-                |> List.filter (\af -> af.factorId == IncreaseDuration)
-                |> List.map .quantity
-                |> List.sum
 
         isDismissable =
             List.any (\af -> af.factorId == Dismissible) globalFactors
@@ -893,11 +937,26 @@ deriveDuration globalFactors instances =
     if isPermanent then
         addDismissTag "Permanent"
 
-    else if doublings > 0 then
-        addDismissTag (scaleDuration (doublings + 1) base)
-
     else
-        addDismissTag base
+        let
+            base =
+                instances
+                    |> List.map instanceDuration
+                    |> List.sortBy durationRank
+                    |> List.head
+                    |> Maybe.withDefault "—"
+
+            doublings =
+                globalFactors
+                    |> List.filter (\af -> af.factorId == IncreaseDuration)
+                    |> List.map .quantity
+                    |> List.sum
+        in
+        if doublings > 0 then
+            addDismissTag (scaleDuration (doublings + 1) base)
+
+        else
+            addDismissTag base
 
 
 deriveSavingThrow : Maybe SavingThrow -> List AppliedFactor -> Int -> String
