@@ -1,6 +1,5 @@
 module Seeds exposing (allSeeds, getSeed, isSpecialSeedFactor)
 
-import Dict exposing (Dict)
 import Types exposing (..)
 
 

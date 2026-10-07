@@ -2,7 +2,7 @@ port module Main exposing (main)
 
 import Browser
 import Calc exposing (calculateBreakdown, devCosts, statBlock)
-import Dict exposing (Dict)
+import Dict
 import Export
 import Html exposing (..)
 import Html.Attributes exposing (class)
@@ -654,7 +654,7 @@ view model =
         [ viewHeader model
         , div [ class "flex flex-1 overflow-hidden pb-14 md:pb-0" ]
             [ viewSeedsPanel model
-            , viewFactorsPanel model breakdown
+            , viewFactorsPanel model
             , viewSummaryPanel model breakdown costs sb
             ]
         , viewMobileNav model

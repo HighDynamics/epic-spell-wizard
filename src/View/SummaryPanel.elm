@@ -512,9 +512,6 @@ viewSeedFactorsBySeed model =
 
                             Just seed ->
                                 let
-                                    label =
-                                        Dict.get inst.instanceId labels |> Maybe.withDefault seed.name
-
                                     choiceLines =
                                         seed.choices
                                             |> List.map
@@ -579,6 +576,10 @@ viewSeedFactorsBySeed model =
                                     Nothing
 
                                 else
+                                    let
+                                        label =
+                                            Dict.get inst.instanceId labels |> Maybe.withDefault seed.name
+                                    in
                                     Just ( label, lines )
                     )
                 |> List.sortBy Tuple.first

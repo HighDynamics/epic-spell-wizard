@@ -32,8 +32,8 @@ mobileVis model =
         "hidden"
 
 
-viewFactorsPanel : Model -> DcBreakdown -> Html Msg
-viewFactorsPanel model _ =
+viewFactorsPanel : Model -> Html Msg
+viewFactorsPanel model =
     if model.factorsPanelOpen then
         div [ class (mobileVis model ++ " flex-col flex-1 md:flex bg-gray-950 border-r border-gray-700 overflow-y-auto min-w-0") ]
             [ -- Panel header

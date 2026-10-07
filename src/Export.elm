@@ -193,13 +193,6 @@ seedFactorBlocks instances =
                             priorCount =
                                 Dict.get seed.name seenCounts |> Maybe.withDefault 0
 
-                            label =
-                                if priorCount == 0 then
-                                    seed.name
-
-                                else
-                                    seed.name ++ " (" ++ String.fromInt (priorCount + 1) ++ ")"
-
                             choiceLines =
                                 seed.choices
                                     |> List.map
@@ -264,6 +257,14 @@ seedFactorBlocks instances =
                             ( Dict.insert seed.name (priorCount + 1) seenCounts, acc )
 
                         else
+                            let
+                                label =
+                                    if priorCount == 0 then
+                                        seed.name
+
+                                    else
+                                        seed.name ++ " (" ++ String.fromInt (priorCount + 1) ++ ")"
+                            in
                             ( Dict.insert seed.name (priorCount + 1) seenCounts
                             , acc ++ [ { label = label, lines = lines } ]
                             )
