@@ -1,5 +1,26 @@
 {
-  "dependencies": {
-    "elm-format": "^0.8.8"
+  "name": "epic-spell-wizard",
+  "private": true,
+  "scripts": {
+    "format": "elm-format src tests review/src --yes",
+    "format:check": "elm-format src tests review/src --validate",
+    "review": "elm-review",
+    "test": "elm-test",
+    "lint:js": "eslint .",
+    "build": "elm make src/Main.elm --optimize --output=/dev/null",
+    "check": "npm run format:check && npm run review && npm run test && npm run lint:js && npm run build"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "elm": "^0.19.1-6",
+    "elm-format": "^0.8.8",
+    "elm-review": "^2.13.5",
+    "elm-test": "^0.19.1-revision17",
+    "eslint": "^10.12.0",
+    "eslint-plugin-html": "^8.2.1",
+    "globals": "^17.13.0"
   }
 }
