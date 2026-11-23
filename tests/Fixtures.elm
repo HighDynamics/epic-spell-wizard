@@ -37,6 +37,7 @@ emptyModel =
     , isStandalone = False
     , clearSpellUndo = Nothing
     , houseRules = False
+    , houseRulesConfirmOpen = False
     }
 
 

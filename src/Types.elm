@@ -363,6 +363,7 @@ type alias Model =
     , isStandalone : Bool
     , clearSpellUndo : Maybe SpellSnapshot
     , houseRules : Bool
+    , houseRulesConfirmOpen : Bool
     }
 
 
@@ -401,3 +402,6 @@ type Msg
     | LoadImportedLink
     | ClearSpell
     | UndoClearSpell
+    | ToggleHouseRules
+    | ConfirmHouseRulesSwitch
+    | CancelHouseRulesSwitch

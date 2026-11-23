@@ -4,6 +4,7 @@ import Browser
 import Calc exposing (calculateBreakdown, devCosts, statBlock)
 import Dict
 import Export
+import HouseRules
 import Html exposing (..)
 import Html.Attributes exposing (class)
 import Set
@@ -13,6 +14,7 @@ import UrlState
 import View.FactorsPanel exposing (viewFactorsPanel)
 import View.Header exposing (viewHeader)
 import View.HelpModal exposing (viewHelpModal)
+import View.HouseRulesConfirmModal exposing (viewHouseRulesConfirmModal)
 import View.ImportLinkModal exposing (viewImportLinkModal)
 import View.LicenseModal exposing (viewLicenseModal)
 import View.MobileNav exposing (viewMobileNav)
@@ -91,6 +93,7 @@ defaultModel =
     , isStandalone = False
     , clearSpellUndo = Nothing
     , houseRules = True
+    , houseRulesConfirmOpen = False
     }
 
 
@@ -202,7 +205,16 @@ preservesCopyFeedback msg =
         ToggleRenameSpell ->
             True
 
+        -- Opening the confirmation keeps the copy feedback and Clear's undo,
+        -- so Cancel changes nothing; switchHouseRules drops both itself
+        -- whenever it actually switches.
+        ToggleHouseRules ->
+            True
+
         SetExportFormat _ ->
+            True
+
+        CancelHouseRulesSwitch ->
             True
 
         _ ->
@@ -562,6 +574,43 @@ updateInner msg model =
                     , Cmd.none
                     )
 
+        ToggleHouseRules ->
+            if List.isEmpty (HouseRules.affected HouseRules.changes (not model.houseRules) model) then
+                ( switchHouseRules model, Cmd.none )
+
+            else
+                ( { model | houseRulesConfirmOpen = True }, Cmd.none )
+
+        ConfirmHouseRulesSwitch ->
+            ( switchHouseRules model, Cmd.none )
+
+        CancelHouseRulesSwitch ->
+            ( { model | houseRulesConfirmOpen = False }, Cmd.none )
+
+
+
+-- Flips house rules, first resetting any options the spell uses that the new
+-- setting doesn't offer. Like any other edit to the spell, this ends the
+-- chance to undo a Clear and clears stale copy feedback.
+
+
+switchHouseRules : Model -> Model
+switchHouseRules model =
+    let
+        switched =
+            not model.houseRules
+
+        reset =
+            HouseRules.reset (HouseRules.affected HouseRules.changes switched model) model
+    in
+    { reset
+        | houseRules = switched
+        , houseRulesConfirmOpen = False
+        , clearSpellUndo = Nothing
+        , copySuccess = Nothing
+        , pendingCopy = Nothing
+    }
+
 
 
 -- ─── View ────────────────────────────────────────────────────────────────────
@@ -599,6 +648,11 @@ view model =
             text ""
         , if model.importModalOpen then
             viewImportLinkModal model
+
+          else
+            text ""
+        , if model.houseRulesConfirmOpen then
+            viewHouseRulesConfirmModal model
 
           else
             text ""
