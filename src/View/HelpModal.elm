@@ -42,6 +42,7 @@ viewHelpModal =
                     ++ "go for it — it's on you to make sure the choices you select are "
                     ++ "actually applicable to what you're building."
                 )
+            , viewHouseRules
             , viewSection "This isn't the final word"
                 ("This tool is a calculator and organizer, not a rules authority. Epic spell "
                     ++ "development is a collaborative process — any spell you develop here "
@@ -82,6 +83,25 @@ viewSuggestedReading =
                     ]
                     [ text "Developing Epic Spells" ]
                 ]
+            ]
+        ]
+
+
+viewHouseRules : Html Msg
+viewHouseRules =
+    div []
+        [ h3 [ class "text-sm font-semibold text-gray-200 mb-1" ] [ text "House rules" ]
+        , p [ class "text-sm text-gray-400 leading-relaxed" ]
+            [ text
+                ("The House rules switch at the top applies the Sojourner Saga campaign's house rules, "
+                    ++ "which can add, remove, or replace options. It's on when you start a new spell, and "
+                    ++ "the link remembers it — links shared before the switch existed open with it off. "
+                )
+            , button
+                [ class "text-arcane-400 hover:text-arcane-500 underline"
+                , onClick ToggleHouseRulesModal
+                ]
+                [ text "See what the house rules change" ]
             ]
         ]
 

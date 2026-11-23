@@ -38,6 +38,7 @@ emptyModel =
     , clearSpellUndo = Nothing
     , houseRules = False
     , houseRulesConfirmOpen = False
+    , houseRulesModalOpen = False
     }
 
 

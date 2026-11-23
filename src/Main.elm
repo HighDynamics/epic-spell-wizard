@@ -15,6 +15,7 @@ import View.FactorsPanel exposing (viewFactorsPanel)
 import View.Header exposing (viewHeader)
 import View.HelpModal exposing (viewHelpModal)
 import View.HouseRulesConfirmModal exposing (viewHouseRulesConfirmModal)
+import View.HouseRulesModal exposing (viewHouseRulesModal)
 import View.ImportLinkModal exposing (viewImportLinkModal)
 import View.LicenseModal exposing (viewLicenseModal)
 import View.MobileNav exposing (viewMobileNav)
@@ -94,6 +95,7 @@ defaultModel =
     , clearSpellUndo = Nothing
     , houseRules = True
     , houseRulesConfirmOpen = False
+    , houseRulesModalOpen = False
     }
 
 
@@ -216,6 +218,9 @@ preservesCopyFeedback msg =
             True
 
         CancelHouseRulesSwitch ->
+            True
+
+        ToggleHouseRulesModal ->
             True
 
         _ ->
@@ -589,6 +594,9 @@ updateInner msg model =
         CancelHouseRulesSwitch ->
             ( { model | houseRulesConfirmOpen = False }, Cmd.none )
 
+        ToggleHouseRulesModal ->
+            ( { model | houseRulesModalOpen = not model.houseRulesModalOpen }, Cmd.none )
+
 
 
 -- Flips house rules, first resetting any options the spell uses that the new
@@ -645,6 +653,11 @@ view model =
             text ""
         , if model.licenseModalOpen then
             viewLicenseModal
+
+          else
+            text ""
+        , if model.houseRulesModalOpen then
+            viewHouseRulesModal
 
           else
             text ""

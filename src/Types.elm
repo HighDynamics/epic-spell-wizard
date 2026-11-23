@@ -364,6 +364,7 @@ type alias Model =
     , clearSpellUndo : Maybe SpellSnapshot
     , houseRules : Bool
     , houseRulesConfirmOpen : Bool
+    , houseRulesModalOpen : Bool
     }
 
 
@@ -405,3 +406,4 @@ type Msg
     | ToggleHouseRules
     | ConfirmHouseRulesSwitch
     | CancelHouseRulesSwitch
+    | ToggleHouseRulesModal
