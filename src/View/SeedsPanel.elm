@@ -1,5 +1,6 @@
 module View.SeedsPanel exposing (viewSeedsPanel)
 
+import HouseRules
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
@@ -36,7 +37,10 @@ viewSeedsPanel model =
                 [ text "Click/Tap to add a seed to your spell" ]
             , -- Seed catalog
               div [ class "p-3 grid grid-cols-1 gap-1" ]
-                (List.map (viewSeedCard model.seedInstances) allSeeds)
+                (allSeeds
+                    |> List.filter (\seed -> HouseRules.isOffered model.houseRules (HouseRules.SeedOption seed.id))
+                    |> List.map (viewSeedCard model.seedInstances)
+                )
             ]
 
     else

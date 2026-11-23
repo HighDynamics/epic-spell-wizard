@@ -4,6 +4,8 @@ module HouseRules exposing
     , Option(..)
     , affected
     , changes
+    , dropUnoffered
+    , isOffered
     , offered
     , optionName
     , reset
@@ -81,6 +83,13 @@ offered changeList houseRulesOn option =
     not (List.any withdraws changeList)
 
 
+{-| `offered` for the campaign's own change list.
+-}
+isOffered : Bool -> Option -> Bool
+isOffered =
+    offered changes
+
+
 
 -- ─── Switching ───────────────────────────────────────────────────────────────
 
@@ -146,6 +155,14 @@ unique =
                 x :: acc
         )
         []
+
+
+{-| Takes out of the spell whatever its own house rules setting doesn't offer,
+as a link from before a change, or an edited one, can carry.
+-}
+dropUnoffered : List Change -> Model -> Model
+dropUnoffered changeList model =
+    reset (affected changeList model.houseRules model) model
 
 
 {-| Takes the given options out of the spell: every instance of a seed, a

@@ -109,6 +109,7 @@ init flags =
 
         decoded =
             UrlState.applyQuery searchToUse defaultModel
+                |> HouseRules.dropUnoffered HouseRules.changes
 
         model =
             { decoded | baseUrl = flags.baseUrl, isStandalone = flags.isStandalone }
@@ -501,6 +502,7 @@ updateInner msg model =
                 let
                     decoded =
                         UrlState.applyQuery query defaultModel
+                            |> HouseRules.dropUnoffered HouseRules.changes
                 in
                 ( { decoded
                     | baseUrl = model.baseUrl

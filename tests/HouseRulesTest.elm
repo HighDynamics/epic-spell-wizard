@@ -152,6 +152,34 @@ suite =
                             , [ { factorId = IncreaseRange, quantity = 2 }, { factorId = Dismissible, quantity = 1 } ]
                             )
             ]
+        , describe "dropUnoffered"
+            [ test "a spell loaded with house rules on loses the removed and replaced options" <|
+                \_ ->
+                    let
+                        after =
+                            HouseRules.dropUnoffered sampleChanges { spell | houseRules = True }
+                    in
+                    ( List.map .seedId after.seedInstances, List.map .factorId after.appliedFactors, after.houseRules )
+                        |> Expect.equal ( [ Animate ], [ IncreaseArea, Dismissible ], True )
+            , test "a spell loaded with house rules off loses the added and replacement options" <|
+                \_ ->
+                    let
+                        after =
+                            HouseRules.dropUnoffered sampleChanges { spell | houseRules = False }
+                    in
+                    ( List.concatMap .appliedSeedFactors after.seedInstances, List.map .factorId after.appliedFactors, after.houseRules )
+                        |> Expect.equal ( [], [ IncreaseRange, Dismissible ], False )
+            , test "the campaign's change list leaves every option in place" <|
+                \_ ->
+                    [ HouseRules.dropUnoffered HouseRules.changes { everything | houseRules = True }
+                    , HouseRules.dropUnoffered HouseRules.changes { everything | houseRules = False }
+                    ]
+                        |> List.map (\m -> ( m.seedInstances, m.appliedFactors ))
+                        |> Expect.equal
+                            [ ( everything.seedInstances, everything.appliedFactors )
+                            , ( everything.seedInstances, everything.appliedFactors )
+                            ]
+            ]
         , describe "the campaign's change list"
             [ test "affects nothing when turning house rules on" <|
                 \_ ->
