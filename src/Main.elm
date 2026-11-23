@@ -451,6 +451,7 @@ updateInner msg model =
                     generate
                         link
                         model.spellName
+                        model.houseRules
                         model.seedInstances
                         model.appliedFactors
                         0
