@@ -362,6 +362,7 @@ type alias Model =
     , importError : Maybe String
     , isStandalone : Bool
     , clearSpellUndo : Maybe SpellSnapshot
+    , houseRules : Bool
     }
 
 

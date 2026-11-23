@@ -36,6 +36,7 @@ emptyModel =
     , importError = Nothing
     , isStandalone = False
     , clearSpellUndo = Nothing
+    , houseRules = False
     }
 
 

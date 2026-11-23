@@ -90,6 +90,7 @@ defaultModel =
     , importError = Nothing
     , isStandalone = False
     , clearSpellUndo = Nothing
+    , houseRules = True
     }
 
 
