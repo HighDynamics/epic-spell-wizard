@@ -7,6 +7,7 @@ import Export
 import Html exposing (..)
 import Html.Attributes exposing (class)
 import Set
+import SpellEdit
 import Types exposing (..)
 import UrlState
 import View.FactorsPanel exposing (viewFactorsPanel)
@@ -260,34 +261,7 @@ updateInner msg model =
             )
 
         RemoveSeedInstance iid ->
-            let
-                remaining =
-                    List.filter (\i -> i.instanceId /= iid) model.seedInstances
-
-                newPrimary =
-                    if model.primarySeedInstanceId == Just iid then
-                        List.head remaining |> Maybe.map .instanceId
-
-                    else
-                        model.primarySeedInstanceId
-            in
-            ( if List.isEmpty remaining then
-                { model
-                    | seedInstances = remaining
-                    , primarySeedInstanceId = newPrimary
-                    , appliedFactors = []
-                    , targetToAreaShape = Nothing
-                    , personalToAreaShape = Nothing
-                    , boltShape = Nothing
-                }
-
-              else
-                { model
-                    | seedInstances = remaining
-                    , primarySeedInstanceId = newPrimary
-                }
-            , Cmd.none
-            )
+            ( SpellEdit.removeSeedInstance iid model, Cmd.none )
 
         SetPrimarySeed iid ->
             ( { model | primarySeedInstanceId = Just iid }, Cmd.none )
@@ -299,31 +273,7 @@ updateInner msg model =
             ( { model | selectedSavingThrow = mst }, Cmd.none )
 
         SetSeedFactor iid factorId qty ->
-            ( { model
-                | seedInstances =
-                    List.map
-                        (\i ->
-                            if i.instanceId == iid then
-                                let
-                                    existing =
-                                        List.filter (\asf -> asf.factorId /= factorId) i.appliedSeedFactors
-
-                                    updated =
-                                        if qty > 0 then
-                                            existing ++ [ { factorId = factorId, quantity = qty } ]
-
-                                        else
-                                            existing
-                                in
-                                { i | appliedSeedFactors = updated }
-
-                            else
-                                i
-                        )
-                        model.seedInstances
-              }
-            , Cmd.none
-            )
+            ( SpellEdit.setSeedFactor iid factorId qty model, Cmd.none )
 
         SetChoice iid choiceId value ->
             ( { model
@@ -355,29 +305,7 @@ updateInner msg model =
                 )
 
         RemoveGlobalFactor factorId ->
-            ( { model
-                | appliedFactors = List.filter (\af -> af.factorId /= factorId) model.appliedFactors
-                , targetToAreaShape =
-                    if factorId == TargetToArea then
-                        Nothing
-
-                    else
-                        model.targetToAreaShape
-                , personalToAreaShape =
-                    if factorId == PersonalToArea then
-                        Nothing
-
-                    else
-                        model.personalToAreaShape
-                , boltShape =
-                    if factorId == ChangeToBolt then
-                        Nothing
-
-                    else
-                        model.boltShape
-              }
-            , Cmd.none
-            )
+            ( SpellEdit.removeGlobalFactor factorId model, Cmd.none )
 
         SetTargetToAreaShape shape ->
             ( { model | targetToAreaShape = Just shape }, Cmd.none )
