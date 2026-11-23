@@ -3,6 +3,7 @@ module View.FactorsPanel exposing (viewFactorsPanel)
 import Calc exposing (boltShapes, seedInstanceLabels, sortByName, targetToAreaShapes)
 import Dict exposing (Dict)
 import Factors exposing (allFactors)
+import HouseRules
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
@@ -110,17 +111,21 @@ viewSeedInstanceFactors model labels inst =
                 choiceRows =
                     List.map (viewChoiceDropdown inst) seed.choices
 
+                offeredFactors =
+                    List.filter (\sf -> HouseRules.isOffered model.houseRules (HouseRules.SeedFactorOption seed.id sf.id))
+
                 universalFactorRows =
-                    List.map (viewSeedFactor inst) seed.universalFactors
+                    List.map (viewSeedFactor inst) (offeredFactors seed.universalFactors)
 
                 modeFactorSections =
                     seed.modes
-                        |> List.filter (\m -> not (List.isEmpty m.factors))
+                        |> List.map (\m -> ( m.name, offeredFactors m.factors ))
+                        |> List.filter (\( _, factors ) -> not (List.isEmpty factors))
                         |> List.concatMap
-                            (\m ->
+                            (\( modeName, factors ) ->
                                 div [ class "text-xs text-indigo-500 font-semibold uppercase tracking-wider mt-2 mb-1 pt-2 border-t border-gray-800" ]
-                                    [ text m.name ]
-                                    :: List.map (viewSeedFactor inst) m.factors
+                                    [ text modeName ]
+                                    :: List.map (viewSeedFactor inst) factors
                             )
 
                 factorRows =
@@ -500,7 +505,9 @@ viewGlobalFactorSection : Model -> String -> FactorCategory -> Html Msg
 viewGlobalFactorSection model label category =
     let
         categoryFactors =
-            List.filter (\f -> f.category == category) allFactors
+            List.filter
+                (\f -> f.category == category && HouseRules.isOffered model.houseRules (HouseRules.GlobalFactorOption f.id))
+                allFactors
 
         isCollapsed =
             Set.member label model.collapsedGlobalFactorSections

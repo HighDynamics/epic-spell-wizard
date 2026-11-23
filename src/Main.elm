@@ -4,14 +4,18 @@ import Browser
 import Calc exposing (calculateBreakdown, devCosts, statBlock)
 import Dict
 import Export
+import HouseRules
 import Html exposing (..)
 import Html.Attributes exposing (class)
 import Set
+import SpellEdit
 import Types exposing (..)
 import UrlState
 import View.FactorsPanel exposing (viewFactorsPanel)
 import View.Header exposing (viewHeader)
 import View.HelpModal exposing (viewHelpModal)
+import View.HouseRulesConfirmModal exposing (viewHouseRulesConfirmModal)
+import View.HouseRulesModal exposing (viewHouseRulesModal)
 import View.ImportLinkModal exposing (viewImportLinkModal)
 import View.LicenseModal exposing (viewLicenseModal)
 import View.MobileNav exposing (viewMobileNav)
@@ -89,6 +93,9 @@ defaultModel =
     , importError = Nothing
     , isStandalone = False
     , clearSpellUndo = Nothing
+    , houseRules = True
+    , houseRulesConfirmOpen = False
+    , houseRulesModalOpen = False
     }
 
 
@@ -104,6 +111,7 @@ init flags =
 
         decoded =
             UrlState.applyQuery searchToUse defaultModel
+                |> HouseRules.dropUnoffered HouseRules.changes
 
         model =
             { decoded | baseUrl = flags.baseUrl, isStandalone = flags.isStandalone }
@@ -200,7 +208,19 @@ preservesCopyFeedback msg =
         ToggleRenameSpell ->
             True
 
+        -- Opening the confirmation keeps the copy feedback and Clear's undo,
+        -- so Cancel changes nothing; switchHouseRules drops both itself
+        -- whenever it actually switches.
+        ToggleHouseRules ->
+            True
+
         SetExportFormat _ ->
+            True
+
+        CancelHouseRulesSwitch ->
+            True
+
+        ToggleHouseRulesModal ->
             True
 
         _ ->
@@ -260,34 +280,7 @@ updateInner msg model =
             )
 
         RemoveSeedInstance iid ->
-            let
-                remaining =
-                    List.filter (\i -> i.instanceId /= iid) model.seedInstances
-
-                newPrimary =
-                    if model.primarySeedInstanceId == Just iid then
-                        List.head remaining |> Maybe.map .instanceId
-
-                    else
-                        model.primarySeedInstanceId
-            in
-            ( if List.isEmpty remaining then
-                { model
-                    | seedInstances = remaining
-                    , primarySeedInstanceId = newPrimary
-                    , appliedFactors = []
-                    , targetToAreaShape = Nothing
-                    , personalToAreaShape = Nothing
-                    , boltShape = Nothing
-                }
-
-              else
-                { model
-                    | seedInstances = remaining
-                    , primarySeedInstanceId = newPrimary
-                }
-            , Cmd.none
-            )
+            ( SpellEdit.removeSeedInstance iid model, Cmd.none )
 
         SetPrimarySeed iid ->
             ( { model | primarySeedInstanceId = Just iid }, Cmd.none )
@@ -299,31 +292,7 @@ updateInner msg model =
             ( { model | selectedSavingThrow = mst }, Cmd.none )
 
         SetSeedFactor iid factorId qty ->
-            ( { model
-                | seedInstances =
-                    List.map
-                        (\i ->
-                            if i.instanceId == iid then
-                                let
-                                    existing =
-                                        List.filter (\asf -> asf.factorId /= factorId) i.appliedSeedFactors
-
-                                    updated =
-                                        if qty > 0 then
-                                            existing ++ [ { factorId = factorId, quantity = qty } ]
-
-                                        else
-                                            existing
-                                in
-                                { i | appliedSeedFactors = updated }
-
-                            else
-                                i
-                        )
-                        model.seedInstances
-              }
-            , Cmd.none
-            )
+            ( SpellEdit.setSeedFactor iid factorId qty model, Cmd.none )
 
         SetChoice iid choiceId value ->
             ( { model
@@ -355,29 +324,7 @@ updateInner msg model =
                 )
 
         RemoveGlobalFactor factorId ->
-            ( { model
-                | appliedFactors = List.filter (\af -> af.factorId /= factorId) model.appliedFactors
-                , targetToAreaShape =
-                    if factorId == TargetToArea then
-                        Nothing
-
-                    else
-                        model.targetToAreaShape
-                , personalToAreaShape =
-                    if factorId == PersonalToArea then
-                        Nothing
-
-                    else
-                        model.personalToAreaShape
-                , boltShape =
-                    if factorId == ChangeToBolt then
-                        Nothing
-
-                    else
-                        model.boltShape
-              }
-            , Cmd.none
-            )
+            ( SpellEdit.removeGlobalFactor factorId model, Cmd.none )
 
         SetTargetToAreaShape shape ->
             ( { model | targetToAreaShape = Just shape }, Cmd.none )
@@ -504,6 +451,7 @@ updateInner msg model =
                     generate
                         link
                         model.spellName
+                        model.houseRules
                         model.seedInstances
                         model.appliedFactors
                         0
@@ -560,6 +508,7 @@ updateInner msg model =
                 let
                     decoded =
                         UrlState.applyQuery query defaultModel
+                            |> HouseRules.dropUnoffered HouseRules.changes
                 in
                 ( { decoded
                     | baseUrl = model.baseUrl
@@ -633,6 +582,46 @@ updateInner msg model =
                     , Cmd.none
                     )
 
+        ToggleHouseRules ->
+            if List.isEmpty (HouseRules.affected HouseRules.changes (not model.houseRules) model) then
+                ( switchHouseRules model, Cmd.none )
+
+            else
+                ( { model | houseRulesConfirmOpen = True }, Cmd.none )
+
+        ConfirmHouseRulesSwitch ->
+            ( switchHouseRules model, Cmd.none )
+
+        CancelHouseRulesSwitch ->
+            ( { model | houseRulesConfirmOpen = False }, Cmd.none )
+
+        ToggleHouseRulesModal ->
+            ( { model | houseRulesModalOpen = not model.houseRulesModalOpen }, Cmd.none )
+
+
+
+-- Flips house rules, first resetting any options the spell uses that the new
+-- setting doesn't offer. Like any other edit to the spell, this ends the
+-- chance to undo a Clear and clears stale copy feedback.
+
+
+switchHouseRules : Model -> Model
+switchHouseRules model =
+    let
+        switched =
+            not model.houseRules
+
+        reset =
+            HouseRules.reset (HouseRules.affected HouseRules.changes switched model) model
+    in
+    { reset
+        | houseRules = switched
+        , houseRulesConfirmOpen = False
+        , clearSpellUndo = Nothing
+        , copySuccess = Nothing
+        , pendingCopy = Nothing
+    }
+
 
 
 -- ─── View ────────────────────────────────────────────────────────────────────
@@ -668,8 +657,18 @@ view model =
 
           else
             text ""
+        , if model.houseRulesModalOpen then
+            viewHouseRulesModal
+
+          else
+            text ""
         , if model.importModalOpen then
             viewImportLinkModal model
+
+          else
+            text ""
+        , if model.houseRulesConfirmOpen then
+            viewHouseRulesConfirmModal model
 
           else
             text ""

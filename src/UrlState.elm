@@ -14,8 +14,32 @@ import Url.Builder as UB
 
 encode : Model -> String
 encode model =
-    UB.toQuery (List.filterMap identity (params model))
+    let
+        spellParams =
+            List.filterMap identity (params model)
+    in
+    UB.toQuery (spellParams ++ houseRulesParam model.houseRules spellParams)
         |> escapeForSharing
+
+
+
+-- House rules are on with `house=1`. Links without `house` are off, so every
+-- link made before house rules existed keeps meaning the rules as written.
+-- The one exception is a blank spell: its link would otherwise be the bare
+-- page address, which is a fresh start (house rules on), so a blank spell with
+-- house rules off says so with `house=0`.
+
+
+houseRulesParam : Bool -> List UB.QueryParameter -> List UB.QueryParameter
+houseRulesParam houseRules spellParams =
+    if houseRules then
+        [ UB.string "house" "1" ]
+
+    else if List.isEmpty spellParams then
+        [ UB.string "house" "0" ]
+
+    else
+        []
 
 
 
@@ -378,6 +402,12 @@ encodeAppliedFactors factors =
 
 
 -- ─── Decode ───────────────────────────────────────────────────────────────────
+-- Every query key `encode` can write.
+
+
+appKeys : List String
+appKeys =
+    [ "name", "school", "save", "t2a", "p2a", "bolt", "panels", "primary", "seeds", "factors", "house" ]
 
 
 applyQuery : String -> Model -> Model
@@ -417,6 +447,16 @@ applyQuery search model =
             Dict.get "factors" query
                 |> Maybe.map decodeAppliedFactors
                 |> Maybe.withDefault model.appliedFactors
+        , houseRules =
+            -- A query with none of the app's own keys (empty, or only
+            -- tracking parameters a link handler added) is a fresh start,
+            -- which keeps the model's default; any other link is off unless
+            -- it says `house=1`.
+            if not (List.any (\key -> Dict.member key query) appKeys) then
+                model.houseRules
+
+            else
+                Dict.get "house" query == Just "1"
     }
 
 

@@ -362,6 +362,9 @@ type alias Model =
     , importError : Maybe String
     , isStandalone : Bool
     , clearSpellUndo : Maybe SpellSnapshot
+    , houseRules : Bool
+    , houseRulesConfirmOpen : Bool
+    , houseRulesModalOpen : Bool
     }
 
 
@@ -400,3 +403,7 @@ type Msg
     | LoadImportedLink
     | ClearSpell
     | UndoClearSpell
+    | ToggleHouseRules
+    | ConfirmHouseRulesSwitch
+    | CancelHouseRulesSwitch
+    | ToggleHouseRulesModal

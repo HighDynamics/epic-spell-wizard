@@ -352,10 +352,20 @@ formatNum n =
 
 
 -- ─── Markdown export ──────────────────────────────────────────────────────────
+-- Says which rules the spell was built under, right below its title.
 
 
-generateMarkdown : String -> String -> List SeedInstance -> List AppliedFactor -> Int -> Maybe SeedInstanceId -> Maybe String -> Maybe String -> Maybe String -> String
-generateMarkdown link spellName instances globalFactors casterSaveDCBonus maybePrimaryId maybeTargetToAreaShape maybePersonalToAreaShape maybeBoltShape =
+rulesLine : Bool -> String
+rulesLine houseRules =
+    if houseRules then
+        "House rules: on"
+
+    else
+        "Rules as written"
+
+
+generateMarkdown : String -> String -> Bool -> List SeedInstance -> List AppliedFactor -> Int -> Maybe SeedInstanceId -> Maybe String -> Maybe String -> Maybe String -> String
+generateMarkdown link spellName houseRules instances globalFactors casterSaveDCBonus maybePrimaryId maybeTargetToAreaShape maybePersonalToAreaShape maybeBoltShape =
     let
         breakdown =
             calculateBreakdown instances globalFactors
@@ -400,7 +410,9 @@ generateMarkdown link spellName instances globalFactors casterSaveDCBonus maybeP
     in
     "# "
         ++ title
-        ++ "\n\n"
+        ++ "\n\n_"
+        ++ rulesLine houseRules
+        ++ "_\n\n"
         ++ "## Epic Spell Wizard Link\n\n"
         ++ link
         ++ "\n\n"
@@ -491,8 +503,8 @@ generateMarkdown link spellName instances globalFactors casterSaveDCBonus maybeP
 -- ─── Plain text export ────────────────────────────────────────────────────────
 
 
-generatePlainText : String -> String -> List SeedInstance -> List AppliedFactor -> Int -> Maybe SeedInstanceId -> Maybe String -> Maybe String -> Maybe String -> String
-generatePlainText link spellName instances globalFactors casterSaveDCBonus maybePrimaryId maybeTargetToAreaShape maybePersonalToAreaShape maybeBoltShape =
+generatePlainText : String -> String -> Bool -> List SeedInstance -> List AppliedFactor -> Int -> Maybe SeedInstanceId -> Maybe String -> Maybe String -> Maybe String -> String
+generatePlainText link spellName houseRules instances globalFactors casterSaveDCBonus maybePrimaryId maybeTargetToAreaShape maybePersonalToAreaShape maybeBoltShape =
     let
         breakdown =
             calculateBreakdown instances globalFactors
@@ -543,6 +555,8 @@ generatePlainText link spellName instances globalFactors casterSaveDCBonus maybe
             bar ++ "\n" ++ String.toUpper label ++ "\n" ++ bar ++ "\n\n"
     in
     title
+        ++ "\n"
+        ++ rulesLine houseRules
         ++ "\n\n"
         ++ header "Epic Spell Wizard Link"
         ++ link
