@@ -1,62 +1,17 @@
 module UrlStateTest exposing (suite)
 
-import Dict
 import Expect
 import Factors exposing (allFactors)
+import Fixtures exposing (emptyModel, seedInstance)
 import Seeds exposing (allSeeds)
-import Set
 import Test exposing (Test, describe, test)
 import Types exposing (..)
 import UrlState
 
 
-emptyModel : Model
-emptyModel =
-    { spellName = ""
-    , seedInstances = []
-    , nextInstanceId = 0
-    , primarySeedInstanceId = Nothing
-    , appliedFactors = []
-    , selectedSchool = Nothing
-    , selectedSavingThrow = Nothing
-    , targetToAreaShape = Nothing
-    , personalToAreaShape = Nothing
-    , boltShape = Nothing
-    , expandedSeedDescriptions = Set.empty
-    , collapsedSeedInstances = Set.empty
-    , collapsedGlobalFactorSections = Set.empty
-    , seedsPanelOpen = True
-    , factorsPanelOpen = True
-    , summaryPanelOpen = True
-    , copySuccess = Nothing
-    , pendingCopy = Nothing
-    , exportFormat = PlainTextExport
-    , baseUrl = ""
-    , renamingSpell = False
-    , helpModalOpen = False
-    , licenseModalOpen = False
-    , activeMobileTab = SeedsTab
-    , importModalOpen = False
-    , importInput = ""
-    , importError = Nothing
-    , isStandalone = False
-    , clearSpellUndo = Nothing
-    }
-
-
 roundTrip : Model -> Model
 roundTrip model =
     UrlState.applyQuery (UrlState.encode model) emptyModel
-
-
-seedInstance : Seed -> SeedInstance
-seedInstance seed =
-    { instanceId = 0
-    , seedId = seed.id
-    , appliedSeedFactors = []
-    , choices = Dict.empty
-    , baseDCOverride = Nothing
-    }
 
 
 suite : Test
